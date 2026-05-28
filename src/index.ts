@@ -1,2 +1,4 @@
 export { MonitorPill } from './components/MonitorPill'
 export type { MonitorPillProps } from './components/MonitorPill'
+export { MonitorInspector } from './components/MonitorInspector'
+export type { MonitorInspectorProps } from './components/MonitorInspector'
