@@ -1,0 +1,64 @@
+/*
+  monitor-ui design tokens
+  Override any of these at :root or on a wrapper element to theme the monitor.
+
+  Example:
+    :root {
+      --monitor-color-fps-good: #00ff99;
+      --monitor-bg: #1a1a2e;
+    }
+*/
+
+:root {
+  /* ── FPS status colors ────────────────────────────────── */
+  --monitor-color-fps-good: #4ade80;  /* ≥ 55 fps  */
+  --monitor-color-fps-warn: #facc15;  /* 30–54 fps */
+  --monitor-color-fps-bad:  #f87171;  /* < 30 fps  */
+
+  /* ── Metric accent colors ─────────────────────────────── */
+  --monitor-color-memory:   #60a5fa;
+  --monitor-color-latency:  #a78bfa;
+  --monitor-color-requests: #a78bfa;
+  --monitor-color-payload:  #fb923c;
+  --monitor-color-events:   #f472b6;
+
+  /* ── Network status ───────────────────────────────────── */
+  --monitor-color-status-ok:    #4ade80;
+  --monitor-color-status-error: #f87171;
+  --monitor-color-latency-high: #f87171;  /* latency > 500ms */
+
+  /* ── Surfaces ─────────────────────────────────────────── */
+  --monitor-bg:         rgba(8, 8, 13, 0.98);
+  --monitor-bg-widget:  rgba(10, 10, 15, 0.92);
+  --monitor-bg-card:    rgba(255, 255, 255, 0.03);
+  --monitor-bg-row:     rgba(255, 255, 255, 0.02);
+  --monitor-bg-section: rgba(255, 255, 255, 0.02);
+
+  /* ── Borders ──────────────────────────────────────────── */
+  --monitor-border:        rgba(255, 255, 255, 0.07);
+  --monitor-border-hover:  rgba(255, 255, 255, 0.25);
+  --monitor-border-row:    rgba(255, 255, 255, 0.03);
+  --monitor-border-header: rgba(255, 255, 255, 0.06);
+
+  /* ── Text ─────────────────────────────────────────────── */
+  --monitor-text-primary:   #f1f5f9;
+  --monitor-text-secondary: #94a3b8;
+  --monitor-text-muted:     #475569;
+  --monitor-text-label:     #64748b;
+  --monitor-text-dim:       #334155;
+
+  /* ── Typography ───────────────────────────────────────── */
+  --monitor-font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+
+  /* ── Radius ───────────────────────────────────────────── */
+  --monitor-radius:    10px;
+  --monitor-radius-lg: 14px;
+  --monitor-radius-sm: 6px;
+
+  /* ── Shadows ──────────────────────────────────────────── */
+  --monitor-shadow-widget: 0 4px 24px rgba(0, 0, 0, 0.5);
+  --monitor-shadow-panel:  0 20px 60px rgba(0, 0, 0, 0.7);
+
+  /* ── Live indicator ───────────────────────────────────── */
+  --monitor-color-live: #4ade80;
+}

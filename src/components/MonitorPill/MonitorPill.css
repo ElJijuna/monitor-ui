@@ -1,0 +1,39 @@
+.monitor-pill {
+  align-items: center;
+  display: inline-flex;
+  gap: 10px;
+  min-height: 44px;
+  min-width: 176px;
+  text-align: start;
+}
+
+.monitor-pill__metrics {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 48px;
+}
+
+.monitor-pill__fps {
+  color: var(--monitor-pill-fps-color, var(--gnome-accent-color, #4ade80));
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.monitor-pill__memory,
+.monitor-pill__latency {
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.monitor-pill__chart {
+  inline-size: 72px;
+  min-inline-size: 72px;
+}
+
+.monitor-pill__separator {
+  align-self: stretch;
+  background: var(--gnome-border-color, rgba(127, 127, 127, 0.24));
+  inline-size: 1px;
+}
