@@ -1,7 +1,7 @@
 .monitor-dashboard {
   background: var(--monitor-bg, rgba(8, 8, 13, 0.98));
   border: 1px solid var(--monitor-border, rgba(255, 255, 255, 0.07));
-  border-radius: var(--monitor-radius-lg, 14px);
+  border-radius: var(--gnome-radius-xl, 15px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -80,7 +80,7 @@
 .monitor-dashboard__chart-panel {
   background: var(--monitor-bg-card, rgba(255, 255, 255, 0.03));
   border: 1px solid var(--monitor-border, rgba(255, 255, 255, 0.07));
-  border-radius: var(--monitor-radius, 10px);
+  border-radius: var(--gnome-radius-lg, 12px);
   display: flex;
   flex-direction: column;
   gap: var(--gnome-space-1, 6px);
@@ -103,7 +103,7 @@
 .monitor-dashboard__log {
   background: var(--monitor-bg-card, rgba(255, 255, 255, 0.03));
   border: 1px solid var(--monitor-border, rgba(255, 255, 255, 0.07));
-  border-radius: var(--monitor-radius, 10px);
+  border-radius: var(--gnome-radius-lg, 12px);
   display: flex;
   flex-direction: column;
   overflow: hidden;

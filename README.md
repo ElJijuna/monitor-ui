@@ -7,6 +7,8 @@
 
 Three-level React UI for [monitor-api](https://www.npmjs.com/package/monitor-api): a compact pill that shows live metrics, an inspector panel with detailed sections, and a full dashboard with charts and tables. Each level is independently usable or wired together into a drill-down flow.
 
+![monitor-ui dashboard demo](https://raw.githubusercontent.com/ElJijuna/monitor-ui/main/public/assets/dashboard.gif)
+
 ```
 MonitorPill  →  MonitorInspector  →  Dashboard
    (pill)          (inspector)        (full view)

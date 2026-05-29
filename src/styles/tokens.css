@@ -1,7 +1,6 @@
 /*
   monitor-ui design tokens
-  Override any of these at :root or on a wrapper element to theme the monitor.
-
+  Only defines tokens that @gnome-ui/core does not provide.
   Surface, border and text tokens delegate to gnome-ui variables so they
   respond automatically to light / dark mode via GnomeProvider.
 
@@ -18,11 +17,9 @@
   --monitor-color-fps-bad:  #f87171;  /* < 30 fps  */
 
   /* ── Metric accent colors ─────────────────────────────── */
-  --monitor-color-memory:   #60a5fa;
-  --monitor-color-latency:  #a78bfa;
-  --monitor-color-requests: #a78bfa;
-  --monitor-color-payload:  #fb923c;
-  --monitor-color-events:   #f472b6;
+  --monitor-color-memory:  #60a5fa;
+  --monitor-color-latency: #a78bfa;
+  --monitor-color-events:  #f472b6;
 
   /* ── Network status ───────────────────────────────────── */
   --monitor-color-status-ok:    #4ade80;
@@ -30,15 +27,11 @@
   --monitor-color-latency-high: #f87171;  /* latency > 500ms */
 
   /* ── Surfaces — follow gnome-ui theme ────────────────── */
-  --monitor-bg:         var(--gnome-window-bg-color);
-  --monitor-bg-widget:  var(--gnome-popover-bg-color);
-  --monitor-bg-card:    color-mix(in srgb, var(--gnome-window-fg-color) 3%, transparent);
-  --monitor-bg-row:     color-mix(in srgb, var(--gnome-window-fg-color) 2%, transparent);
-  --monitor-bg-section: color-mix(in srgb, var(--gnome-window-fg-color) 2%, transparent);
+  --monitor-bg:      var(--gnome-window-bg-color);
+  --monitor-bg-card: color-mix(in srgb, var(--gnome-window-fg-color) 3%, transparent);
 
   /* ── Borders — follow gnome-ui theme ─────────────────── */
   --monitor-border:        var(--gnome-border-subtle);
-  --monitor-border-hover:  color-mix(in srgb, var(--gnome-window-fg-color) 25%, transparent);
   --monitor-border-row:    var(--gnome-divider-color);
   --monitor-border-header: var(--gnome-divider-color);
 
@@ -48,18 +41,6 @@
   --monitor-text-muted:     color-mix(in srgb, var(--gnome-window-fg-color) 40%, transparent);
   --monitor-text-label:     color-mix(in srgb, var(--gnome-window-fg-color) 45%, transparent);
   --monitor-text-dim:       color-mix(in srgb, var(--gnome-window-fg-color) 20%, transparent);
-
-  /* ── Typography ───────────────────────────────────────── */
-  --monitor-font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
-
-  /* ── Radius ───────────────────────────────────────────── */
-  --monitor-radius:    10px;
-  --monitor-radius-lg: 14px;
-  --monitor-radius-sm: 6px;
-
-  /* ── Shadows ──────────────────────────────────────────── */
-  --monitor-shadow-widget: 0 4px 24px rgba(0, 0, 0, 0.15);
-  --monitor-shadow-panel:  0 20px 60px rgba(0, 0, 0, 0.2);
 
   /* ── Live indicator ───────────────────────────────────── */
   --monitor-color-live: #4ade80;

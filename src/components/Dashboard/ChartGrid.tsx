@@ -20,16 +20,19 @@ export function ChartGrid({ monitor }: ChartGridProps) {
   const charts = [
     {
       label: 'FPS History',
+      dataKey: 'fps' as const,
       data: toChartData(performance.fpsHistory, performance.fps),
       color: fpsChartColor,
     },
     {
       label: 'Memory (MB)',
+      dataKey: 'memory' as const,
       data: toChartData(performance.memoryHistory, performance.memory?.used ?? 0),
       color: COLOR_MEMORY,
     },
     {
       label: 'Request Latency (ms)',
+      dataKey: 'latency' as const,
       data: latencyPoints.length > 1 ? latencyPoints : [0, 0],
       color: COLOR_LATENCY,
     },
@@ -37,12 +40,12 @@ export function ChartGrid({ monitor }: ChartGridProps) {
 
   return (
     <div className="monitor-dashboard__charts">
-      {charts.map(({ label, data, color }) => (
+      {charts.map(({ label, dataKey, data, color }) => (
         <div key={label} className="monitor-dashboard__chart-panel">
           <Text className="monitor-dashboard__chart-label" color="dim" variant="caption-heading">
             {label}
           </Text>
-          <SparkAreaChart color={color} data={data} height={64} strokeWidth={1.5} />
+          <SparkAreaChart color={color} data={data} dataKey={dataKey} height={64} strokeWidth={1.5} />
         </div>
       ))}
     </div>

@@ -5,6 +5,41 @@ import type { Monitor } from 'monitor-api'
 import { Dashboard } from './Dashboard'
 import { MonitorInspector } from '../MonitorInspector'
 
+const MOCK_ENDPOINTS = [
+  { url: 'https://jsonplaceholder.typicode.com/posts/1',          method: 'GET' },
+  { url: 'https://jsonplaceholder.typicode.com/users/1',          method: 'GET' },
+  { url: 'https://jsonplaceholder.typicode.com/todos?_limit=10',  method: 'GET' },
+  { url: 'https://jsonplaceholder.typicode.com/comments?postId=1',method: 'GET' },
+  { url: 'https://jsonplaceholder.typicode.com/albums/1/photos',  method: 'GET' },
+  { url: 'https://jsonplaceholder.typicode.com/posts',            method: 'POST' },
+  { url: 'https://jsonplaceholder.typicode.com/posts/999',        method: 'GET' },  // 404
+]
+
+function useMockRequests() {
+  useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>
+
+    async function fire() {
+      const endpoint = MOCK_ENDPOINTS[Math.floor(Math.random() * MOCK_ENDPOINTS.length)]
+      try {
+        await fetch(endpoint.url, {
+          method: endpoint.method,
+          ...(endpoint.method === 'POST' && {
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: 'mock', body: 'test', userId: 1 }),
+          }),
+        })
+      } catch {
+        // network failures are also captured by monitor-api
+      }
+      timeoutId = setTimeout(fire, 600 + Math.random() * 1400)
+    }
+
+    fire()
+    return () => clearTimeout(timeoutId)
+  }, [])
+}
+
 const meta = {
   title: 'Components/Dashboard',
   component: Dashboard,
@@ -43,6 +78,7 @@ function useDemoMonitor() {
 
 function DashboardStory(props: Omit<React.ComponentProps<typeof Dashboard>, 'monitor'>) {
   const monitor = useDemoMonitor()
+  useMockRequests()
   return (
     <div style={{ minHeight: '100vh', padding: '24px' }}>
       <Dashboard {...props} monitor={monitor} />
@@ -57,6 +93,7 @@ export const Default: Story = {
 
 function DashboardWithBackStory() {
   const monitor = useDemoMonitor()
+  useMockRequests()
   const [view, setView] = useState<'inspector' | 'dashboard'>('dashboard')
 
   return (

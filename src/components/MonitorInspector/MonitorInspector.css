@@ -53,14 +53,14 @@
 .monitor-inspector__vital {
   background: var(--monitor-bg-card);
   border: 1px solid var(--monitor-border);
-  border-radius: var(--monitor-radius-sm, 6px);
+  border-radius: var(--gnome-radius-md, 8px);
   display: flex;
   flex-direction: column;
   gap: 3px;
   overflow: hidden;
   padding: 8px 6px 7px;
   position: relative;
-  transition: border-color 0.3s ease;
+  transition: border-color var(--gnome-duration-slow, 300ms) var(--gnome-easing-default, ease);
 }
 
 .monitor-inspector__vital::before {
@@ -70,7 +70,7 @@
   inset-block-start: 0;
   inset-inline: 0;
   position: absolute;
-  transition: background-color 0.4s ease;
+  transition: background-color var(--gnome-duration-slow, 300ms) var(--gnome-easing-default, ease);
 }
 
 .monitor-inspector__vital--good    { --_vital-color: var(--monitor-color-fps-good, #4ade80); border-color: color-mix(in srgb, var(--monitor-color-fps-good, #4ade80) 20%, transparent); }

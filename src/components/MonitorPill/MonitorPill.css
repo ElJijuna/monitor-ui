@@ -33,6 +33,6 @@
 
 .monitor-pill__separator {
   align-self: stretch;
-  background: var(--gnome-border-color, rgba(127, 127, 127, 0.24));
+  background: var(--monitor-border);
   inline-size: 1px;
 }
