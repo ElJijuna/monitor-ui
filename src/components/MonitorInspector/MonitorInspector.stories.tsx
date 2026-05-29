@@ -1,28 +1,12 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { createMonitor, emitMonitorEvent } from 'monitor-api'
 import type { Monitor } from 'monitor-api'
-import { MonitorInspector } from './MonitorInspector'
-
-const meta = {
-  title: 'Components/MonitorInspector',
-  component: MonitorInspector,
-  parameters: {
-    layout: 'fullscreen',
-  },
-  argTypes: {
-    monitor: { table: { disable: true } },
-    onOpenDashboard: { table: { disable: true } },
-    onClose: { table: { disable: true } },
-  },
-} satisfies Meta<typeof MonitorInspector>
-
-export default meta
-
-type Story = StoryObj<typeof meta>
+import { MonitorInspector, type MonitorInspectorProps } from './MonitorInspector'
 
 function useDemoMonitor() {
   const monitor = useMemo<Monitor>(() => createMonitor({
+    collectors: { react: false },
     maxHistory: 60,
   }), [])
 
@@ -42,45 +26,28 @@ function useDemoMonitor() {
   return monitor
 }
 
-function MonitorInspectorStory(props: Omit<React.ComponentProps<typeof MonitorInspector>, 'monitor'>) {
+function MonitorInspectorStory(props: Omit<MonitorInspectorProps, 'monitor'>) {
   const monitor = useDemoMonitor()
-  return <MonitorInspector {...props} monitor={monitor} />
-}
-
-export const Open: Story = {
-  args: {
-    open: true,
-    title: 'Monitor',
-  },
-  render: (args) => <MonitorInspectorStory {...args} />,
-}
-
-function WithDashboardStory() {
-  const monitor = useDemoMonitor()
-  const [dashboardOpen, setDashboardOpen] = useState(false)
-
-  if (dashboardOpen) {
-    return (
-      <div style={{ padding: 24 }}>
-        <button onClick={() => setDashboardOpen(false)} style={{ marginBottom: 16 }}>
-          ← Back to Inspector
-        </button>
-        <div>Dashboard would render here</div>
-      </div>
-    )
-  }
-
   return (
-    <MonitorInspector
-      monitor={monitor}
-      onOpenDashboard={() => setDashboardOpen(true)}
-      open
-      title="Monitor"
-    />
+    <div style={{ width: 360, height: '80vh', overflow: 'auto', border: '1px solid var(--gnome-border-subtle)' }}>
+      <MonitorInspector {...props} monitor={monitor} />
+    </div>
   )
 }
 
-export const WithDashboardButton: Story = {
-  args: { open: true },
-  render: () => <WithDashboardStory />,
+const meta = {
+  title: 'Components/MonitorInspector',
+  component: MonitorInspectorStory,
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta<typeof MonitorInspectorStory>
+
+export default meta
+
+type Story = StoryObj<typeof meta>
+
+export const Default: Story = {
+  args: { title: 'Monitor' },
 }
+

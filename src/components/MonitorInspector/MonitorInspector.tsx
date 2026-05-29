@@ -1,6 +1,6 @@
+import type { HTMLAttributes } from 'react'
 import type { Monitor } from 'monitor-api'
-import { Button, Drawer, HeaderBar } from '@gnome-ui/react'
-import type { DrawerProps } from '@gnome-ui/react'
+import { Button, HeaderBar } from '@gnome-ui/react'
 import '../../styles/tokens.css'
 import './MonitorInspector.css'
 import { PerformanceSection } from './PerformanceSection'
@@ -9,29 +9,25 @@ import { NetworkSection } from './NetworkSection'
 import { ReactSection } from './ReactSection'
 import { EventsSection } from './EventsSection'
 
-export interface MonitorInspectorProps extends Omit<DrawerProps, 'children' | 'content'> {
+export interface MonitorInspectorProps extends HTMLAttributes<HTMLDivElement> {
   monitor: Monitor
+  title?: string
+  onClose?: () => void
   onOpenDashboard?: () => void
 }
 
 export function MonitorInspector({
   monitor,
-  open,
+  title = 'Monitor',
   onClose,
   onOpenDashboard,
-  side = 'right',
-  size = 'classic',
-  title = 'Monitor',
-  ...drawerProps
+  className,
+  ...divProps
 }: MonitorInspectorProps) {
   return (
-    <Drawer
-      {...drawerProps}
-      className="monitor-inspector"
-      onClose={onClose}
-      open={open}
-      side={side}
-      size={size}
+    <div
+      {...divProps}
+      className={['monitor-inspector', className].filter(Boolean).join(' ')}
     >
       <HeaderBar
         end={(
@@ -41,9 +37,11 @@ export function MonitorInspector({
                 Dashboard
               </Button>
             ) : null}
-            <Button onClick={onClose} size="sm" variant="flat">
-              Close
-            </Button>
+            {onClose ? (
+              <Button onClick={onClose} size="sm" variant="flat">
+                Close
+              </Button>
+            ) : null}
           </>
         )}
         title={title}
@@ -56,6 +54,6 @@ export function MonitorInspector({
         <ReactSection monitor={monitor} />
         <EventsSection monitor={monitor} />
       </div>
-    </Drawer>
+    </div>
   )
 }
