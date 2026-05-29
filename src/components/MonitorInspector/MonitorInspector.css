@@ -79,18 +79,12 @@
 .monitor-inspector__vital--pending { opacity: 0.5; }
 
 .monitor-inspector__vital-name {
-  color: var(--monitor-text-label);
-  font-size: 9px;
-  font-weight: 700;
   letter-spacing: 0.06em;
   line-height: 1;
   text-transform: uppercase;
 }
 
 .monitor-inspector__vital-value {
-  color: var(--monitor-text-primary);
-  font-size: 12px;
-  font-weight: 600;
   line-height: 1.2;
 }
 
@@ -100,8 +94,6 @@
 
 .monitor-inspector__vital-rating {
   color: var(--_vital-color);
-  font-size: 8px;
-  font-weight: 600;
   letter-spacing: 0.04em;
   line-height: 1;
   text-transform: uppercase;

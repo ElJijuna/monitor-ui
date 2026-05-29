@@ -1,0 +1,184 @@
+.monitor-dashboard {
+  background: var(--monitor-bg, rgba(8, 8, 13, 0.98));
+  border: 1px solid var(--monitor-border, rgba(255, 255, 255, 0.07));
+  border-radius: var(--monitor-radius-lg, 14px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+
+.monitor-dashboard__header {
+  align-items: center;
+  border-block-end: 1px solid var(--monitor-border-header, rgba(255, 255, 255, 0.06));
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 18px;
+}
+
+.monitor-dashboard__title-group {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+@keyframes monitor-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.monitor-dashboard__live {
+  animation: monitor-pulse 2s ease-in-out infinite;
+  background: var(--monitor-color-live, #4ade80);
+  block-size: 7px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--monitor-color-live, #4ade80);
+  flex-shrink: 0;
+  inline-size: 7px;
+}
+
+.monitor-dashboard__title {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── Content ────────────────────────────────────────────── */
+
+.monitor-dashboard__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--gnome-space-3, 18px);
+  overflow: auto;
+  padding: var(--gnome-space-3, 18px);
+}
+
+/* ── KPI grid ───────────────────────────────────────────── */
+
+.monitor-dashboard__kpis {
+  display: grid;
+  gap: var(--gnome-space-2, 12px);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.monitor-dashboard__spark {
+  display: block;
+  inline-size: 100%;
+}
+
+/* ── Charts ─────────────────────────────────────────────── */
+
+.monitor-dashboard__charts {
+  display: grid;
+  gap: var(--gnome-space-2, 12px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.monitor-dashboard__chart-panel {
+  background: var(--monitor-bg-card, rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--monitor-border, rgba(255, 255, 255, 0.07));
+  border-radius: var(--monitor-radius, 10px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gnome-space-1, 6px);
+  overflow: hidden;
+  padding: var(--gnome-space-2, 12px);
+}
+
+.monitor-dashboard__chart-label {
+  display: block;
+}
+
+/* ── Log tables ─────────────────────────────────────────── */
+
+.monitor-dashboard__tables {
+  display: grid;
+  gap: var(--gnome-space-2, 12px);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.monitor-dashboard__log {
+  background: var(--monitor-bg-card, rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--monitor-border, rgba(255, 255, 255, 0.07));
+  border-radius: var(--monitor-radius, 10px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.monitor-dashboard__log-header {
+  border-block-end: 1px solid var(--monitor-border, rgba(255, 255, 255, 0.07));
+  padding: var(--gnome-space-1, 6px) var(--gnome-space-2, 12px);
+}
+
+.monitor-dashboard__log-rows {
+  max-block-size: 200px;
+  overflow-y: auto;
+}
+
+.monitor-dashboard__log-row {
+  align-items: center;
+  border-block-end: 1px solid var(--monitor-border-row, rgba(255, 255, 255, 0.03));
+  display: flex;
+  gap: var(--gnome-space-1, 6px);
+  padding: 4px var(--gnome-space-2, 12px);
+}
+
+.monitor-dashboard__value {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.monitor-dashboard__log-status {
+  flex-shrink: 0;
+  inline-size: 32px;
+}
+
+.monitor-dashboard__log-url {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.monitor-dashboard__log-meta {
+  flex-shrink: 0;
+}
+
+.monitor-dashboard__log-time {
+  flex-shrink: 0;
+}
+
+.monitor-dashboard__log-event {
+  color: var(--monitor-color-events, #f472b6);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.monitor-dashboard__log-empty {
+  padding: var(--gnome-space-3, 18px);
+  text-align: center;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+
+@media (max-width: 720px) {
+  .monitor-dashboard__kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .monitor-dashboard__charts {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .monitor-dashboard__tables {
+    grid-template-columns: 1fr;
+  }
+}

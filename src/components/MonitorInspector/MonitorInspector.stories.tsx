@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { createMonitor, emitMonitorEvent } from 'monitor-api'
 import type { Monitor } from 'monitor-api'
@@ -11,11 +11,9 @@ const meta = {
     layout: 'fullscreen',
   },
   argTypes: {
-    monitor: {
-      table: {
-        disable: true,
-      },
-    },
+    monitor: { table: { disable: true } },
+    onOpenDashboard: { table: { disable: true } },
+    onClose: { table: { disable: true } },
   },
 } satisfies Meta<typeof MonitorInspector>
 
@@ -23,14 +21,8 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-function MonitorInspectorStory(props: Omit<React.ComponentProps<typeof MonitorInspector>, 'monitor'>) {
+function useDemoMonitor() {
   const monitor = useMemo<Monitor>(() => createMonitor({
-    collectors: {
-      performance: true,
-      events: true,
-      network: false,
-      react: false,
-    },
     maxHistory: 60,
   }), [])
 
@@ -47,6 +39,11 @@ function MonitorInspectorStory(props: Omit<React.ComponentProps<typeof MonitorIn
     }
   }, [monitor])
 
+  return monitor
+}
+
+function MonitorInspectorStory(props: Omit<React.ComponentProps<typeof MonitorInspector>, 'monitor'>) {
+  const monitor = useDemoMonitor()
   return <MonitorInspector {...props} monitor={monitor} />
 }
 
@@ -56,4 +53,34 @@ export const Open: Story = {
     title: 'Monitor',
   },
   render: (args) => <MonitorInspectorStory {...args} />,
+}
+
+function WithDashboardStory() {
+  const monitor = useDemoMonitor()
+  const [dashboardOpen, setDashboardOpen] = useState(false)
+
+  if (dashboardOpen) {
+    return (
+      <div style={{ padding: 24 }}>
+        <button onClick={() => setDashboardOpen(false)} style={{ marginBottom: 16 }}>
+          ← Back to Inspector
+        </button>
+        <div>Dashboard would render here</div>
+      </div>
+    )
+  }
+
+  return (
+    <MonitorInspector
+      monitor={monitor}
+      onOpenDashboard={() => setDashboardOpen(true)}
+      open
+      title="Monitor"
+    />
+  )
+}
+
+export const WithDashboardButton: Story = {
+  args: { open: true },
+  render: () => <WithDashboardStory />,
 }

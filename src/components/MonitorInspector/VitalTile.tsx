@@ -1,4 +1,5 @@
 import type { WebVitalMetric, WebVitalName } from 'monitor-api'
+import { Text } from '@gnome-ui/react'
 import { formatVital, VITAL_FULL_NAMES } from './formatters'
 
 interface VitalTileProps {
@@ -23,14 +24,16 @@ export function VitalTile({ name, metric }: VitalTileProps) {
       role="listitem"
       title={VITAL_FULL_NAMES[name]}
     >
-      <span className="monitor-inspector__vital-name">{name}</span>
-      <span className="monitor-inspector__vital-value monitor-inspector__value">
+      <Text as="span" className="monitor-inspector__vital-name" color="dim" variant="caption">
+        {name}
+      </Text>
+      <Text as="span" className="monitor-inspector__vital-value monitor-inspector__value" variant="numeric">
         {metric ? formatVital(name, metric.value) : '—'}
-      </span>
+      </Text>
       {metric && (
-        <span className="monitor-inspector__vital-rating">
+        <Text as="span" className="monitor-inspector__vital-rating" variant="caption">
           {metric.rating === 'needs-improvement' ? 'meh' : metric.rating}
-        </span>
+        </Text>
       )}
     </div>
   )

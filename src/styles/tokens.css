@@ -2,10 +2,12 @@
   monitor-ui design tokens
   Override any of these at :root or on a wrapper element to theme the monitor.
 
+  Surface, border and text tokens delegate to gnome-ui variables so they
+  respond automatically to light / dark mode via GnomeProvider.
+
   Example:
     :root {
       --monitor-color-fps-good: #00ff99;
-      --monitor-bg: #1a1a2e;
     }
 */
 
@@ -27,25 +29,25 @@
   --monitor-color-status-error: #f87171;
   --monitor-color-latency-high: #f87171;  /* latency > 500ms */
 
-  /* ── Surfaces ─────────────────────────────────────────── */
-  --monitor-bg:         rgba(8, 8, 13, 0.98);
-  --monitor-bg-widget:  rgba(10, 10, 15, 0.92);
-  --monitor-bg-card:    rgba(255, 255, 255, 0.03);
-  --monitor-bg-row:     rgba(255, 255, 255, 0.02);
-  --monitor-bg-section: rgba(255, 255, 255, 0.02);
+  /* ── Surfaces — follow gnome-ui theme ────────────────── */
+  --monitor-bg:         var(--gnome-window-bg-color);
+  --monitor-bg-widget:  var(--gnome-popover-bg-color);
+  --monitor-bg-card:    color-mix(in srgb, var(--gnome-window-fg-color) 3%, transparent);
+  --monitor-bg-row:     color-mix(in srgb, var(--gnome-window-fg-color) 2%, transparent);
+  --monitor-bg-section: color-mix(in srgb, var(--gnome-window-fg-color) 2%, transparent);
 
-  /* ── Borders ──────────────────────────────────────────── */
-  --monitor-border:        rgba(255, 255, 255, 0.07);
-  --monitor-border-hover:  rgba(255, 255, 255, 0.25);
-  --monitor-border-row:    rgba(255, 255, 255, 0.03);
-  --monitor-border-header: rgba(255, 255, 255, 0.06);
+  /* ── Borders — follow gnome-ui theme ─────────────────── */
+  --monitor-border:        var(--gnome-border-subtle);
+  --monitor-border-hover:  color-mix(in srgb, var(--gnome-window-fg-color) 25%, transparent);
+  --monitor-border-row:    var(--gnome-divider-color);
+  --monitor-border-header: var(--gnome-divider-color);
 
-  /* ── Text ─────────────────────────────────────────────── */
-  --monitor-text-primary:   #f1f5f9;
-  --monitor-text-secondary: #94a3b8;
-  --monitor-text-muted:     #475569;
-  --monitor-text-label:     #64748b;
-  --monitor-text-dim:       #334155;
+  /* ── Text — follow gnome-ui theme ────────────────────── */
+  --monitor-text-primary:   var(--gnome-window-fg-color);
+  --monitor-text-secondary: color-mix(in srgb, var(--gnome-window-fg-color) 65%, transparent);
+  --monitor-text-muted:     color-mix(in srgb, var(--gnome-window-fg-color) 40%, transparent);
+  --monitor-text-label:     color-mix(in srgb, var(--gnome-window-fg-color) 45%, transparent);
+  --monitor-text-dim:       color-mix(in srgb, var(--gnome-window-fg-color) 20%, transparent);
 
   /* ── Typography ───────────────────────────────────────── */
   --monitor-font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
@@ -56,8 +58,8 @@
   --monitor-radius-sm: 6px;
 
   /* ── Shadows ──────────────────────────────────────────── */
-  --monitor-shadow-widget: 0 4px 24px rgba(0, 0, 0, 0.5);
-  --monitor-shadow-panel:  0 20px 60px rgba(0, 0, 0, 0.7);
+  --monitor-shadow-widget: 0 4px 24px rgba(0, 0, 0, 0.15);
+  --monitor-shadow-panel:  0 20px 60px rgba(0, 0, 0, 0.2);
 
   /* ── Live indicator ───────────────────────────────────── */
   --monitor-color-live: #4ade80;
