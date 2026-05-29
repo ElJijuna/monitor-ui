@@ -44,8 +44,75 @@
   white-space: nowrap;
 }
 
+.monitor-inspector__vitals {
+  display: grid;
+  gap: var(--gnome-space-1, 6px);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.monitor-inspector__vital {
+  background: var(--monitor-bg-card);
+  border: 1px solid var(--monitor-border);
+  border-radius: var(--monitor-radius-sm, 6px);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow: hidden;
+  padding: 8px 6px 7px;
+  position: relative;
+  transition: border-color 0.3s ease;
+}
+
+.monitor-inspector__vital::before {
+  background: var(--_vital-color, transparent);
+  block-size: 2px;
+  content: '';
+  inset-block-start: 0;
+  inset-inline: 0;
+  position: absolute;
+  transition: background-color 0.4s ease;
+}
+
+.monitor-inspector__vital--good    { --_vital-color: var(--monitor-color-fps-good, #4ade80); border-color: color-mix(in srgb, var(--monitor-color-fps-good, #4ade80) 20%, transparent); }
+.monitor-inspector__vital--warn    { --_vital-color: var(--monitor-color-fps-warn, #facc15); border-color: color-mix(in srgb, var(--monitor-color-fps-warn, #facc15) 20%, transparent); }
+.monitor-inspector__vital--poor    { --_vital-color: var(--monitor-color-fps-bad,  #f87171); border-color: color-mix(in srgb, var(--monitor-color-fps-bad,  #f87171) 20%, transparent); }
+.monitor-inspector__vital--pending { opacity: 0.5; }
+
+.monitor-inspector__vital-name {
+  color: var(--monitor-text-label);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.monitor-inspector__vital-value {
+  color: var(--monitor-text-primary);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.monitor-inspector__vital--pending .monitor-inspector__vital-value {
+  color: var(--monitor-text-muted);
+}
+
+.monitor-inspector__vital-rating {
+  color: var(--_vital-color);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
 @media (max-width: 420px) {
   .monitor-inspector__stats {
     grid-template-columns: 1fr;
+  }
+
+  .monitor-inspector__vitals {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }

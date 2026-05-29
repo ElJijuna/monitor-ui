@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import type { Monitor } from 'monitor-api'
-import { useEvents, useNetwork, usePerformance, useReact } from 'monitor-api/react'
+import type { Monitor, WebVitalMetric, WebVitalName } from 'monitor-api'
+import { useEvents, useNetwork, usePerformance, useReact, useWebVitals } from 'monitor-api/react'
 import {
   ActionRow,
   BoxedList,
@@ -39,6 +39,28 @@ function formatTime(timestamp: number): string {
   })
 }
 
+const VITAL_ORDER: WebVitalName[] = ['LCP', 'INP', 'CLS', 'FCP', 'TTFB']
+
+const VITAL_FULL_NAMES: Record<WebVitalName, string> = {
+  LCP: 'Largest Contentful Paint',
+  INP: 'Interaction to Next Paint',
+  CLS: 'Cumulative Layout Shift',
+  FCP: 'First Contentful Paint',
+  TTFB: 'Time to First Byte',
+}
+
+function formatVital(name: WebVitalName, value: number): string {
+  if (name === 'CLS') return value.toFixed(3)
+  if (value >= 1000) return `${(value / 1000).toFixed(1)}s`
+  return `${Math.round(value)}ms`
+}
+
+function vitalRatingClass(rating: WebVitalMetric['rating']): string {
+  if (rating === 'good') return 'monitor-inspector__vital--good'
+  if (rating === 'needs-improvement') return 'monitor-inspector__vital--warn'
+  return 'monitor-inspector__vital--poor'
+}
+
 function EmptyRow({ children }: { children: ReactNode }) {
   return (
     <Text className="monitor-inspector__empty" color="dim" variant="caption">
@@ -61,6 +83,7 @@ export function MonitorInspector({
   const network = useNetwork(monitor)
   const react = useReact(monitor)
   const events = useEvents(monitor)
+  const webVitals = useWebVitals(monitor)
   const fpsChartColor = fpsColor(performance.fps)
   const memory = formatMemory(performance.memory)
   const latency = Math.round(network.window5s.avgLatency)
@@ -137,6 +160,39 @@ export function MonitorInspector({
               unit={latency > 0 ? 'ms' : ''}
               value={latency > 0 ? latency : '-'}
             />
+          </div>
+        </section>
+
+        <section className="monitor-inspector__section">
+          <Text className="monitor-inspector__section-title" color="dim" variant="caption-heading">
+            Web Vitals
+          </Text>
+          <div className="monitor-inspector__vitals" role="list">
+            {VITAL_ORDER.map((name) => {
+              const metric = webVitals[name.toLowerCase() as keyof typeof webVitals] as WebVitalMetric | null
+              return (
+                <div
+                  key={name}
+                  aria-label={`${VITAL_FULL_NAMES[name]}: ${metric ? formatVital(name, metric.value) : 'pending'}`}
+                  className={[
+                    'monitor-inspector__vital',
+                    metric ? vitalRatingClass(metric.rating) : 'monitor-inspector__vital--pending',
+                  ].join(' ')}
+                  role="listitem"
+                  title={VITAL_FULL_NAMES[name]}
+                >
+                  <span className="monitor-inspector__vital-name">{name}</span>
+                  <span className="monitor-inspector__vital-value monitor-inspector__value">
+                    {metric ? formatVital(name, metric.value) : '—'}
+                  </span>
+                  {metric && (
+                    <span className="monitor-inspector__vital-rating">
+                      {metric.rating === 'needs-improvement' ? 'meh' : metric.rating}
+                    </span>
+                  )}
+                </div>
+              )
+            })}
           </div>
         </section>
 
