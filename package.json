@@ -13,16 +13,13 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    },
-    "./styles": "./dist/style.css"
+    }
   },
   "files": [
     "dist",
     "LICENSE"
   ],
-  "sideEffects": [
-    "**/*.css"
-  ],
+  "sideEffects": false,
   "keywords": [
     "react",
     "monitor",
@@ -90,6 +87,7 @@
     "ts-jest": "^29.4.3",
     "typescript": "^5.9.3",
     "vite": "8.0.7",
+    "vite-plugin-css-injected-by-js": "^5.0.1",
     "vite-plugin-dts": "^5.0.1"
   },
   "overrides": {
