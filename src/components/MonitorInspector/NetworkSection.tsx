@@ -1,0 +1,42 @@
+import type { Monitor } from 'monitor-api'
+import { useNetwork } from 'monitor-api/react'
+import { ActionRow, BoxedList, Text } from '@gnome-ui/react'
+import { formatBytes } from './formatters'
+import { EmptyRow } from './EmptyRow'
+
+interface NetworkSectionProps {
+  monitor: Monitor
+}
+
+export function NetworkSection({ monitor }: NetworkSectionProps) {
+  const network = useNetwork(monitor)
+  const recentRequests = network.entries.slice(-5).reverse()
+
+  return (
+    <section className="monitor-inspector__section">
+      <Text className="monitor-inspector__section-title" color="dim" variant="caption-heading">
+        Recent Requests
+      </Text>
+      <BoxedList>
+        {recentRequests.length > 0 ? recentRequests.map((entry) => (
+          <ActionRow
+            key={entry.id}
+            subtitle={`${entry.method} - ${formatBytes(entry.payloadSize)} - ${Math.round(entry.latency)}ms`}
+            title={entry.url}
+            trailing={(
+              <Text
+                className="monitor-inspector__value"
+                color={entry.error || entry.status >= 400 ? 'error' : 'success'}
+                variant="numeric"
+              >
+                {entry.status || 'ERR'}
+              </Text>
+            )}
+          />
+        )) : (
+          <EmptyRow>No requests yet</EmptyRow>
+        )}
+      </BoxedList>
+    </section>
+  )
+}
