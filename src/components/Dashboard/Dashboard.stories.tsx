@@ -68,7 +68,6 @@ function DashboardWithBackStory() {
           <MonitorInspector
             monitor={monitor}
             onOpenDashboard={() => setView('dashboard')}
-            open
             title="Monitor"
           />
         </div>

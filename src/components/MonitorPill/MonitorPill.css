@@ -15,14 +15,13 @@
   min-width: 48px;
 }
 
-.monitor-pill__fps {
-  color: var(--monitor-pill-fps-color, var(--gnome-accent-color, #4ade80));
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
+.monitor-pill__metrics--wide {
+  min-width: 96px;
 }
 
-.monitor-pill__memory,
-.monitor-pill__latency {
+.monitor-pill__primary,
+.monitor-pill__secondary,
+.monitor-pill__trailing {
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
