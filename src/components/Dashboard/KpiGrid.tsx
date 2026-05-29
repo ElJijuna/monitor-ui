@@ -3,6 +3,8 @@ import { useEvents, useNetwork, usePerformance } from 'monitor-api/react'
 import { StatCard } from '@gnome-ui/layout'
 import { SparkLineChart } from '@gnome-ui/charts'
 import { fpsColor } from '../../utils/fpsColor'
+import { toChartData } from '../../utils/chartData'
+import { COLOR_MEMORY } from '../../utils/colors'
 
 interface KpiGridProps {
   monitor: Monitor
@@ -22,7 +24,7 @@ export function KpiGrid({ monitor }: KpiGridProps) {
           <span className="monitor-dashboard__spark" aria-hidden="true">
             <SparkLineChart
               color={color}
-              data={performance.fpsHistory.length > 1 ? performance.fpsHistory : [performance.fps, performance.fps]}
+              data={toChartData(performance.fpsHistory, performance.fps)}
               height={38}
             />
           </span>
@@ -35,8 +37,8 @@ export function KpiGrid({ monitor }: KpiGridProps) {
         backgroundChart={(
           <span className="monitor-dashboard__spark" aria-hidden="true">
             <SparkLineChart
-              color="var(--monitor-color-memory, #60a5fa)"
-              data={performance.memoryHistory.length > 1 ? performance.memoryHistory : [0, performance.memory?.used ?? 0]}
+              color={COLOR_MEMORY}
+              data={toChartData(performance.memoryHistory, performance.memory?.used ?? 0)}
               height={38}
             />
           </span>

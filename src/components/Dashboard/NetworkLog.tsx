@@ -2,6 +2,7 @@ import type { Monitor } from 'monitor-api'
 import { useNetwork } from 'monitor-api/react'
 import { Text } from '@gnome-ui/react'
 import { formatBytes } from '../../utils/formatters'
+import { LOG_MAX_ENTRIES } from '../../utils/constants'
 
 interface NetworkLogProps {
   monitor: Monitor
@@ -9,7 +10,7 @@ interface NetworkLogProps {
 
 export function NetworkLog({ monitor }: NetworkLogProps) {
   const network = useNetwork(monitor)
-  const entries = [...network.entries].reverse().slice(0, 20)
+  const entries = [...network.entries].reverse().slice(0, LOG_MAX_ENTRIES)
 
   return (
     <div className="monitor-dashboard__log">

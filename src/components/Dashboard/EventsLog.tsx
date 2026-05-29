@@ -2,6 +2,7 @@ import type { Monitor } from 'monitor-api'
 import { useEvents } from 'monitor-api/react'
 import { Text } from '@gnome-ui/react'
 import { formatTime } from '../../utils/formatters'
+import { LOG_MAX_ENTRIES } from '../../utils/constants'
 
 interface EventsLogProps {
   monitor: Monitor
@@ -9,7 +10,7 @@ interface EventsLogProps {
 
 export function EventsLog({ monitor }: EventsLogProps) {
   const events = useEvents(monitor)
-  const recentEvents = events.entries.slice(0, 20)
+  const recentEvents = events.entries.slice(0, LOG_MAX_ENTRIES)
 
   return (
     <div className="monitor-dashboard__log">

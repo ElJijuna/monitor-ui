@@ -3,6 +3,7 @@ import { useNetwork } from 'monitor-api/react'
 import { ActionRow, BoxedList, Text } from '@gnome-ui/react'
 import { formatBytes } from './formatters'
 import { EmptyRow } from './EmptyRow'
+import { INSPECTOR_MAX_REQUESTS } from '../../utils/constants'
 
 interface NetworkSectionProps {
   monitor: Monitor
@@ -10,7 +11,7 @@ interface NetworkSectionProps {
 
 export function NetworkSection({ monitor }: NetworkSectionProps) {
   const network = useNetwork(monitor)
-  const recentRequests = network.entries.slice(-5).reverse()
+  const recentRequests = network.entries.slice(-INSPECTOR_MAX_REQUESTS).reverse()
 
   return (
     <section className="monitor-inspector__section">

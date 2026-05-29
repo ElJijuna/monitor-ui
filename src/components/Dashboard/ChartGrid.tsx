@@ -3,6 +3,9 @@ import { useNetwork, usePerformance } from 'monitor-api/react'
 import { SparkAreaChart } from '@gnome-ui/charts'
 import { Text } from '@gnome-ui/react'
 import { fpsColor } from '../../utils/fpsColor'
+import { toChartData } from '../../utils/chartData'
+import { COLOR_MEMORY, COLOR_LATENCY } from '../../utils/colors'
+import { CHART_HISTORY_POINTS } from '../../utils/constants'
 
 interface ChartGridProps {
   monitor: Monitor
@@ -12,23 +15,23 @@ export function ChartGrid({ monitor }: ChartGridProps) {
   const performance = usePerformance(monitor)
   const network = useNetwork(monitor)
   const fpsChartColor = fpsColor(performance.fps)
-  const latencyPoints = network.entries.slice(-60).map((e) => e.latency)
+  const latencyPoints = network.entries.slice(-CHART_HISTORY_POINTS).map((e) => e.latency)
 
   const charts = [
     {
       label: 'FPS History',
-      data: performance.fpsHistory.length > 1 ? performance.fpsHistory : [performance.fps, performance.fps],
+      data: toChartData(performance.fpsHistory, performance.fps),
       color: fpsChartColor,
     },
     {
       label: 'Memory (MB)',
-      data: performance.memoryHistory.length > 1 ? performance.memoryHistory : [0, performance.memory?.used ?? 0],
-      color: 'var(--monitor-color-memory, #60a5fa)',
+      data: toChartData(performance.memoryHistory, performance.memory?.used ?? 0),
+      color: COLOR_MEMORY,
     },
     {
       label: 'Request Latency (ms)',
       data: latencyPoints.length > 1 ? latencyPoints : [0, 0],
-      color: 'var(--monitor-color-latency, #a78bfa)',
+      color: COLOR_LATENCY,
     },
   ]
 

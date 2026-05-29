@@ -4,6 +4,8 @@ import { Text } from '@gnome-ui/react'
 import { StatCard } from '@gnome-ui/layout'
 import { SparkLineChart } from '@gnome-ui/charts'
 import { fpsColor } from '../../utils/fpsColor'
+import { toChartData } from '../../utils/chartData'
+import { COLOR_MEMORY } from '../../utils/colors'
 import { formatMemory } from './formatters'
 
 interface PerformanceSectionProps {
@@ -28,7 +30,7 @@ export function PerformanceSection({ monitor }: PerformanceSectionProps) {
             <span className="monitor-inspector__spark" aria-hidden="true">
               <SparkLineChart
                 color={fpsChartColor}
-                data={performance.fpsHistory.length > 1 ? performance.fpsHistory : [performance.fps, performance.fps]}
+                data={toChartData(performance.fpsHistory, performance.fps)}
                 height={34}
               />
             </span>
@@ -41,8 +43,8 @@ export function PerformanceSection({ monitor }: PerformanceSectionProps) {
           backgroundChart={(
             <span className="monitor-inspector__spark" aria-hidden="true">
               <SparkLineChart
-                color="var(--monitor-color-memory, var(--gnome-accent-color, #3584e4))"
-                data={performance.memoryHistory.length > 1 ? performance.memoryHistory : [0, performance.memory?.used ?? 0]}
+                color={COLOR_MEMORY}
+                data={toChartData(performance.memoryHistory, performance.memory?.used ?? 0)}
                 height={34}
               />
             </span>

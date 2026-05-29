@@ -3,6 +3,8 @@ import { useNetwork } from 'monitor-api/react'
 import { Text } from '@gnome-ui/react'
 import { SparkLineChart } from '@gnome-ui/charts'
 import { formatBytes } from '../../utils/formatters'
+import { COLOR_LATENCY } from '../../utils/colors'
+import { CHART_HISTORY_POINTS, RECENT_WINDOW_MS } from '../../utils/constants'
 
 interface PillNetworkViewProps {
   monitor: Monitor
@@ -10,11 +12,10 @@ interface PillNetworkViewProps {
 
 export function PillNetworkView({ monitor }: PillNetworkViewProps) {
   const network = useNetwork(monitor)
-  const latencyData = network.entries.length > 1
-    ? network.entries.slice(-40).map((e) => e.latency)
-    : [0, 0]
+  const latencyPoints = network.entries.slice(-CHART_HISTORY_POINTS).map((e) => e.latency)
+  const latencyData = latencyPoints.length > 1 ? latencyPoints : [0, 0]
   const recentErrors = network.entries.filter(
-    (e) => Date.now() - e.timestamp < 5000 && (e.error || e.status >= 400),
+    (e) => Date.now() - e.timestamp < RECENT_WINDOW_MS && (e.error || e.status >= 400),
   ).length
 
   return (
@@ -23,7 +24,7 @@ export function PillNetworkView({ monitor }: PillNetworkViewProps) {
         <Text
           as="span"
           className="monitor-pill__primary"
-          style={{ color: 'var(--monitor-color-latency, #a78bfa)' }}
+          style={{ color: COLOR_LATENCY }}
           variant="numeric"
         >
           {network.window5s.count} req
@@ -33,12 +34,7 @@ export function PillNetworkView({ monitor }: PillNetworkViewProps) {
         </Text>
       </span>
       <span className="monitor-pill__chart" aria-hidden="true">
-        <SparkLineChart
-          color="var(--monitor-color-latency, #a78bfa)"
-          data={latencyData}
-          height={30}
-          strokeWidth={1.5}
-        />
+        <SparkLineChart color={COLOR_LATENCY} data={latencyData} height={30} strokeWidth={1.5} />
       </span>
       <span className="monitor-pill__separator" aria-hidden="true" />
       <Text

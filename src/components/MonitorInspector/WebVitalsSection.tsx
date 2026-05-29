@@ -1,4 +1,4 @@
-import type { Monitor, WebVitalMetric } from 'monitor-api'
+import type { Monitor, WebVitalName, WebVitalsSnapshot } from 'monitor-api'
 import { useWebVitals } from 'monitor-api/react'
 import { Text } from '@gnome-ui/react'
 import { VITAL_ORDER } from './formatters'
@@ -6,6 +6,14 @@ import { VitalTile } from './VitalTile'
 
 interface WebVitalsSectionProps {
   monitor: Monitor
+}
+
+const VITAL_KEY_MAP: Record<WebVitalName, keyof Omit<WebVitalsSnapshot, 'entries'>> = {
+  LCP: 'lcp',
+  INP: 'inp',
+  CLS: 'cls',
+  FCP: 'fcp',
+  TTFB: 'ttfb',
 }
 
 export function WebVitalsSection({ monitor }: WebVitalsSectionProps) {
@@ -17,10 +25,9 @@ export function WebVitalsSection({ monitor }: WebVitalsSectionProps) {
         Web Vitals
       </Text>
       <div className="monitor-inspector__vitals" role="list">
-        {VITAL_ORDER.map((name) => {
-          const metric = webVitals[name.toLowerCase() as keyof typeof webVitals] as WebVitalMetric | null
-          return <VitalTile key={name} metric={metric} name={name} />
-        })}
+        {VITAL_ORDER.map((name) => (
+          <VitalTile key={name} metric={webVitals[VITAL_KEY_MAP[name]]} name={name} />
+        ))}
       </div>
     </section>
   )

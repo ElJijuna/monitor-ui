@@ -2,6 +2,9 @@ import type { Monitor } from 'monitor-api'
 import { useEvents } from 'monitor-api/react'
 import { Text } from '@gnome-ui/react'
 import { formatTime } from '../../utils/formatters'
+import { COLOR_EVENTS } from '../../utils/colors'
+
+const LABEL_MAX_LENGTH = 16
 
 interface PillEventsViewProps {
   monitor: Monitor
@@ -11,7 +14,9 @@ export function PillEventsView({ monitor }: PillEventsViewProps) {
   const events = useEvents(monitor)
   const lastEvent = events.entries[0]
   const shortLabel = lastEvent
-    ? lastEvent.label.length > 16 ? `${lastEvent.label.slice(0, 14)}…` : lastEvent.label
+    ? lastEvent.label.length > LABEL_MAX_LENGTH
+      ? `${lastEvent.label.slice(0, LABEL_MAX_LENGTH - 2)}…`
+      : lastEvent.label
     : 'no events'
 
   return (
@@ -20,7 +25,7 @@ export function PillEventsView({ monitor }: PillEventsViewProps) {
         <Text
           as="span"
           className="monitor-pill__primary"
-          style={{ color: 'var(--monitor-color-events, #f472b6)' }}
+          style={{ color: COLOR_EVENTS }}
           variant="numeric"
         >
           {events.entries.length} evt

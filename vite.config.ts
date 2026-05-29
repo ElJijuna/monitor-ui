@@ -21,10 +21,10 @@ export default defineConfig({
       fileName: (fmt) => fmt === 'es' ? 'index.js' : 'index.cjs',
     },
     rollupOptions: {
-      external: ['react', 'react/jsx-runtime', 'react-dom', /^@gnome-ui\//],
+      external: ['react', 'react/jsx-runtime', 'react-dom', /^@gnome-ui\//, 'monitor-api', /^monitor-api\//],
       output: {
         externalLiveBindings: false,
-        globals: { react: 'React', 'react-dom': 'ReactDOM' },
+        globals: { react: 'React', 'react-dom': 'ReactDOM', 'monitor-api': 'MonitorAPI' },
       },
     },
     sourcemap: true,

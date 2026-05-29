@@ -2,6 +2,7 @@ import type { Monitor } from 'monitor-api'
 import { useReact } from 'monitor-api/react'
 import { ActionRow, BoxedList, Text } from '@gnome-ui/react'
 import { EmptyRow } from './EmptyRow'
+import { INSPECTOR_MAX_SLOW_COMPONENTS } from '../../utils/constants'
 
 interface ReactSectionProps {
   monitor: Monitor
@@ -9,7 +10,7 @@ interface ReactSectionProps {
 
 export function ReactSection({ monitor }: ReactSectionProps) {
   const react = useReact(monitor)
-  const slowComponents = react.slowComponents.slice(0, 5)
+  const slowComponents = react.slowComponents.slice(0, INSPECTOR_MAX_SLOW_COMPONENTS)
 
   return (
     <section className="monitor-inspector__section">

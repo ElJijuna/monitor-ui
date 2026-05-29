@@ -4,6 +4,7 @@ import { Text } from '@gnome-ui/react'
 import { SparkLineChart } from '@gnome-ui/charts'
 import { fpsColor } from '../../utils/fpsColor'
 import { formatMemory } from '../../utils/formatters'
+import { toChartData } from '../../utils/chartData'
 
 interface PillPerformanceViewProps {
   monitor: Monitor
@@ -14,9 +15,7 @@ export function PillPerformanceView({ monitor }: PillPerformanceViewProps) {
   const network = useNetwork(monitor)
   const color = fpsColor(performance.fps)
   const memory = formatMemory(performance.memory)
-  const chartData = performance.fpsHistory.length > 1
-    ? performance.fpsHistory
-    : [performance.fps, performance.fps]
+  const chartData = toChartData(performance.fpsHistory, performance.fps)
 
   return (
     <>
