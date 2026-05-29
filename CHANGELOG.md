@@ -1,3 +1,11 @@
+## [1.0.2](https://github.com/ElJijuna/monitor-ui/compare/v1.0.1...v1.0.2) (2026-05-29)
+
+
+### Bug Fixes
+
+* align token system with gnome-ui and fix chart gradient collision ([1d4e491](https://github.com/ElJijuna/monitor-ui/commit/1d4e491c1fd2fb3958b6165df62ed3087ee58f5a))
+* change styles to auto inject ([029e83b](https://github.com/ElJijuna/monitor-ui/commit/029e83b2fa7c0594b1fddbd19cba35f55448cdf1))
+
 ## [1.0.1](https://github.com/ElJijuna/monitor-ui/compare/v1.0.0...v1.0.1) (2026-05-29)
 
 

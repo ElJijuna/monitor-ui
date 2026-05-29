@@ -1,6 +1,6 @@
 {
   "name": "monitor-ui",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "3-level React monitoring UI: MiniWidget → Drawer → Dashboard",
   "license": "MIT",
   "author": "pilmee <pilmee@gmail.com>",
