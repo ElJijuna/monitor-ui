@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/ElJijuna/monitor-ui/compare/v1.0.2...v2.0.0) (2026-05-30)
+
+
+### Features
+
+* simplify MonitorInspector API and remove header controls ([47e5e89](https://github.com/ElJijuna/monitor-ui/commit/47e5e89f24e1e333decd56f3915662531e2a75fe))
+
+
+### BREAKING CHANGES
+
+* simplify MonitorInspector API and remove header controls
+
 ## [1.0.2](https://github.com/ElJijuna/monitor-ui/compare/v1.0.1...v1.0.2) (2026-05-29)
 
 
