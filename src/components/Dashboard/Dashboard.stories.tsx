@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { createMonitor, emitMonitorEvent } from 'monitor-api'
 import type { Monitor } from 'monitor-api'
+import { Button } from '@gnome-ui/react'
 import { Dashboard } from './Dashboard'
 import { MonitorInspector } from '../MonitorInspector'
 
@@ -101,12 +102,11 @@ function DashboardWithBackStory() {
       {view === 'dashboard' ? (
         <Dashboard monitor={monitor} onBack={() => setView('inspector')} title="Dashboard" />
       ) : (
-        <div style={{ maxWidth: 420 }}>
-          <MonitorInspector
-            monitor={monitor}
-            onOpenDashboard={() => setView('dashboard')}
-            title="Monitor"
-          />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 420 }}>
+          <Button onClick={() => setView('dashboard')} size="sm" variant="flat">
+            Dashboard
+          </Button>
+          <MonitorInspector monitor={monitor} />
         </div>
       )}
     </div>

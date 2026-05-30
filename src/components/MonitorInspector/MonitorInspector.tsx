@@ -1,6 +1,6 @@
 import type { HTMLAttributes } from 'react'
 import type { Monitor } from 'monitor-api'
-import { Button, HeaderBar } from '@gnome-ui/react'
+import { Card } from '@gnome-ui/react'
 import '../../styles/tokens.css'
 import './MonitorInspector.css'
 import { PerformanceSection } from './PerformanceSection'
@@ -9,44 +9,21 @@ import { NetworkSection } from './NetworkSection'
 import { ReactSection } from './ReactSection'
 import { EventsSection } from './EventsSection'
 
-export interface MonitorInspectorProps extends HTMLAttributes<HTMLDivElement> {
+export interface MonitorInspectorProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
   monitor: Monitor
-  title?: string
-  onClose?: () => void
-  onOpenDashboard?: () => void
 }
 
 export function MonitorInspector({
   monitor,
-  title = 'Monitor',
-  onClose,
-  onOpenDashboard,
   className,
   ...divProps
 }: MonitorInspectorProps) {
   return (
-    <div
+    <Card
       {...divProps}
       className={['monitor-inspector', className].filter(Boolean).join(' ')}
+      padding="none"
     >
-      <HeaderBar
-        end={(
-          <>
-            {onOpenDashboard ? (
-              <Button onClick={onOpenDashboard} size="sm" variant="flat">
-                Dashboard
-              </Button>
-            ) : null}
-            {onClose ? (
-              <Button onClick={onClose} size="sm" variant="flat">
-                Close
-              </Button>
-            ) : null}
-          </>
-        )}
-        title={title}
-      />
-
       <div className="monitor-inspector__content">
         <PerformanceSection monitor={monitor} />
         <WebVitalsSection monitor={monitor} />
@@ -54,6 +31,6 @@ export function MonitorInspector({
         <ReactSection monitor={monitor} />
         <EventsSection monitor={monitor} />
       </div>
-    </div>
+    </Card>
   )
 }

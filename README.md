@@ -51,7 +51,7 @@ export function App() {
   return (
     <>
       <MonitorPill monitor={monitor} scope="performance" onClick={() => setOpen(true)} />
-      {open && <MonitorInspector monitor={monitor} onClose={() => setOpen(false)} />}
+      {open && <MonitorInspector monitor={monitor} />}
     </>
   )
 }
@@ -64,12 +64,7 @@ export function App() {
 A panel with collapsible sections: performance, Web Vitals, network, React internals, and custom events.
 
 ```tsx
-<MonitorInspector
-  monitor={monitor}
-  title="App Monitor"
-  onClose={() => setOpen(false)}
-  onOpenDashboard={() => setView('dashboard')}
-/>
+<MonitorInspector monitor={monitor} />
 ```
 
 ### 3. Dashboard — full view
@@ -108,11 +103,11 @@ export function MonitorFlow() {
 
   if (view === 'inspector') {
     return (
-      <MonitorInspector
-        monitor={monitor}
-        onClose={() => setView('pill')}
-        onOpenDashboard={() => setView('dashboard')}
-      />
+      <>
+        <button type="button" onClick={() => setView('pill')}>Close</button>
+        <button type="button" onClick={() => setView('dashboard')}>Dashboard</button>
+        <MonitorInspector monitor={monitor} />
+      </>
     )
   }
 
@@ -136,10 +131,7 @@ export function MonitorFlow() {
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `monitor` | `Monitor` | — | Monitor instance |
-| `title` | `string` | `'Monitor'` | Panel heading |
-| `onClose` | `() => void` | — | Called when the close button is clicked |
-| `onOpenDashboard` | `() => void` | — | Shows a Dashboard button when provided |
-| `...div` | `HTMLAttributes<HTMLDivElement>` | — | All native div props |
+| `...div` | `HTMLAttributes<HTMLDivElement>` except `title` | — | Native div props |
 
 ### `Dashboard`
 
