@@ -1,18 +1,21 @@
-import type { Config } from 'jest'
+import type { Config } from 'jest';
 
 const config: Config = {
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   transform: {
-    '^.+\\.(ts|tsx)$': ['ts-jest', {
-      tsconfig: {
-        module: 'CommonJS',
-        moduleResolution: 'node',
-        jsx: 'react-jsx',
-        esModuleInterop: true,
-        ignoreDeprecations: '6.0',
+    '^.+\\.(ts|tsx)$': [
+      'ts-jest',
+      {
+        tsconfig: {
+          module: 'CommonJS',
+          moduleResolution: 'node',
+          jsx: 'react-jsx',
+          esModuleInterop: true,
+          ignoreDeprecations: '6.0',
+        },
       },
-    }],
+    ],
   },
   moduleNameMapper: {
     '^@gnome-ui/react/components/(.*)$': '<rootDir>/__mocks__/@gnome-ui/react-component-mock.ts',
@@ -32,6 +35,6 @@ const config: Config = {
   coverageThreshold: {
     global: { lines: 70, functions: 70 },
   },
-}
+};
 
-export default config
+export default config;

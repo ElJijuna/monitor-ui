@@ -1,2 +1,2 @@
-export { MonitorPill } from './MonitorPill'
-export type { MonitorPillProps, MonitorPillScope } from './MonitorPill'
+export type { MonitorPillProps, MonitorPillScope } from './MonitorPill';
+export { MonitorPill } from './MonitorPill';

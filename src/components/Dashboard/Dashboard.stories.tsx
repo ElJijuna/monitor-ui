@@ -1,27 +1,29 @@
-import { useEffect, useMemo, useState } from 'react'
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import { createMonitor, emitMonitorEvent } from 'monitor-api'
-import type { Monitor } from 'monitor-api'
-import { Button } from '@gnome-ui/react'
-import { Dashboard } from './Dashboard'
-import { MonitorInspector } from '../MonitorInspector'
+import { Button } from '@gnome-ui/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Monitor } from 'monitor-api';
+import { createMonitor, emitMonitorEvent } from 'monitor-api';
+import type { ComponentProps } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { MonitorInspector } from '../MonitorInspector';
+import { Dashboard } from './Dashboard';
 
 const MOCK_ENDPOINTS = [
-  { url: 'https://jsonplaceholder.typicode.com/posts/1',          method: 'GET' },
-  { url: 'https://jsonplaceholder.typicode.com/users/1',          method: 'GET' },
-  { url: 'https://jsonplaceholder.typicode.com/todos?_limit=10',  method: 'GET' },
-  { url: 'https://jsonplaceholder.typicode.com/comments?postId=1',method: 'GET' },
-  { url: 'https://jsonplaceholder.typicode.com/albums/1/photos',  method: 'GET' },
-  { url: 'https://jsonplaceholder.typicode.com/posts',            method: 'POST' },
-  { url: 'https://jsonplaceholder.typicode.com/posts/999',        method: 'GET' },  // 404
-]
+  { url: 'https://jsonplaceholder.typicode.com/posts/1', method: 'GET' },
+  { url: 'https://jsonplaceholder.typicode.com/users/1', method: 'GET' },
+  { url: 'https://jsonplaceholder.typicode.com/todos?_limit=10', method: 'GET' },
+  { url: 'https://jsonplaceholder.typicode.com/comments?postId=1', method: 'GET' },
+  { url: 'https://jsonplaceholder.typicode.com/albums/1/photos', method: 'GET' },
+  { url: 'https://jsonplaceholder.typicode.com/posts', method: 'POST' },
+  { url: 'https://jsonplaceholder.typicode.com/posts/999', method: 'GET' }, // 404
+];
 
 function useMockRequests() {
   useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout>
+    let timeoutId: ReturnType<typeof setTimeout>;
 
     async function fire() {
-      const endpoint = MOCK_ENDPOINTS[Math.floor(Math.random() * MOCK_ENDPOINTS.length)]
+      const endpoint = MOCK_ENDPOINTS[Math.floor(Math.random() * MOCK_ENDPOINTS.length)];
+
       try {
         await fetch(endpoint.url, {
           method: endpoint.method,
@@ -29,16 +31,18 @@ function useMockRequests() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ title: 'mock', body: 'test', userId: 1 }),
           }),
-        })
+        });
       } catch {
         // network failures are also captured by monitor-api
       }
-      timeoutId = setTimeout(fire, 600 + Math.random() * 1400)
+
+      timeoutId = setTimeout(fire, 600 + Math.random() * 1400);
     }
 
-    fire()
-    return () => clearTimeout(timeoutId)
-  }, [])
+    fire();
+
+    return () => clearTimeout(timeoutId);
+  }, []);
 }
 
 const meta = {
@@ -51,51 +55,55 @@ const meta = {
     monitor: { table: { disable: true } },
     onBack: { table: { disable: true } },
   },
-} satisfies Meta<typeof Dashboard>
+} satisfies Meta<typeof Dashboard>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 function useDemoMonitor() {
-  const monitor = useMemo<Monitor>(() => createMonitor({ maxHistory: 120 }), [])
+  const monitor = useMemo<Monitor>(() => createMonitor({ maxHistory: 120 }), []);
 
   useEffect(() => {
-    monitor.start()
+    monitor.start();
 
     const events = window.setInterval(() => {
-      const labels = ['user:login', 'route:change', 'cache:miss', 'error:caught', 'api:retry']
-      emitMonitorEvent(labels[Math.floor(Math.random() * labels.length)], { ts: Date.now() })
-    }, 1400)
+      const labels = ['user:login', 'route:change', 'cache:miss', 'error:caught', 'api:retry'];
+
+      emitMonitorEvent(labels[Math.floor(Math.random() * labels.length)], { ts: Date.now() });
+    }, 1400);
 
     return () => {
-      window.clearInterval(events)
-      monitor.destroy()
-    }
-  }, [monitor])
+      window.clearInterval(events);
+      monitor.destroy();
+    };
+  }, [monitor]);
 
-  return monitor
+  return monitor;
 }
 
-function DashboardStory(props: Omit<React.ComponentProps<typeof Dashboard>, 'monitor'>) {
-  const monitor = useDemoMonitor()
-  useMockRequests()
+const DashboardStory = (props: Omit<ComponentProps<typeof Dashboard>, 'monitor'>) => {
+  const monitor = useDemoMonitor();
+
+  useMockRequests();
+
   return (
     <div style={{ minHeight: '100vh', padding: '24px' }}>
       <Dashboard {...props} monitor={monitor} />
     </div>
-  )
-}
+  );
+};
 
 export const Default: Story = {
   args: { title: 'Dashboard' },
   render: (args) => <DashboardStory {...args} />,
-}
+};
 
-function DashboardWithBackStory() {
-  const monitor = useDemoMonitor()
-  useMockRequests()
-  const [view, setView] = useState<'inspector' | 'dashboard'>('dashboard')
+const DashboardWithBackStory = () => {
+  const monitor = useDemoMonitor();
+
+  useMockRequests();
+  const [view, setView] = useState<'inspector' | 'dashboard'>('dashboard');
 
   return (
     <div style={{ minHeight: '100vh', padding: '24px' }}>
@@ -110,10 +118,10 @@ function DashboardWithBackStory() {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 export const WithNavigation: Story = {
   args: { title: 'Dashboard' },
   render: () => <DashboardWithBackStory />,
-}
+};

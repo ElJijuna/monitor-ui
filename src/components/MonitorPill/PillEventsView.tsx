@@ -1,23 +1,23 @@
-import type { Monitor } from 'monitor-api'
-import { useEvents } from 'monitor-api/react'
-import { Text } from '@gnome-ui/react'
-import { formatTime } from '../../utils/formatters'
-import { COLOR_EVENTS } from '../../utils/colors'
+import { Text } from '@gnome-ui/react';
+import type { Monitor } from 'monitor-api';
+import { useEvents } from 'monitor-api/react';
+import { COLOR_EVENTS } from '../../utils/colors';
+import { formatTime } from '../../utils/formatters';
 
-const LABEL_MAX_LENGTH = 16
+const LABEL_MAX_LENGTH = 16;
 
 interface PillEventsViewProps {
-  monitor: Monitor
+  monitor: Monitor;
 }
 
-export function PillEventsView({ monitor }: PillEventsViewProps) {
-  const events = useEvents(monitor)
-  const lastEvent = events.entries[0]
+export const PillEventsView = ({ monitor }: PillEventsViewProps) => {
+  const events = useEvents(monitor);
+  const lastEvent = events.entries[0];
   const shortLabel = lastEvent
     ? lastEvent.label.length > LABEL_MAX_LENGTH
       ? `${lastEvent.label.slice(0, LABEL_MAX_LENGTH - 2)}…`
       : lastEvent.label
-    : 'no events'
+    : 'no events';
 
   return (
     <>
@@ -39,5 +39,5 @@ export function PillEventsView({ monitor }: PillEventsViewProps) {
         {lastEvent ? formatTime(lastEvent.timestamp) : '—'}
       </Text>
     </>
-  )
-}
+  );
+};

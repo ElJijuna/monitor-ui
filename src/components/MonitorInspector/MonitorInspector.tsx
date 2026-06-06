@@ -1,23 +1,19 @@
-import type { HTMLAttributes } from 'react'
-import type { Monitor } from 'monitor-api'
-import { Card } from '@gnome-ui/react'
-import '../../styles/tokens.css'
-import './MonitorInspector.css'
-import { PerformanceSection } from './PerformanceSection'
-import { WebVitalsSection } from './WebVitalsSection'
-import { NetworkSection } from './NetworkSection'
-import { ReactSection } from './ReactSection'
-import { EventsSection } from './EventsSection'
+import { Card } from '@gnome-ui/react';
+import type { Monitor } from 'monitor-api';
+import type { HTMLAttributes } from 'react';
+import '../../styles/tokens.css';
+import './MonitorInspector.css';
+import { EventsSection } from './EventsSection';
+import { NetworkSection } from './NetworkSection';
+import { PerformanceSection } from './PerformanceSection';
+import { ReactSection } from './ReactSection';
+import { WebVitalsSection } from './WebVitalsSection';
 
 export interface MonitorInspectorProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
-  monitor: Monitor
+  monitor: Monitor;
 }
 
-export function MonitorInspector({
-  monitor,
-  className,
-  ...divProps
-}: MonitorInspectorProps) {
+export const MonitorInspector = ({ monitor, className, ...divProps }: MonitorInspectorProps) => {
   return (
     <Card
       {...divProps}
@@ -32,5 +28,5 @@ export function MonitorInspector({
         <EventsSection monitor={monitor} />
       </div>
     </Card>
-  )
-}
+  );
+};

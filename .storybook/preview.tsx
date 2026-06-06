@@ -1,8 +1,8 @@
-import type { Preview } from '@storybook/react-vite'
-import { GnomeProvider } from '@gnome-ui/react'
-import '@gnome-ui/core/styles'
-import '@gnome-ui/react/styles'
-import '@gnome-ui/layout/styles'
+import { GnomeProvider } from '@gnome-ui/react';
+import type { Preview } from '@storybook/react-vite';
+import '@gnome-ui/core/styles';
+import '@gnome-ui/react/styles';
+import '@gnome-ui/layout/styles';
 
 const preview: Preview = {
   parameters: {
@@ -15,6 +15,6 @@ const preview: Preview = {
       </GnomeProvider>
     ),
   ],
-}
+};
 
-export default preview
+export default preview;

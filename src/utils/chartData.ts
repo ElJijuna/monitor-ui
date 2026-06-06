@@ -4,5 +4,5 @@
  * so we fall back to [fallback, fallback] to keep the chart renderable.
  */
 export function toChartData(history: number[], fallback: number): number[] {
-  return history.length > 1 ? history : [fallback, fallback]
+  return history.length > 1 ? history : [fallback, fallback];
 }

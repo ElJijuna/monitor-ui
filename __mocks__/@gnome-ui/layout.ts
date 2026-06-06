@@ -1,15 +1,16 @@
-import React from 'react'
+import type { ReactNode } from 'react';
+import React from 'react';
 
 interface PassProps {
-  children?: React.ReactNode
-  className?: string
-  [key: string]: unknown
+  children?: ReactNode;
+  className?: string;
+  [key: string]: unknown;
 }
 
 const CardMock = ({ children, className, ...rest }: PassProps) =>
-  React.createElement('div', { className, 'data-testid': 'stat-card', ...rest }, children)
+  React.createElement('div', { className, 'data-testid': 'stat-card', ...rest }, children);
 
-export const StatCard = CardMock
-export const CounterCard = CardMock
-export const Stack = CardMock
-export const Grid = CardMock
+export const StatCard = CardMock;
+export const CounterCard = CardMock;
+export const Stack = CardMock;
+export const Grid = CardMock;

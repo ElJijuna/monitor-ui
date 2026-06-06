@@ -1,21 +1,21 @@
-import type { Monitor } from 'monitor-api'
-import { useNetwork, usePerformance } from 'monitor-api/react'
-import { Text } from '@gnome-ui/react'
-import { SparkLineChart } from '@gnome-ui/charts'
-import { fpsColor } from '../../utils/fpsColor'
-import { formatMemory } from '../../utils/formatters'
-import { toChartData } from '../../utils/chartData'
+import { SparkLineChart } from '@gnome-ui/charts';
+import { Text } from '@gnome-ui/react';
+import type { Monitor } from 'monitor-api';
+import { useNetwork, usePerformance } from 'monitor-api/react';
+import { toChartData } from '../../utils/chartData';
+import { formatMemory } from '../../utils/formatters';
+import { fpsColor } from '../../utils/fpsColor';
 
 interface PillPerformanceViewProps {
-  monitor: Monitor
+  monitor: Monitor;
 }
 
-export function PillPerformanceView({ monitor }: PillPerformanceViewProps) {
-  const performance = usePerformance(monitor)
-  const network = useNetwork(monitor)
-  const color = fpsColor(performance.fps)
-  const memory = formatMemory(performance.memory)
-  const chartData = toChartData(performance.fpsHistory, performance.fps)
+export const PillPerformanceView = ({ monitor }: PillPerformanceViewProps) => {
+  const performance = usePerformance(monitor);
+  const network = useNetwork(monitor);
+  const color = fpsColor(performance.fps);
+  const memory = formatMemory(performance.memory);
+  const chartData = toChartData(performance.fpsHistory, performance.fps);
 
   return (
     <>
@@ -24,7 +24,8 @@ export function PillPerformanceView({ monitor }: PillPerformanceViewProps) {
           {Math.round(performance.fps)} fps
         </Text>
         <Text as="span" className="monitor-pill__secondary" color="dim" variant="caption">
-          {memory.value}{memory.unit ? ` ${memory.unit}` : ''}
+          {memory.value}
+          {memory.unit ? ` ${memory.unit}` : ''}
         </Text>
       </span>
       <span className="monitor-pill__chart" aria-hidden="true">
@@ -35,5 +36,5 @@ export function PillPerformanceView({ monitor }: PillPerformanceViewProps) {
         {network.window5s.avgLatency > 0 ? `${Math.round(network.window5s.avgLatency)}ms` : '—'}
       </Text>
     </>
-  )
-}
+  );
+};

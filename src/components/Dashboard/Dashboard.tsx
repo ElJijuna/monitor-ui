@@ -1,20 +1,20 @@
-import type { Monitor } from 'monitor-api'
-import { Button, Text } from '@gnome-ui/react'
-import '../../styles/tokens.css'
-import './Dashboard.css'
-import { KpiGrid } from './KpiGrid'
-import { ChartGrid } from './ChartGrid'
-import { NetworkLog } from './NetworkLog'
-import { EventsLog } from './EventsLog'
-import { WebVitalsSection } from '../MonitorInspector/WebVitalsSection'
+import { Button, Text } from '@gnome-ui/react';
+import type { Monitor } from 'monitor-api';
+import '../../styles/tokens.css';
+import './Dashboard.css';
+import { WebVitalsSection } from '../MonitorInspector/WebVitalsSection';
+import { ChartGrid } from './ChartGrid';
+import { EventsLog } from './EventsLog';
+import { KpiGrid } from './KpiGrid';
+import { NetworkLog } from './NetworkLog';
 
 export interface DashboardProps {
-  monitor: Monitor
-  onBack?: () => void
-  title?: string
+  monitor: Monitor;
+  onBack?: () => void;
+  title?: string;
 }
 
-export function Dashboard({ monitor, onBack, title = 'Dashboard' }: DashboardProps) {
+export const Dashboard = ({ monitor, onBack, title = 'Dashboard' }: DashboardProps) => {
   return (
     <div className="monitor-dashboard">
       <div className="monitor-dashboard__header">
@@ -41,5 +41,5 @@ export function Dashboard({ monitor, onBack, title = 'Dashboard' }: DashboardPro
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

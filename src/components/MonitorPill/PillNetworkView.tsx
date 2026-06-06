@@ -1,22 +1,22 @@
-import type { Monitor } from 'monitor-api'
-import { useNetwork } from 'monitor-api/react'
-import { Text } from '@gnome-ui/react'
-import { SparkLineChart } from '@gnome-ui/charts'
-import { formatBytes } from '../../utils/formatters'
-import { COLOR_LATENCY } from '../../utils/colors'
-import { CHART_HISTORY_POINTS, RECENT_WINDOW_MS } from '../../utils/constants'
+import { SparkLineChart } from '@gnome-ui/charts';
+import { Text } from '@gnome-ui/react';
+import type { Monitor } from 'monitor-api';
+import { useNetwork } from 'monitor-api/react';
+import { COLOR_LATENCY } from '../../utils/colors';
+import { CHART_HISTORY_POINTS, RECENT_WINDOW_MS } from '../../utils/constants';
+import { formatBytes } from '../../utils/formatters';
 
 interface PillNetworkViewProps {
-  monitor: Monitor
+  monitor: Monitor;
 }
 
-export function PillNetworkView({ monitor }: PillNetworkViewProps) {
-  const network = useNetwork(monitor)
-  const latencyPoints = network.entries.slice(-CHART_HISTORY_POINTS).map((e) => e.latency)
-  const latencyData = latencyPoints.length > 1 ? latencyPoints : [0, 0]
+export const PillNetworkView = ({ monitor }: PillNetworkViewProps) => {
+  const network = useNetwork(monitor);
+  const latencyPoints = network.entries.slice(-CHART_HISTORY_POINTS).map((e) => e.latency);
+  const latencyData = latencyPoints.length > 1 ? latencyPoints : [0, 0];
   const recentErrors = network.entries.filter(
     (e) => Date.now() - e.timestamp < RECENT_WINDOW_MS && (e.error || e.status >= 400),
-  ).length
+  ).length;
 
   return (
     <>
@@ -46,5 +46,5 @@ export function PillNetworkView({ monitor }: PillNetworkViewProps) {
         {recentErrors > 0 ? `${recentErrors} err` : '—'}
       </Text>
     </>
-  )
-}
+  );
+};

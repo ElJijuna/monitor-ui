@@ -12,35 +12,35 @@
 
 :root {
   /* ── FPS status colors ────────────────────────────────── */
-  --monitor-color-fps-good: #4ade80;  /* ≥ 55 fps  */
-  --monitor-color-fps-warn: #facc15;  /* 30–54 fps */
-  --monitor-color-fps-bad:  #f87171;  /* < 30 fps  */
+  --monitor-color-fps-good: #4ade80; /* ≥ 55 fps  */
+  --monitor-color-fps-warn: #facc15; /* 30–54 fps */
+  --monitor-color-fps-bad: #f87171; /* < 30 fps  */
 
   /* ── Metric accent colors ─────────────────────────────── */
-  --monitor-color-memory:  #60a5fa;
+  --monitor-color-memory: #60a5fa;
   --monitor-color-latency: #a78bfa;
-  --monitor-color-events:  #f472b6;
+  --monitor-color-events: #f472b6;
 
   /* ── Network status ───────────────────────────────────── */
-  --monitor-color-status-ok:    #4ade80;
+  --monitor-color-status-ok: #4ade80;
   --monitor-color-status-error: #f87171;
-  --monitor-color-latency-high: #f87171;  /* latency > 500ms */
+  --monitor-color-latency-high: #f87171; /* latency > 500ms */
 
   /* ── Surfaces — follow gnome-ui theme ────────────────── */
-  --monitor-bg:      var(--gnome-window-bg-color);
+  --monitor-bg: var(--gnome-window-bg-color);
   --monitor-bg-card: color-mix(in srgb, var(--gnome-window-fg-color) 3%, transparent);
 
   /* ── Borders — follow gnome-ui theme ─────────────────── */
-  --monitor-border:        var(--gnome-border-subtle);
-  --monitor-border-row:    var(--gnome-divider-color);
+  --monitor-border: var(--gnome-border-subtle);
+  --monitor-border-row: var(--gnome-divider-color);
   --monitor-border-header: var(--gnome-divider-color);
 
   /* ── Text — follow gnome-ui theme ────────────────────── */
-  --monitor-text-primary:   var(--gnome-window-fg-color);
+  --monitor-text-primary: var(--gnome-window-fg-color);
   --monitor-text-secondary: color-mix(in srgb, var(--gnome-window-fg-color) 65%, transparent);
-  --monitor-text-muted:     color-mix(in srgb, var(--gnome-window-fg-color) 40%, transparent);
-  --monitor-text-label:     color-mix(in srgb, var(--gnome-window-fg-color) 45%, transparent);
-  --monitor-text-dim:       color-mix(in srgb, var(--gnome-window-fg-color) 20%, transparent);
+  --monitor-text-muted: color-mix(in srgb, var(--gnome-window-fg-color) 40%, transparent);
+  --monitor-text-label: color-mix(in srgb, var(--gnome-window-fg-color) 45%, transparent);
+  --monitor-text-dim: color-mix(in srgb, var(--gnome-window-fg-color) 20%, transparent);
 
   /* ── Live indicator ───────────────────────────────────── */
   --monitor-color-live: #4ade80;

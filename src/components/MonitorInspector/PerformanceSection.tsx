@@ -1,23 +1,23 @@
-import type { Monitor } from 'monitor-api'
-import { useNetwork, usePerformance } from 'monitor-api/react'
-import { Text } from '@gnome-ui/react'
-import { StatCard } from '@gnome-ui/layout'
-import { SparkLineChart } from '@gnome-ui/charts'
-import { fpsColor } from '../../utils/fpsColor'
-import { toChartData } from '../../utils/chartData'
-import { COLOR_MEMORY } from '../../utils/colors'
-import { formatMemory } from './formatters'
+import { SparkLineChart } from '@gnome-ui/charts';
+import { StatCard } from '@gnome-ui/layout';
+import { Text } from '@gnome-ui/react';
+import type { Monitor } from 'monitor-api';
+import { useNetwork, usePerformance } from 'monitor-api/react';
+import { toChartData } from '../../utils/chartData';
+import { COLOR_MEMORY } from '../../utils/colors';
+import { fpsColor } from '../../utils/fpsColor';
+import { formatMemory } from './formatters';
 
 interface PerformanceSectionProps {
-  monitor: Monitor
+  monitor: Monitor;
 }
 
-export function PerformanceSection({ monitor }: PerformanceSectionProps) {
-  const performance = usePerformance(monitor)
-  const network = useNetwork(monitor)
-  const fpsChartColor = fpsColor(performance.fps)
-  const memory = formatMemory(performance.memory)
-  const latency = Math.round(network.window5s.avgLatency)
+export const PerformanceSection = ({ monitor }: PerformanceSectionProps) => {
+  const performance = usePerformance(monitor);
+  const network = useNetwork(monitor);
+  const fpsChartColor = fpsColor(performance.fps);
+  const memory = formatMemory(performance.memory);
+  const latency = Math.round(network.window5s.avgLatency);
 
   return (
     <section className="monitor-inspector__section">
@@ -26,7 +26,7 @@ export function PerformanceSection({ monitor }: PerformanceSectionProps) {
       </Text>
       <div className="monitor-inspector__stats">
         <StatCard
-          backgroundChart={(
+          backgroundChart={
             <span className="monitor-inspector__spark" aria-hidden="true">
               <SparkLineChart
                 color={fpsChartColor}
@@ -34,13 +34,13 @@ export function PerformanceSection({ monitor }: PerformanceSectionProps) {
                 height={34}
               />
             </span>
-          )}
+          }
           label="FPS"
           unit="fps"
           value={Math.round(performance.fps)}
         />
         <StatCard
-          backgroundChart={(
+          backgroundChart={
             <span className="monitor-inspector__spark" aria-hidden="true">
               <SparkLineChart
                 color={COLOR_MEMORY}
@@ -48,16 +48,12 @@ export function PerformanceSection({ monitor }: PerformanceSectionProps) {
                 height={34}
               />
             </span>
-          )}
+          }
           label="JS Heap"
           unit={memory.unit}
           value={memory.value}
         />
-        <StatCard
-          label="Requests"
-          unit="/ 5s"
-          value={network.window5s.count}
-        />
+        <StatCard label="Requests" unit="/ 5s" value={network.window5s.count} />
         <StatCard
           label="Latency"
           unit={latency > 0 ? 'ms' : ''}
@@ -65,5 +61,5 @@ export function PerformanceSection({ monitor }: PerformanceSectionProps) {
         />
       </div>
     </section>
-  )
-}
+  );
+};

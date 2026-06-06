@@ -67,17 +67,28 @@
 .monitor-inspector__vital::before {
   background: var(--_vital-color, transparent);
   block-size: 2px;
-  content: '';
+  content: "";
   inset-block-start: 0;
   inset-inline: 0;
   position: absolute;
   transition: background-color var(--gnome-duration-slow, 300ms) var(--gnome-easing-default, ease);
 }
 
-.monitor-inspector__vital--good    { --_vital-color: var(--monitor-color-fps-good, #4ade80); border-color: color-mix(in srgb, var(--monitor-color-fps-good, #4ade80) 20%, transparent); }
-.monitor-inspector__vital--warn    { --_vital-color: var(--monitor-color-fps-warn, #facc15); border-color: color-mix(in srgb, var(--monitor-color-fps-warn, #facc15) 20%, transparent); }
-.monitor-inspector__vital--poor    { --_vital-color: var(--monitor-color-fps-bad,  #f87171); border-color: color-mix(in srgb, var(--monitor-color-fps-bad,  #f87171) 20%, transparent); }
-.monitor-inspector__vital--pending { opacity: 0.5; }
+.monitor-inspector__vital--good {
+  --_vital-color: var(--monitor-color-fps-good, #4ade80);
+  border-color: color-mix(in srgb, var(--monitor-color-fps-good, #4ade80) 20%, transparent);
+}
+.monitor-inspector__vital--warn {
+  --_vital-color: var(--monitor-color-fps-warn, #facc15);
+  border-color: color-mix(in srgb, var(--monitor-color-fps-warn, #facc15) 20%, transparent);
+}
+.monitor-inspector__vital--poor {
+  --_vital-color: var(--monitor-color-fps-bad, #f87171);
+  border-color: color-mix(in srgb, var(--monitor-color-fps-bad, #f87171) 20%, transparent);
+}
+.monitor-inspector__vital--pending {
+  opacity: 0.5;
+}
 
 .monitor-inspector__vital-name {
   letter-spacing: 0.06em;

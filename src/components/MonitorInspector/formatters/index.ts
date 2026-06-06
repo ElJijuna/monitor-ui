@@ -1,2 +1,2 @@
-export { formatBytes, formatMemory, formatTime } from '../../../utils/formatters'
-export { formatVital, VITAL_ORDER, VITAL_FULL_NAMES } from './formatVital'
+export { formatBytes, formatMemory, formatTime } from '../../../utils/formatters';
+export { formatVital, VITAL_FULL_NAMES, VITAL_ORDER } from './formatVital';

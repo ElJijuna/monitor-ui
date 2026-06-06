@@ -2,4 +2,4 @@ export {
   default,
   SparkAreaChart,
   SparkLineChart,
-} from './charts-component-mock'
+} from './charts-component-mock';

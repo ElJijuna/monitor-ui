@@ -1,1 +1,1 @@
-export const tokens = {}
+export const tokens = {};

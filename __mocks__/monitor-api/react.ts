@@ -5,23 +5,23 @@ export const usePerformance = jest.fn(() => ({
   memoryHistory: [32],
   longTasks: { count: 0, lastDuration: null },
   cls: 0,
-}))
+}));
 
 export const useNetwork = jest.fn(() => ({
   entries: [],
   window5s: { count: 0, avgLatency: 0, totalPayload: 0 },
-}))
+}));
 
 export const useEvents = jest.fn(() => ({
   entries: [],
   labelStats: new Map(),
-}))
+}));
 
 export const useReact = jest.fn(() => ({
   totalCommits: 0,
   slowComponents: [],
   renderStats: new Map(),
-}))
+}));
 
 export const useWebVitals = jest.fn(() => ({
   cls: null,
@@ -30,7 +30,7 @@ export const useWebVitals = jest.fn(() => ({
   lcp: null,
   ttfb: null,
   entries: [],
-}))
+}));
 
-export const useMonitor = jest.fn(() => ({}))
-export const useSignal = jest.fn((signal: unknown) => signal)
+export const useMonitor = jest.fn(() => ({}));
+export const useSignal = jest.fn((signal: unknown) => signal);

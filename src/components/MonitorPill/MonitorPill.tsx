@@ -1,28 +1,28 @@
-import type { ComponentPropsWithoutRef } from 'react'
-import type { Monitor } from 'monitor-api'
-import { Card } from '@gnome-ui/react'
-import '../../styles/tokens.css'
-import './MonitorPill.css'
-import { PillPerformanceView } from './PillPerformanceView'
-import { PillNetworkView } from './PillNetworkView'
-import { PillEventsView } from './PillEventsView'
+import { Card } from '@gnome-ui/react';
+import type { Monitor } from 'monitor-api';
+import type { ComponentPropsWithoutRef } from 'react';
+import '../../styles/tokens.css';
+import './MonitorPill.css';
+import { PillEventsView } from './PillEventsView';
+import { PillNetworkView } from './PillNetworkView';
+import { PillPerformanceView } from './PillPerformanceView';
 
-export type MonitorPillScope = 'performance' | 'network' | 'events'
+export type MonitorPillScope = 'performance' | 'network' | 'events';
 
 export interface MonitorPillProps extends Omit<ComponentPropsWithoutRef<'button'>, 'children'> {
-  monitor: Monitor
-  scope?: MonitorPillScope
-  label?: string
+  monitor: Monitor;
+  scope?: MonitorPillScope;
+  label?: string;
 }
 
-export function MonitorPill({
+export const MonitorPill = ({
   monitor,
   scope = 'performance',
   label = 'Open monitor',
   className,
   style,
   ...buttonProps
-}: MonitorPillProps) {
+}: MonitorPillProps) => {
   return (
     <Card
       {...buttonProps}
@@ -37,5 +37,5 @@ export function MonitorPill({
       {scope === 'network' && <PillNetworkView monitor={monitor} />}
       {scope === 'events' && <PillEventsView monitor={monitor} />}
     </Card>
-  )
-}
+  );
+};

@@ -1,2 +1,2 @@
-export { MonitorInspector } from './MonitorInspector'
-export type { MonitorInspectorProps } from './MonitorInspector'
+export type { MonitorInspectorProps } from './MonitorInspector';
+export { MonitorInspector } from './MonitorInspector';
