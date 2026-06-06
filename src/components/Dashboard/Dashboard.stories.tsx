@@ -4,7 +4,7 @@ import type { Monitor } from 'monitor-api';
 import { createMonitor, emitMonitorEvent } from 'monitor-api';
 import type { ComponentProps } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { MonitorInspector } from '../MonitorInspector';
+import { MonitorInspector } from '@/components/MonitorInspector';
 import { Dashboard } from './Dashboard';
 
 const MOCK_ENDPOINTS = [

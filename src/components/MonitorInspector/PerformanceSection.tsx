@@ -3,9 +3,9 @@ import { StatCard } from '@gnome-ui/layout';
 import { Text } from '@gnome-ui/react';
 import type { Monitor } from 'monitor-api';
 import { useNetwork, usePerformance } from 'monitor-api/react';
-import { toChartData } from '../../utils/chartData';
-import { COLOR_MEMORY } from '../../utils/colors';
-import { fpsColor } from '../../utils/fpsColor';
+import { toChartData } from '@/utils/chartData';
+import { COLOR_MEMORY } from '@/utils/colors';
+import { fpsColor } from '@/utils/fpsColor';
 import { formatMemory } from './formatters';
 
 interface PerformanceSectionProps {

@@ -2,9 +2,9 @@ import { SparkLineChart } from '@gnome-ui/charts';
 import { Text } from '@gnome-ui/react';
 import type { Monitor } from 'monitor-api';
 import { useNetwork, usePerformance } from 'monitor-api/react';
-import { toChartData } from '../../utils/chartData';
-import { formatMemory } from '../../utils/formatters';
-import { fpsColor } from '../../utils/fpsColor';
+import { toChartData } from '@/utils/chartData';
+import { formatMemory } from '@/utils/formatters';
+import { fpsColor } from '@/utils/fpsColor';
 
 interface PillPerformanceViewProps {
   monitor: Monitor;

@@ -5,6 +5,11 @@ import cssInjectedByJs from 'vite-plugin-css-injected-by-js';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src'),
+    },
+  },
   plugins: [
     react(),
     cssInjectedByJs(),

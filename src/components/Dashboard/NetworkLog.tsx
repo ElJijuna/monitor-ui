@@ -1,8 +1,8 @@
 import { Text } from '@gnome-ui/react';
 import type { Monitor } from 'monitor-api';
 import { useNetwork } from 'monitor-api/react';
-import { LOG_MAX_ENTRIES } from '../../utils/constants';
-import { formatBytes } from '../../utils/formatters';
+import { LOG_MAX_ENTRIES } from '@/utils/constants';
+import { formatBytes } from '@/utils/formatters';
 
 interface NetworkLogProps {
   monitor: Monitor;

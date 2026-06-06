@@ -1,7 +1,7 @@
 import { ActionRow, BoxedList, Text } from '@gnome-ui/react';
 import type { Monitor } from 'monitor-api';
 import { useReact } from 'monitor-api/react';
-import { INSPECTOR_MAX_SLOW_COMPONENTS } from '../../utils/constants';
+import { INSPECTOR_MAX_SLOW_COMPONENTS } from '@/utils/constants';
 import { EmptyRow } from './EmptyRow';
 
 interface ReactSectionProps {

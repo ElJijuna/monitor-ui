@@ -1,8 +1,8 @@
 import { Text } from '@gnome-ui/react';
 import type { Monitor } from 'monitor-api';
 import { useEvents } from 'monitor-api/react';
-import { COLOR_EVENTS } from '../../utils/colors';
-import { formatTime } from '../../utils/formatters';
+import { COLOR_EVENTS } from '@/utils/colors';
+import { formatTime } from '@/utils/formatters';
 
 const LABEL_MAX_LENGTH = 16;
 

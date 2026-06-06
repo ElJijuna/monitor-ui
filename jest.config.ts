@@ -18,6 +18,7 @@ const config: Config = {
     ],
   },
   moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
     '^@gnome-ui/react/components/(.*)$': '<rootDir>/__mocks__/@gnome-ui/react-component-mock.ts',
     '^@gnome-ui/charts/components/(.*)$': '<rootDir>/__mocks__/@gnome-ui/charts-component-mock.ts',
     '^@gnome-ui/(.*)$': '<rootDir>/__mocks__/@gnome-ui/$1.ts',

@@ -2,9 +2,9 @@ import { SparkLineChart } from '@gnome-ui/charts';
 import { StatCard } from '@gnome-ui/layout';
 import type { Monitor } from 'monitor-api';
 import { useEvents, useNetwork, usePerformance } from 'monitor-api/react';
-import { toChartData } from '../../utils/chartData';
-import { COLOR_MEMORY } from '../../utils/colors';
-import { fpsColor } from '../../utils/fpsColor';
+import { toChartData } from '@/utils/chartData';
+import { COLOR_MEMORY } from '@/utils/colors';
+import { fpsColor } from '@/utils/fpsColor';
 
 interface KpiGridProps {
   monitor: Monitor;

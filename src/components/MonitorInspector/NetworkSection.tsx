@@ -1,7 +1,7 @@
 import { ActionRow, BoxedList, Text } from '@gnome-ui/react';
 import type { Monitor } from 'monitor-api';
 import { useNetwork } from 'monitor-api/react';
-import { INSPECTOR_MAX_REQUESTS } from '../../utils/constants';
+import { INSPECTOR_MAX_REQUESTS } from '@/utils/constants';
 import { EmptyRow } from './EmptyRow';
 import { formatBytes } from './formatters';
 

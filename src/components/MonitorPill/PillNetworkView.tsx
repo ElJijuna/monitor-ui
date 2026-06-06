@@ -2,9 +2,9 @@ import { SparkLineChart } from '@gnome-ui/charts';
 import { Text } from '@gnome-ui/react';
 import type { Monitor } from 'monitor-api';
 import { useNetwork } from 'monitor-api/react';
-import { COLOR_LATENCY } from '../../utils/colors';
-import { CHART_HISTORY_POINTS, RECENT_WINDOW_MS } from '../../utils/constants';
-import { formatBytes } from '../../utils/formatters';
+import { COLOR_LATENCY } from '@/utils/colors';
+import { CHART_HISTORY_POINTS, RECENT_WINDOW_MS } from '@/utils/constants';
+import { formatBytes } from '@/utils/formatters';
 
 interface PillNetworkViewProps {
   monitor: Monitor;

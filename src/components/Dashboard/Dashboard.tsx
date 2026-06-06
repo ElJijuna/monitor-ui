@@ -2,7 +2,7 @@ import { Button, Text } from '@gnome-ui/react';
 import type { Monitor } from 'monitor-api';
 import '../../styles/tokens.css';
 import './Dashboard.css';
-import { WebVitalsSection } from '../MonitorInspector/WebVitalsSection';
+import { WebVitalsSection } from '@/components/MonitorInspector/WebVitalsSection';
 import { ChartGrid } from './ChartGrid';
 import { EventsLog } from './EventsLog';
 import { KpiGrid } from './KpiGrid';

@@ -11,7 +11,10 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "skipLibCheck": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src", "jest.setup.ts"],
   "exclude": ["node_modules", "dist"]

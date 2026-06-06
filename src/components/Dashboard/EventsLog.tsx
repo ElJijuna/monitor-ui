@@ -1,8 +1,8 @@
 import { Text } from '@gnome-ui/react';
 import type { Monitor } from 'monitor-api';
 import { useEvents } from 'monitor-api/react';
-import { LOG_MAX_ENTRIES } from '../../utils/constants';
-import { formatTime } from '../../utils/formatters';
+import { LOG_MAX_ENTRIES } from '@/utils/constants';
+import { formatTime } from '@/utils/formatters';
 
 interface EventsLogProps {
   monitor: Monitor;

@@ -2,10 +2,10 @@ import { SparkAreaChart } from '@gnome-ui/charts';
 import { Text } from '@gnome-ui/react';
 import type { Monitor } from 'monitor-api';
 import { useNetwork, usePerformance } from 'monitor-api/react';
-import { toChartData } from '../../utils/chartData';
-import { COLOR_LATENCY, COLOR_MEMORY } from '../../utils/colors';
-import { CHART_HISTORY_POINTS } from '../../utils/constants';
-import { fpsColor } from '../../utils/fpsColor';
+import { toChartData } from '@/utils/chartData';
+import { COLOR_LATENCY, COLOR_MEMORY } from '@/utils/colors';
+import { CHART_HISTORY_POINTS } from '@/utils/constants';
+import { fpsColor } from '@/utils/fpsColor';
 
 interface ChartGridProps {
   monitor: Monitor;
