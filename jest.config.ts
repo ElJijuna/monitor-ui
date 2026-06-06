@@ -10,6 +10,7 @@ const config: Config = {
         moduleResolution: 'node',
         jsx: 'react-jsx',
         esModuleInterop: true,
+        ignoreDeprecations: '6.0',
       },
     }],
   },
