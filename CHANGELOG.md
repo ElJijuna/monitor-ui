@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/ElJijuna/monitor-ui/compare/v2.0.0...v2.1.0) (2026-06-06)
+
+
+### Features
+
+* add path aliasing for improved module imports across components ([4dec834](https://github.com/ElJijuna/monitor-ui/commit/4dec834d533ca8a3df7c687c2607701958968339))
+
 # [2.0.0](https://github.com/ElJijuna/monitor-ui/compare/v1.0.2...v2.0.0) (2026-05-30)
 
 
