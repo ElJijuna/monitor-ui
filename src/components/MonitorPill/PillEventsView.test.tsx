@@ -16,14 +16,14 @@ describe('PillEventsView', () => {
   it('shows event count', () => {
     jest.mocked(hooks.useEvents).mockReturnValue({
       entries: [makeEvent('user:login'), makeEvent('route:change')],
-      labelStats: new Map(),
+      byLabel: { 'user:login': 1, 'route:change': 1 },
     });
     render(<PillEventsView monitor={monitor} />);
     expect(screen.getByText(/2 evt/)).toBeInTheDocument();
   });
 
   it('shows "no events" when entries are empty', () => {
-    jest.mocked(hooks.useEvents).mockReturnValue({ entries: [], labelStats: new Map() });
+    jest.mocked(hooks.useEvents).mockReturnValue({ entries: [], byLabel: {} });
     render(<PillEventsView monitor={monitor} />);
     expect(screen.getByText('no events')).toBeInTheDocument();
   });
@@ -31,7 +31,7 @@ describe('PillEventsView', () => {
   it('shows label of last event when short enough', () => {
     jest.mocked(hooks.useEvents).mockReturnValue({
       entries: [makeEvent('user:login')],
-      labelStats: new Map(),
+      byLabel: { 'user:login': 1 },
     });
     render(<PillEventsView monitor={monitor} />);
     expect(screen.getByText('user:login')).toBeInTheDocument();
@@ -40,14 +40,14 @@ describe('PillEventsView', () => {
   it('truncates label longer than 16 chars with ellipsis', () => {
     jest.mocked(hooks.useEvents).mockReturnValue({
       entries: [makeEvent('very-long-event-label-that-exceeds-limit')],
-      labelStats: new Map(),
+      byLabel: { 'very-long-event-label-that-exceeds-limit': 1 },
     });
     render(<PillEventsView monitor={monitor} />);
     expect(screen.getByText('very-long-even…')).toBeInTheDocument();
   });
 
   it('shows — in trailing when no events', () => {
-    jest.mocked(hooks.useEvents).mockReturnValue({ entries: [], labelStats: new Map() });
+    jest.mocked(hooks.useEvents).mockReturnValue({ entries: [], byLabel: {} });
     render(<PillEventsView monitor={monitor} />);
     const trailing = screen.getAllByText('—');
 

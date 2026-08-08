@@ -16,7 +16,9 @@ function makeEntry(overrides: Partial<ReturnType<typeof hooks.useNetwork>['entri
     status: 200,
     latency: 100,
     payloadSize: 512,
-    error: false,
+    requestSize: 0,
+    initiator: 'fetch' as const,
+    error: null,
     timestamp: Date.now(),
     ...overrides,
   };
@@ -24,9 +26,10 @@ function makeEntry(overrides: Partial<ReturnType<typeof hooks.useNetwork>['entri
 
 describe('NetworkLog', () => {
   it('shows empty state when no entries', () => {
-    jest
-      .mocked(hooks.useNetwork)
-      .mockReturnValue({ entries: [], window5s: { count: 0, avgLatency: 0, totalPayload: 0 } });
+    jest.mocked(hooks.useNetwork).mockReturnValue({
+      entries: [],
+      window5s: { count: 0, avgLatency: 0, totalPayload: 0, errorRate: 0 },
+    });
     render(<NetworkLog monitor={monitor} />);
     expect(screen.getByText('No requests yet')).toBeInTheDocument();
   });
@@ -34,7 +37,7 @@ describe('NetworkLog', () => {
   it('renders entry url', () => {
     jest.mocked(hooks.useNetwork).mockReturnValue({
       entries: [makeEntry({ url: '/api/users' })],
-      window5s: { count: 1, avgLatency: 0, totalPayload: 0 },
+      window5s: { count: 1, avgLatency: 0, totalPayload: 0, errorRate: 0 },
     });
     render(<NetworkLog monitor={monitor} />);
     expect(screen.getByText('/api/users')).toBeInTheDocument();
@@ -47,7 +50,7 @@ describe('NetworkLog', () => {
 
     jest.mocked(hooks.useNetwork).mockReturnValue({
       entries,
-      window5s: { count: 25, avgLatency: 0, totalPayload: 0 },
+      window5s: { count: 25, avgLatency: 0, totalPayload: 0, errorRate: 0 },
     });
     render(<NetworkLog monitor={monitor} />);
     expect(screen.queryByText('/api/0')).not.toBeInTheDocument();
@@ -56,8 +59,8 @@ describe('NetworkLog', () => {
 
   it('colors error status red', () => {
     jest.mocked(hooks.useNetwork).mockReturnValue({
-      entries: [makeEntry({ status: 500, error: true })],
-      window5s: { count: 1, avgLatency: 0, totalPayload: 0 },
+      entries: [makeEntry({ status: 500, error: 'Server error' })],
+      window5s: { count: 1, avgLatency: 0, totalPayload: 0, errorRate: 1 },
     });
     const { container } = render(<NetworkLog monitor={monitor} />);
     const statusEl = container.querySelector('[color="error"]');

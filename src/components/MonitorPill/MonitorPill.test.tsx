@@ -19,11 +19,11 @@ beforeEach(() => {
   });
   jest.mocked(hooks.useNetwork).mockReturnValue({
     entries: [],
-    window5s: { count: 3, avgLatency: 50, totalPayload: 2048 },
+    window5s: { count: 3, avgLatency: 50, totalPayload: 2048, errorRate: 0 },
   });
   jest.mocked(hooks.useEvents).mockReturnValue({
     entries: [],
-    labelStats: new Map(),
+    byLabel: {},
   });
 });
 

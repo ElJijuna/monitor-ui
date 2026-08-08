@@ -16,7 +16,9 @@ function makeEntry(overrides: Partial<ReturnType<typeof hooks.useNetwork>['entri
     status: 200,
     latency: 50,
     payloadSize: 1024,
-    error: false,
+    requestSize: 0,
+    initiator: 'fetch' as const,
+    error: null,
     timestamp: Date.now(),
     ...overrides,
   };
@@ -26,7 +28,7 @@ describe('PillNetworkView', () => {
   it('shows request count from window5s', () => {
     jest.mocked(hooks.useNetwork).mockReturnValue({
       entries: [],
-      window5s: { count: 5, avgLatency: 0, totalPayload: 0 },
+      window5s: { count: 5, avgLatency: 0, totalPayload: 0, errorRate: 0 },
     });
     render(<PillNetworkView monitor={monitor} />);
     expect(screen.getByText(/5 req/)).toBeInTheDocument();
@@ -35,7 +37,7 @@ describe('PillNetworkView', () => {
   it('shows formatted payload from window5s', () => {
     jest.mocked(hooks.useNetwork).mockReturnValue({
       entries: [],
-      window5s: { count: 1, avgLatency: 0, totalPayload: 2048 },
+      window5s: { count: 1, avgLatency: 0, totalPayload: 2048, errorRate: 0 },
     });
     render(<PillNetworkView monitor={monitor} />);
     expect(screen.getByText('2 KB')).toBeInTheDocument();
@@ -43,8 +45,8 @@ describe('PillNetworkView', () => {
 
   it('shows — when no recent errors', () => {
     jest.mocked(hooks.useNetwork).mockReturnValue({
-      entries: [makeEntry({ status: 200, error: false })],
-      window5s: { count: 1, avgLatency: 0, totalPayload: 0 },
+      entries: [makeEntry({ status: 200, error: null })],
+      window5s: { count: 1, avgLatency: 0, totalPayload: 0, errorRate: 0 },
     });
     render(<PillNetworkView monitor={monitor} />);
     expect(screen.getByText('—')).toBeInTheDocument();
@@ -55,10 +57,10 @@ describe('PillNetworkView', () => {
 
     jest.mocked(hooks.useNetwork).mockReturnValue({
       entries: [
-        makeEntry({ status: 500, error: true, timestamp: recentTs }),
-        makeEntry({ status: 404, error: false, timestamp: recentTs }),
+        makeEntry({ status: 500, error: 'Server error', timestamp: recentTs }),
+        makeEntry({ status: 404, error: null, timestamp: recentTs }),
       ],
-      window5s: { count: 2, avgLatency: 0, totalPayload: 0 },
+      window5s: { count: 2, avgLatency: 0, totalPayload: 0, errorRate: 1 },
     });
     render(<PillNetworkView monitor={monitor} />);
     expect(screen.getByText('2 err')).toBeInTheDocument();
@@ -68,8 +70,8 @@ describe('PillNetworkView', () => {
     const oldTs = Date.now() - 10_000;
 
     jest.mocked(hooks.useNetwork).mockReturnValue({
-      entries: [makeEntry({ status: 500, error: true, timestamp: oldTs })],
-      window5s: { count: 0, avgLatency: 0, totalPayload: 0 },
+      entries: [makeEntry({ status: 500, error: 'Server error', timestamp: oldTs })],
+      window5s: { count: 0, avgLatency: 0, totalPayload: 0, errorRate: 0 },
     });
     render(<PillNetworkView monitor={monitor} />);
     expect(screen.getByText('—')).toBeInTheDocument();
