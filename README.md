@@ -42,7 +42,7 @@ import { MonitorPill, MonitorInspector } from 'monitor-ui'
 export function App() {
   const monitor = useMemo(() => createMonitor({
     maxHistory: 120,
-    collectors: { errors: true },
+    collectors: ['performance', 'network', 'react', 'events', 'webVitals', 'errors'],
   }), [])
   const [open, setOpen] = useState(false)
 
@@ -104,7 +104,7 @@ type View = 'pill' | 'inspector' | 'dashboard'
 export function MonitorFlow() {
   const monitor = useMemo(() => createMonitor({
     maxHistory: 120,
-    collectors: { errors: true },
+    collectors: ['performance', 'network', 'react', 'events', 'webVitals', 'errors'],
   }), [])
   const [view, setView] = useState<View>('pill')
 

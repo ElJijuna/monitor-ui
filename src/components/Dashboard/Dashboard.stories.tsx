@@ -63,7 +63,11 @@ type Story = StoryObj<typeof meta>;
 
 function useDemoMonitor() {
   const monitor = useMemo<Monitor>(
-    () => createMonitor({ collectors: { errors: true }, maxHistory: 120 }),
+    () =>
+      createMonitor({
+        collectors: ['performance', 'network', 'react', 'events', 'webVitals', 'errors'],
+        maxHistory: 120,
+      }),
     [],
   );
 
@@ -78,7 +82,7 @@ function useDemoMonitor() {
 
     return () => {
       window.clearInterval(events);
-      monitor.destroy();
+      monitor.stop();
     };
   }, [monitor]);
 

@@ -42,6 +42,13 @@ describe('monitor-api 1.4 integration', () => {
     await waitFor(() => expect(result.current.entries).toHaveLength(0));
     expect(result.current.totalErrors).toBe(1);
 
+    act(() => {
+      monitor.stop();
+      monitor.start();
+      monitor.errors.capture(new Error('after restart'), 'manual');
+    });
+    await waitFor(() => expect(result.current.totalErrors).toBe(2));
+
     unmount();
     expect(() => monitor.destroy()).not.toThrow();
   });

@@ -8,7 +8,7 @@ function useDemoMonitor() {
   const monitor = useMemo<Monitor>(
     () =>
       createMonitor({
-        collectors: { react: false, errors: true },
+        collectors: ['performance', 'network', 'events', 'webVitals', 'errors'],
         maxHistory: 60,
       }),
     [],
@@ -24,7 +24,7 @@ function useDemoMonitor() {
 
     return () => {
       window.clearInterval(timer);
-      monitor.destroy();
+      monitor.stop();
     };
   }, [monitor]);
 
