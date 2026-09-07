@@ -1,3 +1,12 @@
+# [2.2.0](https://github.com/ElJijuna/monitor-ui/compare/v2.1.0...v2.2.0) (2026-09-07)
+
+
+### Features
+
+* update collectors in monitor configuration and improve monitor lifecycle methods ([c09f312](https://github.com/ElJijuna/monitor-ui/commit/c09f312eb98b885b23fb8e4c298aed107e15b35c))
+* update dependencies and improve dashboard components ([58e5d46](https://github.com/ElJijuna/monitor-ui/commit/58e5d46bd95c5700082f4127f787f371a3459c4f))
+* update monitor-api to version 1.3.0 and enhance mock implementations for performance, network, events, and react snapshots ([ea4b65b](https://github.com/ElJijuna/monitor-ui/commit/ea4b65b5dad7283899c772c3596752a1209ecee2))
+
 # [2.1.0](https://github.com/ElJijuna/monitor-ui/compare/v2.0.0...v2.1.0) (2026-06-06)
 
 
