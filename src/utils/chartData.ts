@@ -1,8 +1,12 @@
 /**
  * Returns history data for a sparkline chart.
- * When history has fewer than 2 points the chart needs at least 2 values,
- * so we fall back to [fallback, fallback] to keep the chart renderable.
+ * A single real sample is repeated because the chart needs two points.
+ * Empty histories stay empty so callers can render an honest empty state.
  */
 export function toChartData(history: number[], fallback: number): number[] {
-  return history.length > 1 ? history : [fallback, fallback];
+  if (history.length === 0) {
+    return [];
+  }
+
+  return history.length === 1 ? [history[0] ?? fallback, history[0] ?? fallback] : history;
 }

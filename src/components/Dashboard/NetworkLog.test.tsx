@@ -31,7 +31,7 @@ describe('NetworkLog', () => {
       window5s: { count: 0, avgLatency: 0, totalPayload: 0, errorRate: 0 },
     });
     render(<NetworkLog monitor={monitor} />);
-    expect(screen.getByText('No requests yet')).toBeInTheDocument();
+    expect(screen.getByText('No request records available')).toBeInTheDocument();
   });
 
   it('renders entry url', () => {

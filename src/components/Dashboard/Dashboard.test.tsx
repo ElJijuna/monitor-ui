@@ -6,7 +6,7 @@ import { Dashboard } from './Dashboard';
 jest.mock('monitor-api/react');
 jest.mock('monitor-api');
 
-const monitor = {} as Monitor;
+const monitor = { reporter: { snapshot: {} } } as Monitor;
 
 describe('Dashboard', () => {
   it('renders the title', () => {

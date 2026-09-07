@@ -27,6 +27,17 @@ export const ReactSection = ({ monitor }: ReactSectionProps) => {
           }
           variant="property"
         />
+        {react.truncatedCommits > 0 && (
+          <ActionRow
+            title="Truncated commits"
+            trailing={
+              <Text color="error" variant="numeric">
+                {react.truncatedCommits}
+              </Text>
+            }
+            variant="property"
+          />
+        )}
         {slowComponents.length > 0 ? (
           slowComponents.map((entry) => (
             <ActionRow
@@ -36,7 +47,7 @@ export const ReactSection = ({ monitor }: ReactSectionProps) => {
             />
           ))
         ) : (
-          <EmptyRow>No slow components</EmptyRow>
+          <EmptyRow>No slow component records available</EmptyRow>
         )}
       </BoxedList>
     </section>

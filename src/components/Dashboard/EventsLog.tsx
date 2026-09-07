@@ -16,7 +16,7 @@ export const EventsLog = ({ monitor }: EventsLogProps) => {
     <div className="monitor-dashboard__log">
       <div className="monitor-dashboard__log-header">
         <Text color="dim" variant="caption-heading">
-          App Events
+          App Events · retained records
         </Text>
       </div>
       <div className="monitor-dashboard__log-rows">
@@ -39,7 +39,7 @@ export const EventsLog = ({ monitor }: EventsLogProps) => {
         ) : (
           <div className="monitor-dashboard__log-empty">
             <Text color="dim" variant="caption">
-              No events yet
+              No event records available
             </Text>
           </div>
         )}

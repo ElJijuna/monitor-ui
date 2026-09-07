@@ -3,17 +3,31 @@ import type { Monitor } from 'monitor-api';
 import type { HTMLAttributes } from 'react';
 import '../../styles/tokens.css';
 import './MonitorInspector.css';
+import { ErrorsSection } from './ErrorsSection';
 import { EventsSection } from './EventsSection';
 import { NetworkSection } from './NetworkSection';
 import { PerformanceSection } from './PerformanceSection';
 import { ReactSection } from './ReactSection';
+import { ReporterSection } from './ReporterSection';
 import { WebVitalsSection } from './WebVitalsSection';
 
 export interface MonitorInspectorProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
   monitor: Monitor;
+  showErrors?: boolean;
+  showReporter?: boolean;
+  allowClearErrors?: boolean;
+  allowFlushReport?: boolean;
 }
 
-export const MonitorInspector = ({ monitor, className, ...divProps }: MonitorInspectorProps) => {
+export const MonitorInspector = ({
+  monitor,
+  showErrors = true,
+  showReporter = true,
+  allowClearErrors = false,
+  allowFlushReport = false,
+  className,
+  ...divProps
+}: MonitorInspectorProps) => {
   return (
     <Card
       {...divProps}
@@ -26,6 +40,8 @@ export const MonitorInspector = ({ monitor, className, ...divProps }: MonitorIns
         <NetworkSection monitor={monitor} />
         <ReactSection monitor={monitor} />
         <EventsSection monitor={monitor} />
+        {showErrors && <ErrorsSection allowClear={allowClearErrors} monitor={monitor} />}
+        {showReporter && <ReporterSection allowFlush={allowFlushReport} monitor={monitor} />}
       </div>
     </Card>
   );

@@ -8,7 +8,7 @@ function useDemoMonitor() {
   const monitor = useMemo<Monitor>(
     () =>
       createMonitor({
-        collectors: { react: false },
+        collectors: { react: false, errors: true },
         maxHistory: 60,
       }),
     [],
@@ -59,4 +59,8 @@ export const Network: Story = {
 
 export const Events: Story = {
   args: { scope: 'events', label: 'Open monitor' },
+};
+
+export const Errors: Story = {
+  args: { scope: 'errors', label: 'Open error monitor' },
 };

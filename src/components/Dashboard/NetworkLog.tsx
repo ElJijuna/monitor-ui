@@ -16,7 +16,7 @@ export const NetworkLog = ({ monitor }: NetworkLogProps) => {
     <div className="monitor-dashboard__log">
       <div className="monitor-dashboard__log-header">
         <Text color="dim" variant="caption-heading">
-          Network Log
+          Network Log · retained records
         </Text>
       </div>
       <div className="monitor-dashboard__log-rows">
@@ -42,7 +42,7 @@ export const NetworkLog = ({ monitor }: NetworkLogProps) => {
         ) : (
           <div className="monitor-dashboard__log-empty">
             <Text color="dim" variant="caption">
-              No requests yet
+              No request records available
             </Text>
           </div>
         )}

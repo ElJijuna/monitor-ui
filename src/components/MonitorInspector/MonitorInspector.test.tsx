@@ -5,7 +5,7 @@ import { MonitorInspector } from './MonitorInspector';
 jest.mock('monitor-api/react');
 jest.mock('monitor-api');
 
-const monitor = {} as Monitor;
+const monitor = { reporter: { snapshot: {} } } as Monitor;
 
 describe('MonitorInspector', () => {
   it('does not render a header title', () => {

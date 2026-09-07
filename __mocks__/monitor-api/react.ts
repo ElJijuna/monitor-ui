@@ -1,4 +1,5 @@
 import type {
+  ErrorSnapshot,
   EventSnapshot,
   Monitor,
   MonitorSnapshot,
@@ -45,6 +46,8 @@ const webVitalsSnapshot = (): WebVitalsSnapshot => ({
   entries: [],
 });
 
+const errorSnapshot = (): ErrorSnapshot => ({ entries: [], totalErrors: 0, droppedErrors: 0 });
+
 export const usePerformance = jest.fn(
   (_monitor: Monitor): PerformanceSnapshot => performanceSnapshot(),
 );
@@ -52,6 +55,7 @@ export const useNetwork = jest.fn((_monitor: Monitor): NetworkSnapshot => networ
 export const useEvents = jest.fn((_monitor: Monitor): EventSnapshot => eventSnapshot());
 export const useReact = jest.fn((_monitor: Monitor): ReactSnapshot => reactSnapshot());
 export const useWebVitals = jest.fn((_monitor: Monitor): WebVitalsSnapshot => webVitalsSnapshot());
+export const useErrors = jest.fn((_monitor: Monitor): ErrorSnapshot => errorSnapshot());
 
 export const useMonitor = jest.fn(
   (_monitor: Monitor): MonitorSnapshot => ({
@@ -60,7 +64,23 @@ export const useMonitor = jest.fn(
     network: networkSnapshot(),
     react: reactSnapshot(),
     events: eventSnapshot(),
+    errors: errorSnapshot(),
     webVitals: webVitalsSnapshot(),
   }),
 );
-export const useSignal = jest.fn(<T>(signal: SSignal<T>): T => signal.value);
+export const useSignal = jest.fn(
+  <T>(signal: SSignal<T>): T =>
+    signal?.value ??
+    ({
+      status: 'disabled',
+      attempts: 0,
+      sent: 0,
+      failed: 0,
+      dropped: 0,
+      retries: 0,
+      cancelled: 0,
+      skipped: 0,
+      lastSuccessAt: null,
+      lastFailure: null,
+    } as T),
+);

@@ -8,7 +8,7 @@ function useDemoMonitor() {
   const monitor = useMemo<Monitor>(
     () =>
       createMonitor({
-        collectors: { react: false },
+        collectors: { react: false, errors: true },
         maxHistory: 60,
       }),
     [],
@@ -61,4 +61,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {},
+};
+
+export const WithActions: Story = {
+  args: { allowClearErrors: true, allowFlushReport: true },
 };

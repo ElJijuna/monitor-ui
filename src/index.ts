@@ -1,3 +1,12 @@
+export type {
+  ErrorCollectorConfig,
+  ErrorSnapshot,
+  MonitorError,
+  MonitorErrorDetails,
+  MonitorErrorSource,
+  ReporterSnapshot,
+  ReportFailure,
+} from 'monitor-api';
 export type { DashboardProps } from './components/Dashboard';
 export { Dashboard } from './components/Dashboard';
 export type { MonitorInspectorProps } from './components/MonitorInspector';

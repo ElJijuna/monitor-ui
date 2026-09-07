@@ -25,6 +25,11 @@ beforeEach(() => {
     entries: [],
     byLabel: {},
   });
+  jest.mocked(hooks.useErrors).mockReturnValue({
+    entries: [],
+    totalErrors: 2,
+    droppedErrors: 0,
+  });
 });
 
 describe('MonitorPill', () => {
@@ -41,6 +46,12 @@ describe('MonitorPill', () => {
   it('renders events scope showing evt', () => {
     render(<MonitorPill monitor={monitor} scope="events" />);
     expect(screen.getByText(/evt/i)).toBeInTheDocument();
+  });
+
+  it('renders errors scope showing the lifetime total', () => {
+    render(<MonitorPill monitor={monitor} scope="errors" />);
+    expect(screen.getByText('Errors')).toBeInTheDocument();
+    expect(screen.getByText('2')).toBeInTheDocument();
   });
 
   it('uses label as aria-label on the pill container', () => {

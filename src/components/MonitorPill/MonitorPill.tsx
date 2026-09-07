@@ -3,11 +3,12 @@ import type { Monitor } from 'monitor-api';
 import type { ComponentPropsWithoutRef } from 'react';
 import '../../styles/tokens.css';
 import './MonitorPill.css';
+import { PillErrorsView } from './PillErrorsView';
 import { PillEventsView } from './PillEventsView';
 import { PillNetworkView } from './PillNetworkView';
 import { PillPerformanceView } from './PillPerformanceView';
 
-export type MonitorPillScope = 'performance' | 'network' | 'events';
+export type MonitorPillScope = 'performance' | 'network' | 'events' | 'errors';
 
 export interface MonitorPillProps extends Omit<ComponentPropsWithoutRef<'button'>, 'children'> {
   monitor: Monitor;
@@ -36,6 +37,7 @@ export const MonitorPill = ({
       {scope === 'performance' && <PillPerformanceView monitor={monitor} />}
       {scope === 'network' && <PillNetworkView monitor={monitor} />}
       {scope === 'events' && <PillEventsView monitor={monitor} />}
+      {scope === 'errors' && <PillErrorsView monitor={monitor} />}
     </Card>
   );
 };

@@ -18,6 +18,7 @@ export const PerformanceSection = ({ monitor }: PerformanceSectionProps) => {
   const fpsChartColor = fpsColor(performance.fps);
   const memory = formatMemory(performance.memory);
   const latency = Math.round(network.window5s.avgLatency);
+  const hasRequests = network.window5s.count > 0;
 
   return (
     <section className="monitor-inspector__section">
@@ -28,11 +29,13 @@ export const PerformanceSection = ({ monitor }: PerformanceSectionProps) => {
         <StatCard
           backgroundChart={
             <span className="monitor-inspector__spark" aria-hidden="true">
-              <SparkLineChart
-                color={fpsChartColor}
-                data={toChartData(performance.fpsHistory, performance.fps)}
-                height={34}
-              />
+              {performance.fpsHistory.length > 0 && (
+                <SparkLineChart
+                  color={fpsChartColor}
+                  data={toChartData(performance.fpsHistory, performance.fps)}
+                  height={34}
+                />
+              )}
             </span>
           }
           label="FPS"
@@ -42,11 +45,13 @@ export const PerformanceSection = ({ monitor }: PerformanceSectionProps) => {
         <StatCard
           backgroundChart={
             <span className="monitor-inspector__spark" aria-hidden="true">
-              <SparkLineChart
-                color={COLOR_MEMORY}
-                data={toChartData(performance.memoryHistory, performance.memory?.used ?? 0)}
-                height={34}
-              />
+              {performance.memory && performance.memoryHistory.length > 0 && (
+                <SparkLineChart
+                  color={COLOR_MEMORY}
+                  data={toChartData(performance.memoryHistory, performance.memory.percent)}
+                  height={34}
+                />
+              )}
             </span>
           }
           label="JS Heap"
@@ -56,8 +61,18 @@ export const PerformanceSection = ({ monitor }: PerformanceSectionProps) => {
         <StatCard label="Requests" unit="/ 5s" value={network.window5s.count} />
         <StatCard
           label="Latency"
-          unit={latency > 0 ? 'ms' : ''}
-          value={latency > 0 ? latency : '-'}
+          unit={hasRequests ? 'ms / 5s' : ''}
+          value={hasRequests ? latency : '—'}
+        />
+        <StatCard label="Long Tasks" value={performance.longTasks.count} />
+        <StatCard
+          label="Last Long Task"
+          unit={performance.longTasks.lastDuration === null ? '' : 'ms'}
+          value={
+            performance.longTasks.lastDuration === null
+              ? '—'
+              : Math.round(performance.longTasks.lastDuration)
+          }
         />
       </div>
     </section>

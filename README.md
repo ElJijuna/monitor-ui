@@ -40,7 +40,10 @@ import { createMonitor } from 'monitor-api'
 import { MonitorPill, MonitorInspector } from 'monitor-ui'
 
 export function App() {
-  const monitor = useMemo(() => createMonitor({ maxHistory: 120 }), [])
+  const monitor = useMemo(() => createMonitor({
+    maxHistory: 120,
+    collectors: { errors: true },
+  }), [])
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -57,14 +60,24 @@ export function App() {
 }
 ```
 
-**`scope` values:** `"performance"` (default) · `"network"` · `"events"`
+**`scope` values:** `"performance"` (default) · `"network"` · `"events"` · `"errors"`
 
 ### 2. MonitorInspector — detailed panel
 
-A panel with collapsible sections: performance, Web Vitals, network, React internals, and custom events.
+A panel for performance, Web Vitals, network, React internals, custom events, captured errors, and reporter diagnostics.
 
 ```tsx
 <MonitorInspector monitor={monitor} />
+```
+
+Error and reporter actions are opt-in:
+
+```tsx
+<MonitorInspector
+  monitor={monitor}
+  allowClearErrors
+  allowFlushReport
+/>
 ```
 
 ### 3. Dashboard — full view
@@ -89,7 +102,10 @@ import { MonitorPill, MonitorInspector, Dashboard } from 'monitor-ui'
 type View = 'pill' | 'inspector' | 'dashboard'
 
 export function MonitorFlow() {
-  const monitor = useMemo(() => createMonitor({ maxHistory: 120 }), [])
+  const monitor = useMemo(() => createMonitor({
+    maxHistory: 120,
+    collectors: { errors: true },
+  }), [])
   const [view, setView] = useState<View>('pill')
 
   useEffect(() => {
@@ -122,7 +138,7 @@ export function MonitorFlow() {
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `monitor` | `Monitor` | — | Monitor instance from `monitor-api` |
-| `scope` | `'performance' \| 'network' \| 'events'` | `'performance'` | Which metric to display |
+| `scope` | `'performance' \| 'network' \| 'events' \| 'errors'` | `'performance'` | Which metric to display |
 | `label` | `string` | `'Open monitor'` | Accessible label |
 | `...button` | `ButtonHTMLAttributes` | — | All native button props |
 
@@ -131,6 +147,10 @@ export function MonitorFlow() {
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `monitor` | `Monitor` | — | Monitor instance |
+| `showErrors` | `boolean` | `true` | Show captured error diagnostics |
+| `showReporter` | `boolean` | `true` | Show production reporter diagnostics |
+| `allowClearErrors` | `boolean` | `false` | Allow clearing retained error records |
+| `allowFlushReport` | `boolean` | `false` | Allow an immediate report while the reporter is idle |
 | `...div` | `HTMLAttributes<HTMLDivElement>` except `title` | — | Native div props |
 
 ### `Dashboard`
@@ -140,6 +160,10 @@ export function MonitorFlow() {
 | `monitor` | `Monitor` | — | Monitor instance |
 | `title` | `string` | `'Dashboard'` | Dashboard heading |
 | `onBack` | `() => void` | — | Shows a Back button when provided |
+| `showErrors` | `boolean` | `true` | Show captured error diagnostics |
+| `showReporter` | `boolean` | `true` | Show production reporter diagnostics |
+| `allowClearErrors` | `boolean` | `false` | Allow clearing retained error records |
+| `allowFlushReport` | `boolean` | `false` | Allow an immediate report while the reporter is idle |
 
 ## Utility exports
 

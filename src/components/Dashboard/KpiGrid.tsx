@@ -16,17 +16,20 @@ export const KpiGrid = ({ monitor }: KpiGridProps) => {
   const events = useEvents(monitor);
   const color = fpsColor(performance.fps);
   const latency = Math.round(network.window5s.avgLatency);
+  const hasRequests = network.window5s.count > 0;
 
   return (
     <div className="monitor-dashboard__kpis">
       <StatCard
         backgroundChart={
           <span className="monitor-dashboard__spark" aria-hidden="true">
-            <SparkLineChart
-              color={color}
-              data={toChartData(performance.fpsHistory, performance.fps)}
-              height={38}
-            />
+            {performance.fpsHistory.length > 0 && (
+              <SparkLineChart
+                color={color}
+                data={toChartData(performance.fpsHistory, performance.fps)}
+                height={38}
+              />
+            )}
           </span>
         }
         label="FPS"
@@ -36,11 +39,13 @@ export const KpiGrid = ({ monitor }: KpiGridProps) => {
       <StatCard
         backgroundChart={
           <span className="monitor-dashboard__spark" aria-hidden="true">
-            <SparkLineChart
-              color={COLOR_MEMORY}
-              data={toChartData(performance.memoryHistory, performance.memory?.used ?? 0)}
-              height={38}
-            />
+            {performance.memory && performance.memoryHistory.length > 0 && (
+              <SparkLineChart
+                color={COLOR_MEMORY}
+                data={toChartData(performance.memoryHistory, performance.memory.percent)}
+                height={38}
+              />
+            )}
           </span>
         }
         label="JS Heap"
@@ -49,10 +54,20 @@ export const KpiGrid = ({ monitor }: KpiGridProps) => {
       />
       <StatCard
         label="Avg Latency"
-        unit={latency > 0 ? 'ms' : ''}
-        value={latency > 0 ? latency : '—'}
+        unit={hasRequests ? 'ms / 5s' : ''}
+        value={hasRequests ? latency : '—'}
       />
-      <StatCard label="App Events" value={events.entries.length} />
+      <StatCard label="Retained Events" value={events.entries.length} />
+      <StatCard label="Long Tasks" value={performance.longTasks.count} />
+      <StatCard
+        label="Last Long Task"
+        unit={performance.longTasks.lastDuration === null ? '' : 'ms'}
+        value={
+          performance.longTasks.lastDuration === null
+            ? '—'
+            : Math.round(performance.longTasks.lastDuration)
+        }
+      />
     </div>
   );
 };

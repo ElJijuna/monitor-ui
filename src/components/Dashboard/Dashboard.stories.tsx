@@ -62,7 +62,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 function useDemoMonitor() {
-  const monitor = useMemo<Monitor>(() => createMonitor({ maxHistory: 120 }), []);
+  const monitor = useMemo<Monitor>(
+    () => createMonitor({ collectors: { errors: true }, maxHistory: 120 }),
+    [],
+  );
 
   useEffect(() => {
     monitor.start();
