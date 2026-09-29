@@ -1,4 +1,4 @@
-import { Text } from '@gnome-ui/react';
+import { Card, Text } from '@gnome-ui/react';
 import type { ReactNode } from 'react';
 import type { MetricTone } from './types';
 
@@ -19,9 +19,12 @@ interface MetricListProps {
   emptyText?: string;
 }
 
-/** Compact list used for the lg drill-down panel of every metric widget. */
+/**
+ * Compact list used for the lg drill-down panel of every metric widget, framed by a
+ * transparent, border-only card.
+ */
 export const MetricList = ({ title, items, emptyText = 'No records yet' }: MetricListProps) => (
-  <>
+  <Card as="div" className="monitor-metric__list-card" padding="none">
     <Text className="monitor-metric__details-title" color="dim" variant="caption-heading">
       {title}
     </Text>
@@ -74,5 +77,5 @@ export const MetricList = ({ title, items, emptyText = 'No records yet' }: Metri
         {emptyText}
       </Text>
     )}
-  </>
+  </Card>
 );
