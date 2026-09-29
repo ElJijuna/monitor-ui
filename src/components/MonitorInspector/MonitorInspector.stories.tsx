@@ -1,34 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { Monitor } from 'monitor-api';
-import { createMonitor, emitMonitorEvent } from 'monitor-api';
-import { useEffect, useMemo } from 'react';
+import { useDemoMonitor } from '@/stories/demoMonitor';
 import { MonitorInspector, type MonitorInspectorProps } from './MonitorInspector';
-
-function useDemoMonitor() {
-  const monitor = useMemo<Monitor>(
-    () =>
-      createMonitor({
-        collectors: ['performance', 'network', 'events', 'webVitals', 'errors'],
-        maxHistory: 60,
-      }),
-    [],
-  );
-
-  useEffect(() => {
-    monitor.start();
-
-    const timer = window.setInterval(() => {
-      emitMonitorEvent('storybook:tick', { at: Date.now() });
-    }, 1400);
-
-    return () => {
-      window.clearInterval(timer);
-      monitor.stop();
-    };
-  }, [monitor]);
-
-  return monitor;
-}
 
 const MonitorInspectorStory = (props: Omit<MonitorInspectorProps, 'monitor'>) => {
   const monitor = useDemoMonitor();
@@ -53,16 +25,24 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
+  args: {
+    showErrors: true,
+    showReporter: true,
+    allowClearErrors: false,
+    allowFlushReport: false,
+  },
 } satisfies Meta<typeof MonitorInspectorStory>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: {},
-};
+export const Default: Story = {};
 
 export const WithActions: Story = {
   args: { allowClearErrors: true, allowFlushReport: true },
+};
+
+export const Minimal: Story = {
+  args: { showErrors: false, showReporter: false },
 };

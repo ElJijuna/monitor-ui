@@ -20,6 +20,7 @@
   --monitor-color-memory: #60a5fa;
   --monitor-color-latency: #a78bfa;
   --monitor-color-events: #f472b6;
+  --monitor-color-react: #61dafb;
 
   /* ── Network status ───────────────────────────────────── */
   --monitor-color-status-ok: #4ade80;

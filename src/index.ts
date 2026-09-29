@@ -9,6 +9,38 @@ export type {
 } from 'monitor-api';
 export type { DashboardProps } from './components/Dashboard';
 export { Dashboard } from './components/Dashboard';
+export type {
+  ClearableMetricProps,
+  ErrorsMetricProps,
+  EventsMetricProps,
+  FpsMetricProps,
+  MemoryMetricProps,
+  MetricBaseProps,
+  MetricCardProps,
+  MetricListItem,
+  MetricSize,
+  MetricStat,
+  MetricTone,
+  MonitorMetricKind,
+  MonitorMetricProps,
+  NetworkMetricProps,
+  ReactMetricProps,
+  ReporterMetricProps,
+  WebVitalsMetricProps,
+} from './components/Metrics';
+export {
+  ErrorsMetric,
+  EventsMetric,
+  FpsMetric,
+  MemoryMetric,
+  MetricCard,
+  MONITOR_METRIC_KINDS,
+  MonitorMetric,
+  NetworkMetric,
+  ReactMetric,
+  ReporterMetric,
+  WebVitalsMetric,
+} from './components/Metrics';
 export type { MonitorInspectorProps } from './components/MonitorInspector';
 export { MonitorInspector } from './components/MonitorInspector';
 export type { MonitorPillProps, MonitorPillScope } from './components/MonitorPill';

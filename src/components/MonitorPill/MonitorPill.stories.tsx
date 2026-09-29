@@ -1,35 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { Monitor } from 'monitor-api';
-import { createMonitor, emitMonitorEvent } from 'monitor-api';
-import { useEffect, useMemo } from 'react';
-import { MonitorPill, type MonitorPillProps } from './MonitorPill';
+import { useDemoMonitor } from '@/stories/demoMonitor';
+import { MonitorPill, type MonitorPillProps, type MonitorPillScope } from './MonitorPill';
 
-function useDemoMonitor() {
-  const monitor = useMemo<Monitor>(
-    () =>
-      createMonitor({
-        collectors: ['performance', 'network', 'events', 'webVitals', 'errors'],
-        maxHistory: 60,
-      }),
-    [],
-  );
-
-  useEffect(() => {
-    monitor.start();
-
-    const labels = ['user:login', 'route:change', 'cache:miss', 'error:caught'];
-    const timer = window.setInterval(() => {
-      emitMonitorEvent(labels[Math.floor(Math.random() * labels.length)], { ts: Date.now() });
-    }, 1400);
-
-    return () => {
-      window.clearInterval(timer);
-      monitor.stop();
-    };
-  }, [monitor]);
-
-  return monitor;
-}
+const SCOPES: MonitorPillScope[] = ['performance', 'network', 'events', 'errors'];
 
 const MonitorPillStory = (props: Omit<MonitorPillProps, 'monitor'>) => {
   const monitor = useDemoMonitor();
@@ -42,25 +15,52 @@ const meta = {
   component: MonitorPillStory,
   parameters: {
     layout: 'centered',
+    docs: {
+      description: {
+        component:
+          'Clickable entry point (button) that opens the inspector. For read-only, resizable widgets see **Components/Metrics** with `size="pill"`.',
+      },
+    },
   },
+  argTypes: {
+    scope: { control: 'inline-radio', options: SCOPES },
+    onClick: { action: 'clicked' },
+  },
+  args: { scope: 'performance', label: 'Open monitor' },
 } satisfies Meta<typeof MonitorPillStory>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Performance: Story = {
-  args: { scope: 'performance', label: 'Open monitor' },
-};
+export const Performance: Story = {};
 
 export const Network: Story = {
-  args: { scope: 'network', label: 'Open monitor' },
+  args: { scope: 'network' },
 };
 
 export const Events: Story = {
-  args: { scope: 'events', label: 'Open monitor' },
+  args: { scope: 'events' },
 };
 
 export const Errors: Story = {
   args: { scope: 'errors', label: 'Open error monitor' },
+};
+
+const AllScopesStory = () => {
+  const monitor = useDemoMonitor();
+
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
+      {SCOPES.map((scope) => (
+        <MonitorPill key={scope} monitor={monitor} scope={scope} />
+      ))}
+    </div>
+  );
+};
+
+/** All scopes side by side, sharing one monitor. */
+export const AllScopes: Story = {
+  argTypes: { scope: { table: { disable: true } } },
+  render: () => <AllScopesStory />,
 };

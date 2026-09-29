@@ -1,96 +1,17 @@
 import { Button } from '@gnome-ui/react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { Monitor } from 'monitor-api';
-import { createMonitor, emitMonitorEvent } from 'monitor-api';
-import type { ComponentProps } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
+import { MonitorMetric } from '@/components/Metrics';
 import { MonitorInspector } from '@/components/MonitorInspector';
-import { Dashboard } from './Dashboard';
+import { useDemoMonitor } from '@/stories/demoMonitor';
+import { Dashboard, type DashboardProps } from './Dashboard';
 
-const MOCK_ENDPOINTS = [
-  { url: 'https://jsonplaceholder.typicode.com/posts/1', method: 'GET' },
-  { url: 'https://jsonplaceholder.typicode.com/users/1', method: 'GET' },
-  { url: 'https://jsonplaceholder.typicode.com/todos?_limit=10', method: 'GET' },
-  { url: 'https://jsonplaceholder.typicode.com/comments?postId=1', method: 'GET' },
-  { url: 'https://jsonplaceholder.typicode.com/albums/1/photos', method: 'GET' },
-  { url: 'https://jsonplaceholder.typicode.com/posts', method: 'POST' },
-  { url: 'https://jsonplaceholder.typicode.com/posts/999', method: 'GET' }, // 404
-];
+type DashboardStoryProps = Omit<DashboardProps, 'monitor'>;
 
-function useMockRequests() {
-  useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-    const controller = new AbortController();
-
-    async function fire() {
-      const endpoint = MOCK_ENDPOINTS[Math.floor(Math.random() * MOCK_ENDPOINTS.length)];
-
-      try {
-        await fetch(endpoint.url, {
-          signal: controller.signal,
-          method: endpoint.method,
-          ...(endpoint.method === 'POST' && {
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title: 'mock', body: 'test', userId: 1 }),
-          }),
-        });
-      } catch {
-        // network failures are also captured by monitor-api
-      }
-
-      if (!controller.signal.aborted) {
-        timeoutId = setTimeout(fire, 600 + Math.random() * 1400);
-      }
-    }
-
-    fire();
-
-    return () => {
-      controller.abort();
-      clearTimeout(timeoutId);
-    };
-  }, []);
-}
-
-function useDemoMonitor() {
-  const monitor = useMemo<Monitor>(
-    () =>
-      createMonitor({
-        // Observing this dashboard's own React commits creates a render feedback loop.
-        collectors: ['performance', 'network', 'events', 'webVitals', 'errors'],
-        maxHistory: 120,
-      }),
-    [],
-  );
-
-  useEffect(() => {
-    monitor.start();
-
-    const events = window.setInterval(() => {
-      const labels = ['user:login', 'route:change', 'cache:miss', 'error:caught', 'api:retry'];
-
-      emitMonitorEvent(labels[Math.floor(Math.random() * labels.length)], { ts: Date.now() });
-    }, 1400);
-
-    return () => {
-      window.clearInterval(events);
-      monitor.stop();
-    };
-  }, [monitor]);
-
-  return monitor;
-}
-
-const DashboardStory = (props: Omit<ComponentProps<typeof Dashboard>, 'monitor'>) => {
+const DashboardStory = (props: DashboardStoryProps) => {
   const monitor = useDemoMonitor();
 
-  useMockRequests();
-
-  return (
-    <div style={{ minHeight: '100vh', padding: '24px' }}>
-      <Dashboard {...props} monitor={monitor} />
-    </div>
-  );
+  return <Dashboard {...props} monitor={monitor} />;
 };
 
 const meta = {
@@ -102,40 +23,61 @@ const meta = {
   argTypes: {
     onBack: { table: { disable: true } },
   },
+  args: {
+    title: 'Dashboard',
+    showErrors: true,
+    showReporter: true,
+    allowClearErrors: false,
+    allowFlushReport: false,
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ boxSizing: 'border-box', minHeight: '100vh', padding: 24 }}>
+        <Story />
+      </div>
+    ),
+  ],
 } satisfies Meta<typeof DashboardStory>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: { title: 'Dashboard' },
-  render: (args) => <DashboardStory {...args} />,
+export const Default: Story = {};
+
+/** Clear the error log and flush the (flaky, in-memory) production reporter on demand. */
+export const WithActions: Story = {
+  args: { allowClearErrors: true, allowFlushReport: true },
 };
 
-const DashboardWithBackStory = () => {
-  const monitor = useDemoMonitor();
+/** Minimal dashboard: diagnostics sections hidden. */
+export const MetricsOnly: Story = {
+  args: { showErrors: false, showReporter: false },
+};
 
-  useMockRequests();
-  const [view, setView] = useState<'inspector' | 'dashboard'>('dashboard');
+const NavigationStory = (props: DashboardStoryProps) => {
+  const monitor = useDemoMonitor();
+  const [view, setView] = useState<'inspector' | 'dashboard'>('inspector');
+
+  if (view === 'dashboard') {
+    return <Dashboard {...props} monitor={monitor} onBack={() => setView('inspector')} />;
+  }
 
   return (
-    <div style={{ minHeight: '100vh', padding: '24px' }}>
-      {view === 'dashboard' ? (
-        <Dashboard monitor={monitor} onBack={() => setView('inspector')} title="Dashboard" />
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 420 }}>
-          <Button onClick={() => setView('dashboard')} size="sm" variant="flat">
-            Dashboard
-          </Button>
-          <MonitorInspector monitor={monitor} />
-        </div>
-      )}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 420 }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+        <MonitorMetric metric="fps" monitor={monitor} size="pill" />
+        <MonitorMetric metric="errors" monitor={monitor} size="pill" />
+      </div>
+      <Button onClick={() => setView('dashboard')} size="sm" variant="suggested">
+        Open dashboard
+      </Button>
+      <MonitorInspector monitor={monitor} />
     </div>
   );
 };
 
+/** Pill → Inspector → Dashboard, sharing a single monitor instance. */
 export const WithNavigation: Story = {
-  args: { title: 'Dashboard' },
-  render: () => <DashboardWithBackStory />,
+  render: (args) => <NavigationStory {...args} />,
 };
