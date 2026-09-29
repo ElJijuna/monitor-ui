@@ -1,4 +1,5 @@
-import { Card, Text } from '@gnome-ui/react';
+import { StatCard } from '@gnome-ui/layout';
+import { Text } from '@gnome-ui/react';
 import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
 import '../../styles/tokens.css';
 import './Metrics.css';
@@ -12,14 +13,14 @@ export interface MetricStat {
 
 export interface MetricCardProps extends Omit<HTMLAttributes<HTMLFieldSetElement>, 'children'> {
   label: string;
-  value: ReactNode;
+  value: number | string;
   unit?: string;
   tone?: MetricTone;
   /** Accent color used while the tone is `neutral`. Any CSS color, including `var(...)`. */
   accent?: string;
   /** Short status text next to the label (sm and up). */
   caption?: ReactNode;
-  /** Trend visualization (hidden while the widget has no samples). */
+  /** Trend visualization, drawn behind the value as the StatCard background chart. */
   chart?: ReactNode;
   /** Secondary figures (md and up). */
   stats?: MetricStat[];
@@ -32,6 +33,10 @@ export interface MetricCardProps extends Omit<HTMLAttributes<HTMLFieldSetElement
 
 /**
  * Presentational shell shared by every metric widget.
+ *
+ * Label, value, unit and chart are rendered by `StatCard` (the chart as its
+ * `backgroundChart`). StatCard has no children slot, so caption, action, stats and
+ * details are layered over it on the same grid.
  *
  * The root element is an inline-size container; the inner surface switches between
  * the pill, sm, md and lg layouts with `@container` queries, so the same markup
@@ -67,39 +72,30 @@ export const MetricCard = ({
       data-tone={tone}
       style={rootStyle}
     >
-      <Card
-        as="div"
-        className="monitor-metric__surface"
-        data-details={details ? '' : undefined}
-        padding="none"
-      >
-        <div className="monitor-metric__header">
-          <span aria-hidden="true" className="monitor-metric__dot" />
-          <Text as="span" className="monitor-metric__label" color="dim" variant="caption-heading">
-            {label}
-          </Text>
-          {caption !== undefined && caption !== null && (
-            <Text as="span" className="monitor-metric__caption" variant="caption">
-              {caption}
-            </Text>
-          )}
-          {action && <span className="monitor-metric__action">{action}</span>}
-        </div>
+      <div className="monitor-metric__surface" data-details={details ? '' : undefined}>
+        <StatCard
+          backgroundChart={
+            chart ? (
+              <div aria-hidden="true" className="monitor-metric__chart">
+                {chart}
+              </div>
+            ) : undefined
+          }
+          className="monitor-metric__card"
+          icon={<span aria-hidden="true" className="monitor-metric__dot" />}
+          label={label}
+          unit={unit}
+          value={value}
+        />
 
-        <div className="monitor-metric__value">
-          <Text as="span" className="monitor-metric__number" variant="numeric">
-            {value}
-          </Text>
-          {unit && (
-            <Text as="span" className="monitor-metric__unit" color="dim" variant="caption">
-              {unit}
-            </Text>
-          )}
-        </div>
-
-        {chart && (
-          <div aria-hidden="true" className="monitor-metric__chart">
-            {chart}
+        {((caption !== undefined && caption !== null) || action) && (
+          <div className="monitor-metric__header">
+            {caption !== undefined && caption !== null && (
+              <Text as="span" className="monitor-metric__caption" variant="caption">
+                {caption}
+              </Text>
+            )}
+            {action && <span className="monitor-metric__action">{action}</span>}
           </div>
         )}
 
@@ -123,7 +119,7 @@ export const MetricCard = ({
         )}
 
         {details && <div className="monitor-metric__details">{details}</div>}
-      </Card>
+      </div>
     </fieldset>
   );
 };

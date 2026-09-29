@@ -10,13 +10,35 @@ interface PassProps {
 const CardMock = ({ children, className, ...rest }: PassProps) =>
   createElement('div', { className, 'data-testid': 'stat-card', ...rest }, children);
 
-// `backgroundChart` is a node slot, not a DOM attribute: render it as a child instead.
+// Node slots are not DOM attributes: render them as children, like the real StatCard.
 const StatCardMock = ({
   backgroundChart,
   children,
+  icon,
+  label,
+  unit,
+  value,
   ...rest
-}: PassProps & { backgroundChart?: ReactNode }) =>
-  CardMock({ ...rest, children: createElement(Fragment, null, backgroundChart, children) });
+}: PassProps & {
+  backgroundChart?: ReactNode;
+  icon?: ReactNode;
+  label?: string;
+  unit?: string;
+  value?: number | string;
+}) =>
+  CardMock({
+    ...rest,
+    children: createElement(
+      Fragment,
+      null,
+      backgroundChart,
+      label !== undefined && createElement('span', null, label),
+      icon,
+      value !== undefined && createElement('span', null, value),
+      unit && createElement('span', null, unit),
+      children,
+    ),
+  });
 
 export const StatCard = StatCardMock;
 export const CounterCard = CardMock;
