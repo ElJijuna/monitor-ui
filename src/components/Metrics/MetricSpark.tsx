@@ -34,6 +34,7 @@ export const MetricSpark = ({ data, color, variant = 'line' }: MetricSparkProps)
       className="monitor-metric__spark"
       color={color}
       data={data}
+      gradient={false}
       height={MAX_CHART_HEIGHT}
       highlighted
       strokeWidth={1.5}
