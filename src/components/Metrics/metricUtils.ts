@@ -1,4 +1,4 @@
-import type { WebVitalMetric } from 'monitor-api';
+import type { LongAnimationFrameEntry, WebVitalMetric } from 'monitor-api';
 import type { MetricTone } from './types';
 
 /** Number of rows shown in the lg drill-down lists. */
@@ -64,4 +64,45 @@ export function shortUrl(url: string): string {
   } catch {
     return url;
   }
+}
+
+/** Whether the browser reports `long-animation-frame` entries (Chromium 123+). */
+export function supportsLongAnimationFrames(): boolean {
+  return (
+    typeof PerformanceObserver !== 'undefined' &&
+    (PerformanceObserver.supportedEntryTypes ?? []).includes('long-animation-frame')
+  );
+}
+
+/**
+ * Tone for the time a long animation frame blocked input. 200ms matches the INP "good"
+ * limit: past it, a single frame is enough to make an interaction feel slow.
+ */
+export function blockingTone(blockingDuration: number): MetricTone | undefined {
+  if (blockingDuration <= 0) {
+    return undefined;
+  }
+
+  return blockingDuration >= 200 ? 'bad' : 'warn';
+}
+
+/** Names the longest script of a long animation frame, falling back to the frame itself. */
+export function describeFrame(frame: LongAnimationFrameEntry): {
+  primary: string;
+  secondary: string;
+} {
+  const [script] = frame.scripts;
+
+  if (!script) {
+    return { primary: 'Unattributed frame', secondary: `${Math.round(frame.duration)}ms frame` };
+  }
+
+  const source = script.sourceURL ? shortUrl(script.sourceURL) : null;
+  const primary =
+    script.invoker ?? script.sourceFunctionName ?? source ?? script.invokerType ?? 'Script';
+  const secondary = [script.invokerType ?? 'script', `${Math.round(script.duration)}ms`, source]
+    .filter(Boolean)
+    .join(' · ');
+
+  return { primary, secondary };
 }

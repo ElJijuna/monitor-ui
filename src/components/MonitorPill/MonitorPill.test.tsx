@@ -15,6 +15,8 @@ beforeEach(() => {
     memory: { used: 42, total: 128, percent: 32.8 },
     memoryHistory: [32],
     longTasks: { count: 0, lastDuration: null },
+    longAnimationFrames: { count: 0, totalBlockingDuration: 0, maxBlockingDuration: null, entries: [] },
+    memoryMeasurement: null,
     cls: 0,
   });
   jest.mocked(hooks.useNetwork).mockReturnValue({

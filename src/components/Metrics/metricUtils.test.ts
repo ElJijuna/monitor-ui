@@ -1,4 +1,15 @@
-import { clsTone, formatPercent, fpsTone, ratingTone, shortUrl, summarize } from './metricUtils';
+import type { LongAnimationFrameEntry, LongAnimationFrameScript } from 'monitor-api';
+import {
+  blockingTone,
+  clsTone,
+  describeFrame,
+  formatPercent,
+  fpsTone,
+  ratingTone,
+  shortUrl,
+  summarize,
+  supportsLongAnimationFrames,
+} from './metricUtils';
 
 describe('fpsTone', () => {
   it('is neutral before any sample', () => {
@@ -70,5 +81,67 @@ describe('shortUrl', () => {
 
   it('returns the input when it cannot be parsed', () => {
     expect(shortUrl('http://[invalid')).toBe('http://[invalid');
+  });
+});
+
+describe('blockingTone', () => {
+  it.each([
+    [0, undefined],
+    [1, 'warn'],
+    [199, 'warn'],
+    [200, 'bad'],
+  ])('maps %pms blocked to %p', (ms, tone) => {
+    expect(blockingTone(ms)).toBe(tone);
+  });
+});
+
+describe('supportsLongAnimationFrames', () => {
+  it('is false without PerformanceObserver', () => {
+    expect(supportsLongAnimationFrames()).toBe(false);
+  });
+});
+
+describe('describeFrame', () => {
+  const script = (overrides: Partial<LongAnimationFrameScript> = {}): LongAnimationFrameScript => ({
+    invokerType: null,
+    invoker: null,
+    sourceURL: null,
+    sourceFunctionName: null,
+    duration: 90.4,
+    forcedStyleAndLayoutDuration: 0,
+    pauseDuration: 0,
+    ...overrides,
+  });
+  const frame = (scripts: LongAnimationFrameScript[]): LongAnimationFrameEntry => ({
+    startTime: 0,
+    duration: 130.6,
+    blockingDuration: 80,
+    renderStart: 0,
+    styleAndLayoutStart: 0,
+    firstUIEventTimestamp: 0,
+    scripts,
+    timestamp: 0,
+  });
+
+  it('falls back to the frame when no script is attributed', () => {
+    expect(describeFrame(frame([]))).toEqual({
+      primary: 'Unattributed frame',
+      secondary: '131ms frame',
+    });
+  });
+
+  it.each([
+    [{ sourceFunctionName: 'onScroll' }, 'onScroll'],
+    [{ sourceURL: 'https://cdn.test/vendor.js' }, '/vendor.js'],
+    [{ invokerType: 'user-callback' }, 'user-callback'],
+    [{}, 'Script'],
+  ])('names %p as %p', (overrides, primary) => {
+    expect(describeFrame(frame([script(overrides)])).primary).toBe(primary);
+  });
+
+  it('summarizes the script type, duration and source', () => {
+    expect(describeFrame(frame([script({ sourceURL: '/app.js' })])).secondary).toBe(
+      'script · 90ms · /app.js',
+    );
   });
 });

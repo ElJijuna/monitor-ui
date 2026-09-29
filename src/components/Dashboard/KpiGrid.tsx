@@ -59,14 +59,14 @@ export const KpiGrid = ({ monitor }: KpiGridProps) => {
         value={hasRequests ? latency : '—'}
       />
       <StatCard label="Retained Events" value={eventCount} />
-      <StatCard label="Long Tasks" value={performance.longTasks.count} />
+      <StatCard label="Long Frames" value={performance.longAnimationFrames.count} />
       <StatCard
-        label="Last Long Task"
-        unit={performance.longTasks.lastDuration === null ? '' : 'ms'}
+        label="Worst Blocking"
+        unit={performance.longAnimationFrames.maxBlockingDuration === null ? '' : 'ms'}
         value={
-          performance.longTasks.lastDuration === null
+          performance.longAnimationFrames.maxBlockingDuration === null
             ? '—'
-            : Math.round(performance.longTasks.lastDuration)
+            : Math.round(performance.longAnimationFrames.maxBlockingDuration)
         }
       />
     </div>

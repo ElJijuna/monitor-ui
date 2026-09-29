@@ -5,14 +5,25 @@ import { MetricAction } from './MetricAction';
 import { MetricCard } from './MetricCard';
 import { MetricList } from './MetricList';
 import { MetricSpark } from './MetricSpark';
-import { clsTone, fpsTone, summarize } from './metricUtils';
+import {
+  blockingTone,
+  clsTone,
+  describeFrame,
+  fpsTone,
+  METRIC_LIST_MAX_ITEMS,
+  summarize,
+  supportsLongAnimationFrames,
+} from './metricUtils';
 import type { ClearableMetricProps } from './types';
 
 export type FpsMetricProps = ClearableMetricProps;
 
 const FPS_CAPTION = { neutral: 'waiting', good: 'smooth', warn: 'janky', bad: 'slow' } as const;
 
-/** Frame rate, long tasks and layout shift from the performance collector. */
+/**
+ * Frame rate, long animation frames (with the script behind each one) and layout shift from
+ * the performance collector.
+ */
 export const FpsMetric = ({
   monitor,
   label = 'FPS',
@@ -24,7 +35,11 @@ export const FpsMetric = ({
   const fps = Math.round(performance.fps);
   const tone = fpsTone(performance.fps, history.length > 0);
   const summary = summarize(history);
-  const { count: longTasks, lastDuration } = performance.longTasks;
+  const loaf = performance.longAnimationFrames;
+  // Frames already reported prove support, even where `supportedEntryTypes` is missing.
+  const loafSupported = loaf.count > 0 || supportsLongAnimationFrames();
+  const worstTone = blockingTone(loaf.maxBlockingDuration ?? 0);
+  const frames = loaf.entries.slice(-METRIC_LIST_MAX_ITEMS).reverse();
 
   return (
     <MetricCard
@@ -32,7 +47,7 @@ export const FpsMetric = ({
       action={
         allowClear && (
           <MetricAction
-            disabled={history.length === 0}
+            disabled={history.length === 0 && loaf.entries.length === 0}
             label="Clear"
             onClick={() => monitor.performance.clearHistory()}
           />
@@ -42,37 +57,31 @@ export const FpsMetric = ({
       chart={<MetricSpark color={fpsColor(fps)} data={toChartData(history, fps)} />}
       details={
         <MetricList
-          items={[
-            {
-              id: 'long-tasks',
-              primary: 'Long tasks',
-              secondary: 'Main thread blocked > 50ms',
-              trailing: longTasks,
-              tone: longTasks > 0 ? 'warn' : undefined,
-            },
-            {
-              id: 'last-long-task',
-              primary: 'Last long task',
-              trailing: lastDuration === null ? '—' : `${Math.round(lastDuration)}ms`,
-            },
-            {
-              id: 'cls',
-              primary: 'Layout shift (CLS)',
-              secondary: 'Cumulative, from layout-shift entries',
-              trailing: performance.cls.toFixed(3),
-              tone: clsTone(performance.cls),
-            },
-            { id: 'samples', primary: 'Samples retained', trailing: history.length },
-          ]}
-          title="Rendering"
+          emptyText={
+            loafSupported
+              ? 'No long frames yet'
+              : 'Long Animation Frames are not supported in this browser'
+          }
+          items={frames.map((frame) => ({
+            id: `${frame.startTime}`,
+            ...describeFrame(frame),
+            trailing: `${Math.round(frame.blockingDuration)}ms`,
+            tone: blockingTone(frame.blockingDuration),
+            ratio: loaf.maxBlockingDuration ? frame.blockingDuration / loaf.maxBlockingDuration : 0,
+          }))}
+          title={
+            loaf.count > 0
+              ? `Long frames · ${Math.round(loaf.totalBlockingDuration)}ms blocked`
+              : 'Long frames'
+          }
         />
       }
       label={label}
       stats={[
         { label: 'Min', value: summary ? Math.round(summary.min) : '—' },
         { label: 'Avg', value: summary ? Math.round(summary.avg) : '—' },
-        { label: 'Max', value: summary ? Math.round(summary.max) : '—' },
-        { label: 'Long tasks', value: longTasks, tone: longTasks > 0 ? 'warn' : undefined },
+        { label: 'Long frames', value: loafSupported ? loaf.count : '—', tone: worstTone },
+        { label: 'CLS', value: performance.cls.toFixed(3), tone: clsTone(performance.cls) },
       ]}
       tone={tone}
       unit="fps"

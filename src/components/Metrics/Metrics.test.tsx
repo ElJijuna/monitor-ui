@@ -1,6 +1,7 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type {
+  LongAnimationFrameEntry,
   Monitor,
   MonitorError,
   MonitorEvent,
@@ -101,22 +102,69 @@ describe('MetricCard', () => {
 });
 
 describe('FpsMetric', () => {
-  it('renders fps, history summary and CLS', () => {
+  it('renders fps, history summary, CLS and the scripts behind long frames', () => {
     jest.mocked(hooks.usePerformance).mockReturnValueOnce({
       fps: 58.4,
       fpsHistory: [50, 60, 55],
       memory: null,
       memoryHistory: [],
       longTasks: { count: 2, lastDuration: 81.6 },
+      longAnimationFrames: {
+        count: 2,
+        totalBlockingDuration: 300.4,
+        maxBlockingDuration: 240,
+        entries: [
+          { ...frame(), startTime: 1, blockingDuration: 60.2, scripts: [] },
+          {
+            ...frame(),
+            startTime: 2,
+            blockingDuration: 240,
+            scripts: [
+              {
+                invokerType: 'event-listener',
+                invoker: 'BUTTON#save.onclick',
+                sourceURL: 'https://app.test/assets/app.js?v=1',
+                sourceFunctionName: 'save',
+                duration: 180.4,
+                forcedStyleAndLayoutDuration: 0,
+                pauseDuration: 0,
+              },
+            ],
+          },
+        ],
+      },
+      memoryMeasurement: null,
       cls: 0.042,
     });
-    render(<FpsMetric monitor={makeMonitor()} />);
+    const { container } = render(<FpsMetric monitor={makeMonitor()} />);
 
     expect(screen.getByText('58')).toBeInTheDocument();
     expect(screen.getByText('smooth')).toBeInTheDocument();
-    expect(screen.getByText('82ms')).toBeInTheDocument();
     expect(screen.getByText('0.042')).toBeInTheDocument();
+    expect(screen.getByText('Long frames · 300ms blocked')).toBeInTheDocument();
     expect(screen.getByRole('group')).toHaveAttribute('data-tone', 'good');
+
+    // Newest frame first, named after its longest script.
+    const rows = screen.getAllByRole('listitem');
+
+    expect(rows[0]).toHaveTextContent('BUTTON#save.onclick');
+    expect(rows[0]).toHaveTextContent('event-listener · 180ms · /assets/app.js?v=1');
+    expect(rows[0]).toHaveTextContent('240ms');
+    expect(rows[0]).toHaveAttribute('data-tone', 'bad');
+    expect(rows[1]).toHaveTextContent('Unattributed frame');
+    expect(rows[1]).toHaveAttribute('data-tone', 'warn');
+    expect(container.querySelector('.monitor-metric__stat[data-tone="bad"]')).toHaveTextContent(
+      'Long frames2',
+    );
+  });
+
+  it('says when the browser has no Long Animation Frames support', () => {
+    jest.mocked(hooks.usePerformance).mockReturnValueOnce(perf());
+    render(<FpsMetric monitor={makeMonitor()} />);
+
+    expect(
+      screen.getByText('Long Animation Frames are not supported in this browser'),
+    ).toBeInTheDocument();
   });
 
   it('clears the performance history', async () => {
@@ -136,6 +184,8 @@ describe('MemoryMetric', () => {
       memory: null,
       memoryHistory: [],
       longTasks: { count: 0, lastDuration: null },
+      longAnimationFrames: { count: 0, totalBlockingDuration: 0, maxBlockingDuration: null, entries: [] },
+      memoryMeasurement: null,
       cls: 0,
     });
     render(<MemoryMetric monitor={makeMonitor()} />);
@@ -149,6 +199,8 @@ describe('MemoryMetric', () => {
       memory: { used: 900, total: 1000, percent: 90 },
       memoryHistory: [70, 90],
       longTasks: { count: 0, lastDuration: null },
+      longAnimationFrames: { count: 0, totalBlockingDuration: 0, maxBlockingDuration: null, entries: [] },
+      memoryMeasurement: null,
       cls: 0,
     });
     render(<MemoryMetric monitor={makeMonitor()} />);
@@ -351,7 +403,23 @@ function perf(overrides: Partial<PerformanceSnapshot> = {}): PerformanceSnapshot
     memory: { used: 40, total: 100, percent: 40 },
     memoryHistory: [40],
     longTasks: { count: 0, lastDuration: null },
+    longAnimationFrames: { count: 0, totalBlockingDuration: 0, maxBlockingDuration: null, entries: [] },
+    memoryMeasurement: null,
     cls: 0,
+    ...overrides,
+  };
+}
+
+function frame(overrides: Partial<LongAnimationFrameEntry> = {}): LongAnimationFrameEntry {
+  return {
+    startTime: 0,
+    duration: 120,
+    blockingDuration: 70,
+    renderStart: 0,
+    styleAndLayoutStart: 0,
+    firstUIEventTimestamp: 0,
+    scripts: [],
+    timestamp: 0,
     ...overrides,
   };
 }
@@ -405,7 +473,7 @@ describe('FpsMetric branches', () => {
 
     expect(screen.getByText('waiting')).toBeInTheDocument();
     expect(tone()).toBe('neutral');
-    expect(screen.getAllByText('—').length).toBeGreaterThanOrEqual(4); // min/avg/max + last long task
+    expect(screen.getAllByText('—').length).toBeGreaterThanOrEqual(3); // min/avg + long frames
   });
 
   it.each([

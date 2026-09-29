@@ -37,6 +37,17 @@ export interface DemoMonitorOptions {
   errors?: boolean;
   /** Enables production reporting through a flaky in-memory transport with retries. */
   reporter?: boolean;
+  /** Blocks the main thread now and then, producing long animation frames (Chromium 123+). */
+  jank?: boolean;
+}
+
+/** Busy-waits so the frame turns into a long animation frame attributed to the timer. */
+function blockMainThread(ms: number) {
+  const end = performance.now() + ms;
+
+  while (performance.now() < end) {
+    // Intentionally blocking.
+  }
 }
 
 /**
@@ -50,6 +61,7 @@ export function useDemoMonitor({
   events = true,
   errors = true,
   reporter = true,
+  jank = true,
 }: DemoMonitorOptions = {}): Monitor {
   const monitor = useMemo<Monitor>(
     () =>
@@ -108,6 +120,10 @@ export function useDemoMonitor({
       );
     }
 
+    if (jank) {
+      timers.push(window.setInterval(() => blockMainThread(90 + Math.random() * 170), 5_000));
+    }
+
     return () => {
       for (const timer of timers) {
         window.clearInterval(timer);
@@ -115,7 +131,7 @@ export function useDemoMonitor({
 
       monitor.stop();
     };
-  }, [monitor, events, errors]);
+  }, [monitor, events, errors, jank]);
 
   useMockRequests(requests);
 
