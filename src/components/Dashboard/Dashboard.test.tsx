@@ -102,7 +102,7 @@ describe('Dashboard', () => {
   it('shows no device chips before the collector reports', () => {
     const { container } = render(<Dashboard monitor={monitor} />);
 
-    expect(container.querySelector('.monitor-dashboard__device')).toBeNull();
+    expect(container.querySelector('.monitor-device')).toBeNull();
   });
 
   it('shows connectivity and CPU chips in the header', () => {

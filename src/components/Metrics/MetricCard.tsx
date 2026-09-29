@@ -3,7 +3,7 @@ import { Text } from '@gnome-ui/react';
 import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
 import '../../styles/tokens.css';
 import './Metrics.css';
-import type { MetricActivationProps, MetricSize, MetricTone } from './types';
+import type { MetricActivationProps, MetricLayoutProps, MetricTone } from './types';
 
 export interface MetricStat {
   label: string;
@@ -13,7 +13,8 @@ export interface MetricStat {
 
 export interface MetricCardProps
   extends Omit<HTMLAttributes<HTMLFieldSetElement>, 'children'>,
-    MetricActivationProps {
+    MetricActivationProps,
+    MetricLayoutProps {
   label: string;
   value: number | string;
   unit?: string;
@@ -30,7 +31,6 @@ export interface MetricCardProps
   details?: ReactNode;
   /** Header action such as a Clear button (md and up). */
   action?: ReactNode;
-  size?: MetricSize;
 }
 
 /**
@@ -60,6 +60,7 @@ export const MetricCard = ({
   details,
   action,
   size = 'auto',
+  expanded = false,
   onActivate,
   activateLabel,
   className,
@@ -85,6 +86,7 @@ export const MetricCard = ({
       aria-label={label}
       {...fieldsetProps}
       className={['monitor-metric', className].filter(Boolean).join(' ')}
+      data-expanded={expanded ? '' : undefined}
       data-interactive={onActivate ? '' : undefined}
       data-size={size}
       data-tone={tone}

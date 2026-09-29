@@ -25,12 +25,22 @@ export interface MetricActivationProps {
   activateLabel?: string;
 }
 
+/** Layout options shared by the widgets and `MetricCard`. */
+export interface MetricLayoutProps {
+  size?: MetricSize;
+  /**
+   * Shows the stats and the drill-down list below 600px as well, stacked under the card,
+   * for narrow panels such as the inspector. From 600px the regular lg layout applies.
+   */
+  expanded?: boolean;
+}
+
 /** Props shared by every standalone metric widget. */
 export interface MetricBaseProps
   extends Omit<HTMLAttributes<HTMLFieldSetElement>, 'children'>,
-    MetricActivationProps {
+    MetricActivationProps,
+    MetricLayoutProps {
   monitor: Monitor;
-  size?: MetricSize;
   /** Overrides the default metric label. */
   label?: string;
 }

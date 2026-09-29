@@ -1,0 +1,37 @@
+.monitor-device {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.monitor-device__chip {
+  --_chip-color: var(--gnome-window-fg-color, #fff);
+
+  align-items: center;
+  border: 1px solid var(--monitor-border, rgba(255, 255, 255, 0.07));
+  border-radius: 999px;
+  display: inline-flex;
+  gap: 5px;
+  line-height: 1;
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+
+.monitor-device__chip[data-tone="good"] {
+  --_chip-color: var(--monitor-color-status-ok, #4ade80);
+}
+
+.monitor-device__chip[data-tone="bad"] {
+  --_chip-color: var(--monitor-color-status-error, #f87171);
+
+  background: color-mix(in srgb, var(--_chip-color) 12%, transparent);
+  color: var(--_chip-color);
+}
+
+.monitor-device__chip[data-tone]::before {
+  background: var(--_chip-color);
+  block-size: 6px;
+  border-radius: 50%;
+  content: "";
+  inline-size: 6px;
+}

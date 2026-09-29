@@ -323,7 +323,29 @@ describe('ErrorsMetric', () => {
     expect(screen.getByText('TypeError')).toBeInTheDocument();
     expect(screen.getByText('boom')).toBeInTheDocument();
     expect(screen.getByText('×3')).toBeInTheDocument();
-    expect(screen.getByRole('group')).toHaveAttribute('data-tone', 'bad');
+    expect(screen.getByRole('group', { name: 'Errors' })).toHaveAttribute('data-tone', 'bad');
+  });
+
+  it('reveals the stack of each error in a disclosure', async () => {
+    const error = {
+      id: 'e1',
+      source: 'error' as const,
+      details: { name: 'TypeError', message: 'boom', stack: 'TypeError: boom\n    at save (app.js:1)' },
+      timestamp: 0,
+      lastSeenAt: 0,
+      occurrences: 1,
+    };
+
+    jest.mocked(hooks.useErrors).mockReturnValue({ entries: [error], totalErrors: 1, droppedErrors: 0 });
+    const { container } = render(<ErrorsMetric monitor={makeMonitor({ latestError: error })} />);
+    const disclosure = container.querySelector('details');
+
+    expect(disclosure).not.toHaveAttribute('open');
+    await userEvent.click(screen.getByText('boom'));
+    expect(disclosure).toHaveAttribute('open');
+    expect(container.querySelector('pre')).toHaveTextContent('at save (app.js:1)');
+    // Back to an empty snapshot for the next tests (the click re-renders, so a Once mock won't do).
+    jest.mocked(hooks.useErrors).mockReturnValue({ entries: [], totalErrors: 0, droppedErrors: 0 });
   });
 
   it('is clean without errors', () => {

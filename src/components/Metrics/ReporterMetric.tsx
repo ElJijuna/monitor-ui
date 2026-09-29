@@ -21,13 +21,16 @@ export const ReporterMetric = ({
 }: ReporterMetricProps) => {
   const reporter = useSignal(monitor.reporter.snapshot);
   const [flushing, setFlushing] = useState(false);
+  const [result, setResult] = useState('');
 
   const flush = async () => {
     setFlushing(true);
+    setResult('');
     try {
-      await monitor.reporter.flush();
+      setResult((await monitor.reporter.flush()) ? 'Report sent' : 'Report was not sent');
     } catch {
-      // The failure is already reflected by the reporter snapshot (failed / lastFailure).
+      // The snapshot also reflects it (failed / lastFailure); this only announces the outcome.
+      setResult('Report failed');
     } finally {
       setFlushing(false);
     }
@@ -38,11 +41,17 @@ export const ReporterMetric = ({
       {...rest}
       action={
         allowFlush && (
-          <MetricAction
-            disabled={reporter.status !== 'idle' || flushing}
-            label={flushing ? 'Sending…' : 'Send now'}
-            onClick={flush}
-          />
+          <>
+            <MetricAction
+              disabled={reporter.status !== 'idle' || flushing}
+              label={flushing ? 'Sending…' : 'Send now'}
+              onClick={flush}
+            />
+            {/* Screen readers hear the outcome of Send now; nothing is shown. */}
+            <span aria-live="polite" className="monitor-metric__announcement">
+              {result}
+            </span>
+          </>
         )
       }
       caption={reporter.status}

@@ -3,14 +3,19 @@ import type { Monitor } from 'monitor-api';
 import type { HTMLAttributes } from 'react';
 import '../../styles/tokens.css';
 import './MonitorInspector.css';
-import { DeviceSection } from './DeviceSection';
-import { ErrorsSection } from './ErrorsSection';
-import { EventsSection } from './EventsSection';
-import { NetworkSection } from './NetworkSection';
-import { PerformanceSection } from './PerformanceSection';
-import { ReactSection } from './ReactSection';
-import { ReporterSection } from './ReporterSection';
-import { WebVitalsSection } from './WebVitalsSection';
+import { DeviceStatus } from '@/components/DeviceStatus';
+import {
+  ErrorsMetric,
+  EventsMetric,
+  FpsMetric,
+  HealthMetric,
+  MemoryMetric,
+  NetworkMetric,
+  ReactMetric,
+  ReporterMetric,
+  ResourcesMetric,
+  WebVitalsMetric,
+} from '@/components/Metrics';
 
 export interface MonitorInspectorProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
   monitor: Monitor;
@@ -20,6 +25,11 @@ export interface MonitorInspectorProps extends Omit<HTMLAttributes<HTMLDivElemen
   allowFlushReport?: boolean;
 }
 
+/**
+ * Detailed side panel: every metric widget, `expanded` so that even in a narrow panel each
+ * one shows its stats and drill-down list stacked under the card. In a panel of 600px or
+ * more, the widgets switch to their lg layout on their own.
+ */
 export const MonitorInspector = ({
   monitor,
   showErrors = true,
@@ -36,14 +46,17 @@ export const MonitorInspector = ({
       padding="none"
     >
       <div className="monitor-inspector__content">
-        <PerformanceSection monitor={monitor} />
-        <DeviceSection monitor={monitor} />
-        <WebVitalsSection monitor={monitor} />
-        <NetworkSection monitor={monitor} />
-        <ReactSection monitor={monitor} />
-        <EventsSection monitor={monitor} />
-        {showErrors && <ErrorsSection allowClear={allowClearErrors} monitor={monitor} />}
-        {showReporter && <ReporterSection allowFlush={allowFlushReport} monitor={monitor} />}
+        <DeviceStatus monitor={monitor} />
+        <HealthMetric expanded monitor={monitor} />
+        <FpsMetric expanded monitor={monitor} />
+        <MemoryMetric expanded monitor={monitor} />
+        <WebVitalsMetric expanded monitor={monitor} />
+        <NetworkMetric expanded monitor={monitor} />
+        <ResourcesMetric expanded monitor={monitor} />
+        <ReactMetric expanded monitor={monitor} />
+        <EventsMetric expanded monitor={monitor} />
+        {showErrors && <ErrorsMetric allowClear={allowClearErrors} expanded monitor={monitor} />}
+        {showReporter && <ReporterMetric allowFlush={allowFlushReport} expanded monitor={monitor} />}
       </div>
     </Card>
   );

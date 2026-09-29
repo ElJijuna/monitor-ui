@@ -350,6 +350,70 @@
   }
 }
 
+/* Live region for action outcomes: announced, never shown. */
+.monitor-metric__announcement {
+  block-size: 1px;
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+/* ── Expanded (narrow drill-down) ───────────────────────── */
+
+/*
+  `expanded` keeps the stats and the drill-down list below 600px, stacked instead of side
+  by side: card (label, value, chart) → stats → list. The list keeps its fixed height, so
+  a column of expanded widgets does not jump as data arrives. From 600px, lg applies.
+*/
+@container monitor-metric (min-width: 240px) and (max-width: 599.98px) {
+  .monitor-metric[data-expanded] .monitor-metric__surface {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    row-gap: 10px;
+  }
+
+  .monitor-metric[data-expanded] .monitor-metric__card {
+    grid-row: 1;
+  }
+
+  .monitor-metric[data-expanded] .monitor-metric__card [class*="_label_"] {
+    max-inline-size: 40%;
+  }
+
+  .monitor-metric[data-expanded] .monitor-metric__header {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    max-inline-size: 60%;
+  }
+
+  .monitor-metric[data-expanded] .monitor-metric__action {
+    display: inline-flex;
+  }
+
+  .monitor-metric[data-expanded] .monitor-metric__stats {
+    align-self: auto;
+    display: grid;
+    gap: 6px 12px;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+    margin: 0;
+    padding: 0 4px;
+  }
+
+  .monitor-metric[data-expanded] .monitor-metric__details {
+    block-size: var(--monitor-metric-details-size, 240px);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    grid-column: 1 / -1;
+    grid-row: 3;
+    margin: 0;
+  }
+}
+
 /* ── Stats ──────────────────────────────────────────────── */
 
 .monitor-metric__stat {
@@ -480,7 +544,8 @@
   }
 }
 
-.monitor-metric__list-item {
+.monitor-metric__list-item,
+.monitor-metric__list-summary {
   align-items: center;
   border-radius: 6px;
   display: flex;
@@ -490,7 +555,58 @@
   position: relative;
 }
 
-.monitor-metric__list-item:hover {
+/* Expandable rows: the summary is the row; the list item only wraps the disclosure. */
+.monitor-metric__list-item--expandable {
+  display: block;
+  padding: 0;
+}
+
+.monitor-metric__list-summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.monitor-metric__list-summary::-webkit-details-marker {
+  display: none;
+}
+
+.monitor-metric__list-summary::after {
+  border-block-end: 1.5px solid currentColor;
+  border-inline-end: 1.5px solid currentColor;
+  block-size: 5px;
+  content: "";
+  flex-shrink: 0;
+  inline-size: 5px;
+  opacity: 0.5;
+  transform: rotate(-45deg);
+}
+
+.monitor-metric__list-disclosure[open] > .monitor-metric__list-summary::after {
+  transform: rotate(45deg);
+}
+
+.monitor-metric__list-summary:focus-visible {
+  outline: 2px solid var(--gnome-accent-color, #3584e4);
+  outline-offset: -2px;
+}
+
+.monitor-metric__list-expand {
+  padding: 2px 6px 6px;
+}
+
+.monitor-metric__list-expand pre {
+  border-inline-start: 2px solid var(--monitor-border, rgba(255, 255, 255, 0.07));
+  font-size: 0.75rem;
+  margin: 0;
+  max-block-size: 160px;
+  overflow: auto;
+  overflow-wrap: anywhere;
+  padding-inline-start: 8px;
+  white-space: pre-wrap;
+}
+
+.monitor-metric__list-item:not(.monitor-metric__list-item--expandable):hover,
+.monitor-metric__list-summary:hover {
   background: color-mix(in srgb, var(--gnome-window-fg-color, #fff) 6%, transparent);
 }
 
@@ -554,7 +670,12 @@
     transition: inline-size 240ms ease;
   }
 
-  .monitor-metric__list-item {
+  .monitor-metric__list-item,
+  .monitor-metric__list-summary {
     transition: background-color 120ms ease;
+  }
+
+  .monitor-metric__list-summary::after {
+    transition: transform 120ms ease;
   }
 }

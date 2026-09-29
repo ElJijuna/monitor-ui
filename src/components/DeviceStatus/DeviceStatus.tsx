@@ -1,12 +1,13 @@
 import { Text } from '@gnome-ui/react';
 import type { Monitor } from 'monitor-api';
 import { useDevice } from 'monitor-api/react';
+import './DeviceStatus.css';
 
 interface DeviceStatusProps {
   monitor: Monitor;
 }
 
-/** Connectivity and CPU chips for the dashboard header; nothing until the collector reports. */
+/** Connectivity and CPU chips from the device collector; nothing until it reports. */
 export const DeviceStatus = ({ monitor }: DeviceStatusProps) => {
   const { online, hardwareConcurrency, offlineCount } = useDevice(monitor);
 
@@ -15,11 +16,11 @@ export const DeviceStatus = ({ monitor }: DeviceStatusProps) => {
   }
 
   return (
-    <span className="monitor-dashboard__device">
+    <span className="monitor-device">
       {online !== null && (
         <Text
           as="span"
-          className="monitor-dashboard__chip"
+          className="monitor-device__chip"
           data-tone={online ? 'good' : 'bad'}
           variant="caption"
         >
@@ -28,7 +29,7 @@ export const DeviceStatus = ({ monitor }: DeviceStatusProps) => {
         </Text>
       )}
       {hardwareConcurrency !== null && (
-        <Text as="span" className="monitor-dashboard__chip" color="dim" variant="caption">
+        <Text as="span" className="monitor-device__chip" color="dim" variant="caption">
           {hardwareConcurrency} cores
         </Text>
       )}

@@ -2,6 +2,7 @@ import { Button, Text } from '@gnome-ui/react';
 import type { Monitor } from 'monitor-api';
 import '../../styles/tokens.css';
 import './Dashboard.css';
+import { DeviceStatus } from '@/components/DeviceStatus';
 import {
   ErrorsMetric,
   EventsMetric,
@@ -14,7 +15,6 @@ import {
   ResourcesMetric,
   WebVitalsMetric,
 } from '@/components/Metrics';
-import { DeviceStatus } from './DeviceStatus';
 import { EventsLog } from './EventsLog';
 import { NetworkLog } from './NetworkLog';
 
