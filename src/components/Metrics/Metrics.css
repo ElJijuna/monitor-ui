@@ -73,6 +73,8 @@
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto;
   inline-size: 100%;
+  /* Containing block of the activation button. */
+  position: relative;
 }
 
 .monitor-metric .monitor-metric__card {
@@ -156,6 +158,61 @@
 .monitor-metric .monitor-metric__spark {
   display: block;
   max-block-size: var(--monitor-metric-chart-size);
+}
+
+/* ── Activation (onActivate) ────────────────────────────── */
+
+/*
+  Transparent button over the whole card. It comes after the StatCard in the DOM, so it
+  stacks above the label and value; header, stats and details come after it and stay on
+  top. Text layers let clicks through, while actions and the scrollable list keep them.
+*/
+.monitor-metric__hit {
+  appearance: none;
+  background: none;
+  border: 0;
+  border-radius: var(--gnome-radius-lg, 12px);
+  cursor: pointer;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  z-index: 1;
+}
+
+.monitor-metric[data-interactive] .monitor-metric__header,
+.monitor-metric[data-interactive] .monitor-metric__stats {
+  pointer-events: none;
+}
+
+.monitor-metric[data-interactive] .monitor-metric__action {
+  pointer-events: auto;
+}
+
+/* Hover and focus are drawn on the card so they follow its shape at every size. */
+.monitor-metric__surface:has(> .monitor-metric__hit:hover) > .monitor-metric__card {
+  box-shadow: inset 0 0 0 100vmax color-mix(in srgb, var(--monitor-metric-color) 6%, transparent);
+}
+
+.monitor-metric__surface:has(> .monitor-metric__hit:active) > .monitor-metric__card {
+  box-shadow: inset 0 0 0 100vmax color-mix(in srgb, var(--monitor-metric-color) 12%, transparent);
+}
+
+@supports selector(:has(*)) {
+  .monitor-metric__hit:focus-visible {
+    outline: none;
+  }
+
+  .monitor-metric__surface:has(> .monitor-metric__hit:focus-visible) > .monitor-metric__card {
+    outline: 2px solid var(--gnome-accent-color, #3584e4);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .monitor-metric[data-interactive] .monitor-metric__card {
+    transition: box-shadow 120ms ease;
+  }
 }
 
 /* ── Small ──────────────────────────────────────────────── */

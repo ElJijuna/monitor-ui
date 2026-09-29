@@ -175,4 +175,63 @@ describe('MetricCard slots', () => {
     render(<MetricCard aria-label="Frame rate" label="FPS" value={1} />);
     expect(screen.getByRole('group', { name: 'Frame rate' })).toBeInTheDocument();
   });
+
 });
+
+describe('MetricCard activation', () => {
+  it('renders no activation button by default', () => {
+    render(<MetricCard label="FPS" value={60} />);
+
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    expect(screen.getByRole('group')).not.toHaveAttribute('data-interactive');
+  });
+
+  it('covers the card with a button named after the label, value and caption', async () => {
+    const onActivate = jest.fn();
+
+    render(
+      <MetricCard caption="smooth" label="FPS" onActivate={onActivate} unit="fps" value={58} />,
+    );
+    const button = screen.getByRole('button', { name: 'FPS, 58 fps, smooth' });
+
+    expect(screen.getByRole('group')).toHaveAttribute('data-interactive');
+    await userEvent.click(button);
+    expect(onActivate).toHaveBeenCalledTimes(1);
+  });
+
+  it('skips non-text captions in the default name and accepts a custom one', () => {
+    const { rerender } = render(
+      <MetricCard caption={<b>x</b>} label="Memory" onActivate={jest.fn()} value="—" />,
+    );
+
+    expect(screen.getByRole('button', { name: 'Memory, —' })).toBeInTheDocument();
+
+    rerender(
+      <MetricCard activateLabel="Open monitor" label="Memory" onActivate={jest.fn()} value="—" />,
+    );
+    expect(screen.getByRole('button', { name: 'Open monitor' })).toBeInTheDocument();
+  });
+
+  it('keeps header actions separate from activation', async () => {
+    const onActivate = jest.fn();
+    const onClear = jest.fn();
+
+    render(
+      <MetricCard
+        action={
+          <button onClick={onClear} type="button">
+            Clear
+          </button>
+        }
+        label="Events"
+        onActivate={onActivate}
+        value={3}
+      />,
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Clear' }));
+
+    expect(onClear).toHaveBeenCalledTimes(1);
+    expect(onActivate).not.toHaveBeenCalled();
+  });
+});
+

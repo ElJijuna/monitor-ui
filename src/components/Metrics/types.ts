@@ -14,8 +14,21 @@ export type MetricSize = 'auto' | 'pill' | 'sm' | 'md' | 'lg';
 /** Semantic status used to color the value, the status dot and the chart. */
 export type MetricTone = 'neutral' | 'good' | 'warn' | 'bad';
 
+/** Makes the whole widget a click target, e.g. to open a detail view. */
+export interface MetricActivationProps {
+  /**
+   * Called when the widget is clicked or activated with the keyboard. Adds a button that
+   * covers the card; header actions such as Clear stay clickable above it.
+   */
+  onActivate?: () => void;
+  /** Accessible name of that button. Defaults to the label, value and caption. */
+  activateLabel?: string;
+}
+
 /** Props shared by every standalone metric widget. */
-export interface MetricBaseProps extends Omit<HTMLAttributes<HTMLFieldSetElement>, 'children'> {
+export interface MetricBaseProps
+  extends Omit<HTMLAttributes<HTMLFieldSetElement>, 'children'>,
+    MetricActivationProps {
   monitor: Monitor;
   size?: MetricSize;
   /** Overrides the default metric label. */

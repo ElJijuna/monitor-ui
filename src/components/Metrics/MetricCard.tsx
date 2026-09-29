@@ -3,7 +3,7 @@ import { Text } from '@gnome-ui/react';
 import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
 import '../../styles/tokens.css';
 import './Metrics.css';
-import type { MetricSize, MetricTone } from './types';
+import type { MetricActivationProps, MetricSize, MetricTone } from './types';
 
 export interface MetricStat {
   label: string;
@@ -11,7 +11,9 @@ export interface MetricStat {
   tone?: MetricTone;
 }
 
-export interface MetricCardProps extends Omit<HTMLAttributes<HTMLFieldSetElement>, 'children'> {
+export interface MetricCardProps
+  extends Omit<HTMLAttributes<HTMLFieldSetElement>, 'children'>,
+    MetricActivationProps {
   label: string;
   value: number | string;
   unit?: string;
@@ -41,6 +43,10 @@ export interface MetricCardProps extends Omit<HTMLAttributes<HTMLFieldSetElement
  * The root element is an inline-size container; the inner surface switches between
  * the pill, sm, md and lg layouts with `@container` queries, so the same markup
  * adapts to whatever slot the host application gives it.
+ *
+ * With `onActivate`, a transparent button stretched over the card makes every size
+ * clickable. It is a sibling of the content rather than a wrapper, because the card holds
+ * its own buttons (header actions) and interactive elements cannot be nested.
  */
 export const MetricCard = ({
   label,
@@ -54,10 +60,21 @@ export const MetricCard = ({
   details,
   action,
   size = 'auto',
+  onActivate,
+  activateLabel,
   className,
   style,
   ...fieldsetProps
 }: MetricCardProps) => {
+  const hasCaption = caption !== undefined && caption !== null;
+  const defaultActivateLabel = [
+    label,
+    [value, unit].filter(Boolean).join(' '),
+    typeof caption === 'string' || typeof caption === 'number' ? caption : null,
+  ]
+    .filter((part) => part !== null && part !== '')
+    .join(', ');
+
   const rootStyle = accent
     ? ({ ...style, '--monitor-metric-accent': accent } as CSSProperties)
     : style;
@@ -68,6 +85,7 @@ export const MetricCard = ({
       aria-label={label}
       {...fieldsetProps}
       className={['monitor-metric', className].filter(Boolean).join(' ')}
+      data-interactive={onActivate ? '' : undefined}
       data-size={size}
       data-tone={tone}
       style={rootStyle}
@@ -88,9 +106,18 @@ export const MetricCard = ({
           value={value}
         />
 
-        {((caption !== undefined && caption !== null) || action) && (
+        {onActivate && (
+          <button
+            aria-label={activateLabel ?? defaultActivateLabel}
+            className="monitor-metric__hit"
+            onClick={onActivate}
+            type="button"
+          />
+        )}
+
+        {(hasCaption || action) && (
           <div className="monitor-metric__header">
-            {caption !== undefined && caption !== null && (
+            {hasCaption && (
               <Text as="span" className="monitor-metric__caption" variant="caption">
                 {caption}
               </Text>

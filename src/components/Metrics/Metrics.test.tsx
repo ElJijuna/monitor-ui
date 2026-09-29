@@ -19,7 +19,7 @@ import { EventsMetric } from './EventsMetric';
 import { FpsMetric } from './FpsMetric';
 import { MemoryMetric } from './MemoryMetric';
 import { MetricCard } from './MetricCard';
-import { MonitorMetric } from './MonitorMetric';
+import { MONITOR_METRIC_KINDS, MonitorMetric } from './MonitorMetric';
 import { NetworkMetric } from './NetworkMetric';
 import { ReactMetric } from './ReactMetric';
 import { ReporterMetric } from './ReporterMetric';
@@ -930,6 +930,22 @@ describe('ReporterMetric branches', () => {
 });
 
 describe('MonitorMetric kinds', () => {
+  it.each(MONITOR_METRIC_KINDS)('forwards onActivate through %p', async (metric) => {
+    const onActivate = jest.fn();
+
+    render(
+      <MonitorMetric
+        activateLabel="Open details"
+        metric={metric}
+        monitor={makeMonitor()}
+        onActivate={onActivate}
+        size="pill"
+      />,
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Open details' }));
+    expect(onActivate).toHaveBeenCalledTimes(1);
+  });
+
   it.each([
     ['fps', 'FPS'],
     ['memory', 'JS Heap'],
