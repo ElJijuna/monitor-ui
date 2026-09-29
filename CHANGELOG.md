@@ -1,3 +1,13 @@
+# [2.3.0](https://github.com/ElJijuna/monitor-ui/compare/v2.2.0...v2.3.0) (2026-09-29)
+
+
+### Features
+
+* add new metric components for monitoring performance, network, React, and web vitals ([49c52cb](https://github.com/ElJijuna/monitor-ui/commit/49c52cbb9c75f7de9eef9423919215749aa92f00))
+* add unit tests for metric utilities and enhance ReporterMetric error handling ([9d603a2](https://github.com/ElJijuna/monitor-ui/commit/9d603a2c8548f3764427d4c897997736b957e059))
+* enhance Storybook configuration and update mock request handling in Dashboard component ([beb4340](https://github.com/ElJijuna/monitor-ui/commit/beb4340e5f978ab7a4d38ed360706d1e42c4498c))
+* implement container queries for responsive layout in Dashboard and MonitorInspector components ([3c6ccb9](https://github.com/ElJijuna/monitor-ui/commit/3c6ccb9bf74f94512bc5e8751ffe9fd54c6bdfaf))
+
 # [2.2.0](https://github.com/ElJijuna/monitor-ui/compare/v2.1.0...v2.2.0) (2026-09-07)
 
 
