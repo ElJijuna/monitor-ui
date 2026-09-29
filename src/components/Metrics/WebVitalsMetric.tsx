@@ -1,6 +1,8 @@
 import type { WebVitalMetric } from 'monitor-api';
 import { useWebVitals } from 'monitor-api/react';
 import {
+  describeAttribution,
+  dominantPhase,
   formatVital,
   VITAL_FULL_NAMES,
   VITAL_ORDER,
@@ -13,6 +15,23 @@ import { METRIC_LIST_MAX_ITEMS, ratingTone } from './metricUtils';
 import type { ClearableMetricProps, MetricTone } from './types';
 
 export type WebVitalsMetricProps = ClearableMetricProps;
+
+/**
+ * Row subtitle: with attribution (`webVitals: { attribution: true }`), the element behind the
+ * value and its slowest phase; otherwise the navigation type and time.
+ */
+function reportSubtitle(metric: WebVitalMetric): string {
+  const attribution = describeAttribution(metric);
+  const slowest = attribution && dominantPhase(attribution.phases);
+  const parts = [
+    attribution?.target,
+    slowest && `${slowest.label} ${formatVital(metric.name, slowest.value)}`,
+  ].filter(Boolean);
+
+  return parts.length > 0
+    ? parts.join(' · ')
+    : `${metric.navigationType} · ${formatTime(metric.timestamp)}`;
+}
 
 /** Core Web Vitals scorecard plus the latest metric reports from the Web Vitals collector. */
 export const WebVitalsMetric = ({
@@ -66,7 +85,7 @@ export const WebVitalsMetric = ({
           items={recent.map((metric) => ({
             id: `${metric.id}-${metric.timestamp}`,
             primary: VITAL_FULL_NAMES[metric.name],
-            secondary: `${metric.navigationType} · ${formatTime(metric.timestamp)}`,
+            secondary: reportSubtitle(metric),
             leading: metric.name,
             trailing: formatVital(metric.name, metric.value),
             tone: ratingTone(metric.rating),

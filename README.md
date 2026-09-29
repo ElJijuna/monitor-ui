@@ -131,6 +131,21 @@ export function MonitorFlow() {
 }
 ```
 
+### Web Vitals diagnostics
+
+Enable `attribution` in the Web Vitals collector to see *why* each vital has its value: the
+Inspector splits each tile into its phases (hover for details), and the Web Vitals widget lists
+the element behind each report with its slowest phase.
+
+```ts
+createMonitor({
+  collectors: { webVitals: { attribution: true } },
+})
+```
+
+It loads the larger `web-vitals/attribution` build on demand, and selectors and URLs can reveal
+page structure — see monitor-api's `PRIVACY.md`. Without it, the UI shows values and ratings only.
+
 ## API
 
 ### `MonitorPill`

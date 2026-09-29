@@ -10,6 +10,8 @@ function makeMetric(overrides: Partial<WebVitalMetric> = {}): WebVitalMetric {
     rating: 'good',
     id: 'lcp-1',
     navigationType: 'navigate',
+    navigationId: 1,
+    navigationURL: null,
     timestamp: Date.now(),
     ...overrides,
   };
@@ -70,5 +72,40 @@ describe('VitalTile', () => {
     const { container } = render(<VitalTile name="TTFB" metric={null} />);
 
     expect(container.firstChild).toHaveClass('monitor-inspector__vital--pending');
+  });
+
+  it('splits the value into attribution phases', () => {
+    const { container } = render(
+      <VitalTile
+        name="LCP"
+        metric={makeMetric({
+          value: 1800,
+          attribution: {
+            target: 'main > img.hero',
+            url: null,
+            timeToFirstByte: 300,
+            resourceLoadDelay: 0,
+            resourceLoadDuration: 600,
+            elementRenderDelay: 900,
+          },
+        })}
+      />,
+    );
+    const tile = container.firstChild as HTMLElement;
+    const phases = container.querySelectorAll<HTMLElement>('.monitor-inspector__vital-phase');
+
+    // Empty phases are skipped; the rest grow with their share of the value.
+    expect(phases).toHaveLength(3);
+    expect(phases[2]?.style.flexGrow).toBe('0.5');
+    expect(tile).toHaveAccessibleName(
+      'Largest Contentful Paint: 1.8s. main > img.hero. Time to first byte 300ms. Resource load 600ms. Render delay 900ms',
+    );
+    expect(tile.title).toContain('main > img.hero');
+  });
+
+  it('omits the phase bar without attribution', () => {
+    const { container } = render(<VitalTile name="LCP" metric={makeMetric()} />);
+
+    expect(container.querySelector('.monitor-inspector__vital-phases')).toBeNull();
   });
 });

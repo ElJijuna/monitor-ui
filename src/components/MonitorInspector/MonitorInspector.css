@@ -167,6 +167,34 @@
   text-transform: uppercase;
 }
 
+.monitor-inspector__vital-phases {
+  block-size: 3px;
+  border-radius: 999px;
+  display: flex;
+  gap: 1px;
+  margin-block-start: 3px;
+  overflow: hidden;
+}
+
+/* Phases in order, from the full vital color fading out, so the split reads left to right. */
+.monitor-inspector__vital-phase {
+  background: color-mix(in srgb, var(--_vital-color) var(--_phase-strength, 100%), transparent);
+  flex-basis: 0;
+  min-inline-size: 2px;
+}
+
+.monitor-inspector__vital-phase:nth-child(2) {
+  --_phase-strength: 70%;
+}
+
+.monitor-inspector__vital-phase:nth-child(3) {
+  --_phase-strength: 45%;
+}
+
+.monitor-inspector__vital-phase:nth-child(n + 4) {
+  --_phase-strength: 25%;
+}
+
 /*
   Unnamed on purpose: the sections are reused by the Dashboard, so they react to the
   nearest container — the inspector here, the dashboard there.

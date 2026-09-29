@@ -70,7 +70,7 @@ export function useDemoMonitor({
           performance: true,
           network: true,
           events: { maxHistory: 200 },
-          webVitals: { reportAllChanges: true },
+          webVitals: { reportAllChanges: true, attribution: true },
           errors: { maxHistory: 25, dedupWindow: 4_000 },
           react: false,
         },

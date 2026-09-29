@@ -184,7 +184,12 @@ describe('MemoryMetric', () => {
       memory: null,
       memoryHistory: [],
       longTasks: { count: 0, lastDuration: null },
-      longAnimationFrames: { count: 0, totalBlockingDuration: 0, maxBlockingDuration: null, entries: [] },
+      longAnimationFrames: {
+        count: 0,
+        totalBlockingDuration: 0,
+        maxBlockingDuration: null,
+        entries: [],
+      },
       memoryMeasurement: null,
       cls: 0,
     });
@@ -199,7 +204,12 @@ describe('MemoryMetric', () => {
       memory: { used: 900, total: 1000, percent: 90 },
       memoryHistory: [70, 90],
       longTasks: { count: 0, lastDuration: null },
-      longAnimationFrames: { count: 0, totalBlockingDuration: 0, maxBlockingDuration: null, entries: [] },
+      longAnimationFrames: {
+        count: 0,
+        totalBlockingDuration: 0,
+        maxBlockingDuration: null,
+        entries: [],
+      },
       memoryMeasurement: null,
       cls: 0,
     });
@@ -315,6 +325,8 @@ describe('WebVitalsMetric', () => {
       rating: 'good' as const,
       id: 'l',
       navigationType: 'navigate',
+      navigationId: 1,
+      navigationURL: null,
       timestamp: 0,
     };
     const inp = {
@@ -403,7 +415,12 @@ function perf(overrides: Partial<PerformanceSnapshot> = {}): PerformanceSnapshot
     memory: { used: 40, total: 100, percent: 40 },
     memoryHistory: [40],
     longTasks: { count: 0, lastDuration: null },
-    longAnimationFrames: { count: 0, totalBlockingDuration: 0, maxBlockingDuration: null, entries: [] },
+    longAnimationFrames: {
+      count: 0,
+      totalBlockingDuration: 0,
+      maxBlockingDuration: null,
+      entries: [],
+    },
     memoryMeasurement: null,
     cls: 0,
     ...overrides,
@@ -448,6 +465,8 @@ function vital(overrides: Partial<WebVitalMetric> = {}): WebVitalMetric {
     rating: 'good',
     id: String(Math.random()),
     navigationType: 'navigate',
+    navigationId: 1,
+    navigationURL: null,
     timestamp: 0,
     ...overrides,
   };
@@ -667,6 +686,51 @@ describe('ErrorsMetric branches', () => {
 });
 
 describe('WebVitalsMetric branches', () => {
+  it('explains attributed reports with their target and slowest phase', () => {
+    const inp = vital({
+      name: 'INP',
+      value: 320,
+      rating: 'needs-improvement',
+      attribution: {
+        interactionTarget: 'button#save',
+        interactionType: 'pointer',
+        interactionTime: 100,
+        inputDelay: 20,
+        processingDuration: 240,
+        presentationDelay: 60,
+        loadState: 'complete',
+        longestScript: {
+          url: null,
+          invoker: 'BUTTON#save.onclick',
+          invokerType: 'event-listener',
+          subpart: 'processing-duration',
+          intersectingDuration: 200,
+        },
+        totalScriptDuration: null,
+        totalStyleAndLayoutDuration: null,
+        totalPaintDuration: null,
+        totalUnattributedDuration: null,
+      },
+    });
+
+    jest.mocked(hooks.useWebVitals).mockReturnValueOnce({
+      lcp: null,
+      inp,
+      cls: null,
+      fcp: null,
+      ttfb: null,
+      entries: [inp, vital({ name: 'TTFB', value: 90 })],
+    });
+    render(<WebVitalsMetric monitor={makeMonitor()} />);
+
+    // Newest report first.
+    const [plain, attributed] = screen.getAllByRole('listitem');
+
+    expect(attributed).toHaveTextContent('button#save → BUTTON#save.onclick · Processing 240ms');
+    // Without attribution the row keeps the navigation type and time.
+    expect(plain).toHaveTextContent('navigate ·');
+  });
+
   it('is bad when any vital is poor', () => {
     const poor = vital({ name: 'CLS', value: 0.4, rating: 'poor' });
 

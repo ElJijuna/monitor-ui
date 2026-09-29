@@ -16,7 +16,12 @@ const performanceSnapshot = (): PerformanceSnapshot => ({
   memory: { used: 42, total: 128, percent: 32.8 },
   memoryHistory: [32],
   longTasks: { count: 0, lastDuration: null },
-  longAnimationFrames: { count: 0, totalBlockingDuration: 0, maxBlockingDuration: null, entries: [] },
+  longAnimationFrames: {
+    count: 0,
+    totalBlockingDuration: 0,
+    maxBlockingDuration: null,
+    entries: [],
+  },
   memoryMeasurement: null,
   cls: 0,
 });
@@ -83,7 +88,9 @@ export const useReact = snapshotHook(reactSnapshot);
 export const useWebVitals = snapshotHook(webVitalsSnapshot);
 export const useErrors = snapshotHook(errorSnapshot);
 
-export const shallowEqual = jest.fn((previous: unknown, next: unknown) => Object.is(previous, next));
+export const shallowEqual = jest.fn((previous: unknown, next: unknown) =>
+  Object.is(previous, next),
+);
 
 export const useMonitor = jest.fn(
   (_monitor: Monitor): MonitorSnapshot => ({
