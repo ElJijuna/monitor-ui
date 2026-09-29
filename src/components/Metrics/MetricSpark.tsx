@@ -1,4 +1,4 @@
-import { SparkBarChart, SparkLineChart } from '@gnome-ui/charts';
+import { SparkAreaChart, SparkBarChart } from '@gnome-ui/charts';
 
 /**
  * Tallest chart any layout uses. The chart only takes a px height, so it is rendered at the
@@ -30,7 +30,7 @@ export const MetricSpark = ({ data, color, variant = 'line' }: MetricSparkProps)
       highlighted
     />
   ) : (
-    <SparkLineChart
+    <SparkAreaChart
       className="monitor-metric__spark"
       color={color}
       data={data}
