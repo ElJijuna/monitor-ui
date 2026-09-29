@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import React from 'react';
+import { createElement } from 'react';
 
 interface PassProps {
   children?: ReactNode;
@@ -8,7 +8,7 @@ interface PassProps {
 }
 
 const PassThrough = ({ children, className, ...rest }: PassProps) =>
-  React.createElement('div', { className, ...rest }, children);
+  createElement('div', { className, ...rest }, children);
 
 export default PassThrough;
 export const ActionRow = PassThrough;

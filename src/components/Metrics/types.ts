@@ -15,7 +15,7 @@ export type MetricSize = 'auto' | 'pill' | 'sm' | 'md' | 'lg';
 export type MetricTone = 'neutral' | 'good' | 'warn' | 'bad';
 
 /** Props shared by every standalone metric widget. */
-export interface MetricBaseProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
+export interface MetricBaseProps extends Omit<HTMLAttributes<HTMLFieldSetElement>, 'children'> {
   monitor: Monitor;
   size?: MetricSize;
   /** Overrides the default metric label. */

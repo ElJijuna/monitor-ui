@@ -15,11 +15,15 @@
 .monitor-metric {
   --monitor-metric-color: var(--monitor-metric-accent, var(--gnome-accent-color, #3584e4));
 
+  border: 0;
   container: monitor-metric / inline-size;
   display: block;
   inline-size: 100%;
+  margin: 0;
   max-inline-size: 100%;
+  /* Fieldsets default to min-content; 0 lets the container shrink to the slot. */
   min-inline-size: 0;
+  padding: 0;
 }
 
 .monitor-metric[data-size="pill"] {
@@ -118,9 +122,9 @@
   min-inline-size: 0;
 }
 
-/* The chart takes a fixed px height prop; the container query owns the real size. */
+/* Rendered at the tallest layout height; each layout clamps it (max-* beats the inline height). */
 .monitor-metric .monitor-metric__spark {
-  block-size: var(--monitor-metric-chart-size) !important;
+  max-block-size: var(--monitor-metric-chart-size);
 }
 
 /* ── Small ──────────────────────────────────────────────── */

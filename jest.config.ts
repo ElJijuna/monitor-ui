@@ -1,8 +1,12 @@
 import type { Config } from 'jest';
+import jestConfig from 'super-configs/jest';
 
 const config: Config = {
+  ...jestConfig,
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  // Replaces the shared ts-jest transform: the library compiles ESM + react-jsx for Vite,
+  // while Jest needs CommonJS.
   transform: {
     '^.+\\.(ts|tsx)$': [
       'ts-jest',

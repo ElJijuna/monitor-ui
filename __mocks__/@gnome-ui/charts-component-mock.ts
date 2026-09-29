@@ -1,4 +1,4 @@
-import React from 'react';
+import { createElement } from 'react';
 
 interface ChartMockProps {
   'data-testid'?: string;
@@ -8,7 +8,7 @@ interface ChartMockProps {
 
 // Chart props (data, color, highlighted…) are not DOM attributes, so only the DOM-safe ones pass through.
 const ChartMock = ({ 'data-testid': testId = 'chart-mock', className }: ChartMockProps) =>
-  React.createElement('div', { 'data-testid': testId, className });
+  createElement('div', { 'data-testid': testId, className });
 
 export default ChartMock;
 export const SparkAreaChart = ChartMock;

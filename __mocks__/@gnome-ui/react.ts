@@ -1,14 +1,14 @@
 import type { ReactNode } from 'react';
-import React from 'react';
+import { createElement } from 'react';
 
 type AnyProps = Record<string, unknown> & { children?: ReactNode; className?: string };
 
 const PassThrough = ({ children, className, ...rest }: AnyProps) =>
-  React.createElement('div', { className, ...rest }, children);
+  createElement('div', { className, ...rest }, children);
 
-const ButtonMock = ({ children, className, onClick, type = 'button', ...rest }: AnyProps) =>
-  // biome-ignore lint/a11y/useButtonType: type is defaulted to 'button' in the destructuring above
-  React.createElement('button', { className, onClick, type, ...rest }, children);
+// The component under test never submits forms, so the mock always renders a plain button.
+const ButtonMock = ({ children, className, onClick, type: _type, ...rest }: AnyProps) =>
+  createElement('button', { ...rest, className, onClick, type: 'button' }, children);
 
 const HeaderBarMock = ({
   title,
@@ -17,14 +17,17 @@ const HeaderBarMock = ({
   className,
   ...rest
 }: AnyProps & { title?: ReactNode; end?: ReactNode }) =>
-  React.createElement('div', { className, ...rest }, title, end, children);
+  createElement('div', { className, ...rest }, title, end, children);
 
 export default PassThrough;
 export const ThemeProvider = PassThrough;
 export const ActionRow = PassThrough;
 export const BoxedList = PassThrough;
 export const Button = ButtonMock;
-export const Card = PassThrough;
+// `interactive` is a boolean behaviour flag, not a DOM attribute.
+const CardMock = ({ interactive: _interactive, ...rest }: AnyProps) => PassThrough(rest);
+
+export const Card = CardMock;
 export const Drawer = PassThrough;
 export const HeaderBar = HeaderBarMock;
 export const Text = PassThrough;

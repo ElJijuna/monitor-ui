@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import React from 'react';
+import { createElement, Fragment } from 'react';
 
 interface PassProps {
   children?: ReactNode;
@@ -8,9 +8,17 @@ interface PassProps {
 }
 
 const CardMock = ({ children, className, ...rest }: PassProps) =>
-  React.createElement('div', { className, 'data-testid': 'stat-card', ...rest }, children);
+  createElement('div', { className, 'data-testid': 'stat-card', ...rest }, children);
 
-export const StatCard = CardMock;
+// `backgroundChart` is a node slot, not a DOM attribute: render it as a child instead.
+const StatCardMock = ({
+  backgroundChart,
+  children,
+  ...rest
+}: PassProps & { backgroundChart?: ReactNode }) =>
+  CardMock({ ...rest, children: createElement(Fragment, null, backgroundChart, children) });
+
+export const StatCard = StatCardMock;
 export const CounterCard = CardMock;
 export const Stack = CardMock;
 export const Grid = CardMock;

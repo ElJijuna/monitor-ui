@@ -12,7 +12,7 @@ interface PillEventsViewProps {
 
 export const PillEventsView = ({ monitor }: PillEventsViewProps) => {
   const events = useEvents(monitor);
-  const lastEvent = events.entries[0];
+  const [lastEvent] = events.entries;
   const shortLabel = lastEvent
     ? lastEvent.label.length > LABEL_MAX_LENGTH
       ? `${lastEvent.label.slice(0, LABEL_MAX_LENGTH - 2)}…`

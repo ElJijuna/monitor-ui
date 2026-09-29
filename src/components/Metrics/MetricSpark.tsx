@@ -1,5 +1,11 @@
 import { SparkBarChart, SparkLineChart } from '@gnome-ui/charts';
 
+/**
+ * Tallest chart any layout uses. The chart only takes a px height, so it is rendered at the
+ * maximum and clamped by `max-block-size` from the container query in Metrics.css.
+ */
+const MAX_CHART_HEIGHT = 64;
+
 interface MetricSparkProps {
   data: number[];
   color: string;
@@ -16,12 +22,19 @@ export const MetricSpark = ({ data, color, variant = 'line' }: MetricSparkProps)
   }
 
   return variant === 'bar' ? (
-    <SparkBarChart className="monitor-metric__spark" color={color} data={data} highlighted />
+    <SparkBarChart
+      className="monitor-metric__spark"
+      color={color}
+      data={data}
+      height={MAX_CHART_HEIGHT}
+      highlighted
+    />
   ) : (
     <SparkLineChart
       className="monitor-metric__spark"
       color={color}
       data={data}
+      height={MAX_CHART_HEIGHT}
       highlighted
       strokeWidth={1.5}
     />

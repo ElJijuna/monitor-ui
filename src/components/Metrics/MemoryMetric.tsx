@@ -27,8 +27,7 @@ export const MemoryMetric = ({
   ...rest
 }: MemoryMetricProps) => {
   const performance = usePerformance(monitor);
-  const memory = performance.memory;
-  const history = performance.memoryHistory;
+  const { memory, memoryHistory: history } = performance;
   const summary = summarize(history);
   const trend = history.length > 1 ? (history[history.length - 1] ?? 0) - (history[0] ?? 0) : null;
   const action = allowClear && (

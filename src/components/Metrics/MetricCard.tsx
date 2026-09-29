@@ -10,7 +10,7 @@ export interface MetricStat {
   tone?: MetricTone;
 }
 
-export interface MetricCardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
+export interface MetricCardProps extends Omit<HTMLAttributes<HTMLFieldSetElement>, 'children'> {
   label: string;
   value: ReactNode;
   unit?: string;
@@ -51,18 +51,17 @@ export const MetricCard = ({
   size = 'auto',
   className,
   style,
-  ...divProps
+  ...fieldsetProps
 }: MetricCardProps) => {
   const rootStyle = accent
     ? ({ ...style, '--monitor-metric-accent': accent } as CSSProperties)
     : style;
 
   return (
-    // biome-ignore lint/a11y/useSemanticElements: a metric is a labelled group, not a form fieldset
-    <div
+    // <fieldset> carries the implicit `group` role; Metrics.css resets its UA styles.
+    <fieldset
       aria-label={label}
-      role="group"
-      {...divProps}
+      {...fieldsetProps}
       className={['monitor-metric', className].filter(Boolean).join(' ')}
       data-size={size}
       data-tone={tone}
@@ -125,6 +124,6 @@ export const MetricCard = ({
 
         {details && <div className="monitor-metric__details">{details}</div>}
       </Card>
-    </div>
+    </fieldset>
   );
 };
