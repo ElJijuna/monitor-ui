@@ -3,6 +3,7 @@ import type { Monitor } from 'monitor-api';
 import { useEvents } from 'monitor-api/react';
 import { COLOR_EVENTS } from '@/utils/colors';
 import { formatTime } from '@/utils/formatters';
+import { selectEventEntries } from '@/utils/selectors';
 
 const LABEL_MAX_LENGTH = 16;
 
@@ -11,8 +12,8 @@ interface PillEventsViewProps {
 }
 
 export const PillEventsView = ({ monitor }: PillEventsViewProps) => {
-  const events = useEvents(monitor);
-  const [lastEvent] = events.entries;
+  const entries = useEvents(monitor, selectEventEntries);
+  const [lastEvent] = entries;
   const shortLabel = lastEvent
     ? lastEvent.label.length > LABEL_MAX_LENGTH
       ? `${lastEvent.label.slice(0, LABEL_MAX_LENGTH - 2)}…`
@@ -28,7 +29,7 @@ export const PillEventsView = ({ monitor }: PillEventsViewProps) => {
           style={{ color: COLOR_EVENTS }}
           variant="numeric"
         >
-          {events.entries.length} evt
+          {entries.length} evt
         </Text>
         <Text as="span" className="monitor-pill__secondary" color="dim" variant="caption">
           {shortLabel}

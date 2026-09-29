@@ -2,10 +2,11 @@ import { SparkLineChart } from '@gnome-ui/charts';
 import { StatCard } from '@gnome-ui/layout';
 import { Text } from '@gnome-ui/react';
 import type { Monitor } from 'monitor-api';
-import { useNetwork, usePerformance } from 'monitor-api/react';
+import { shallowEqual, useNetwork, usePerformance } from 'monitor-api/react';
 import { toChartData } from '@/utils/chartData';
 import { COLOR_MEMORY } from '@/utils/colors';
 import { fpsColor } from '@/utils/fpsColor';
+import { selectWindow5s } from '@/utils/selectors';
 import { formatMemory } from './formatters';
 
 interface PerformanceSectionProps {
@@ -14,11 +15,11 @@ interface PerformanceSectionProps {
 
 export const PerformanceSection = ({ monitor }: PerformanceSectionProps) => {
   const performance = usePerformance(monitor);
-  const network = useNetwork(monitor);
+  const window5s = useNetwork(monitor, selectWindow5s, shallowEqual);
   const fpsChartColor = fpsColor(performance.fps);
   const memory = formatMemory(performance.memory);
-  const latency = Math.round(network.window5s.avgLatency);
-  const hasRequests = network.window5s.count > 0;
+  const latency = Math.round(window5s.avgLatency);
+  const hasRequests = window5s.count > 0;
 
   return (
     <section className="monitor-inspector__section">
@@ -58,7 +59,7 @@ export const PerformanceSection = ({ monitor }: PerformanceSectionProps) => {
           unit={memory.unit}
           value={memory.value}
         />
-        <StatCard label="Requests" unit="/ 5s" value={network.window5s.count} />
+        <StatCard label="Requests" unit="/ 5s" value={window5s.count} />
         <StatCard
           label="Latency"
           unit={hasRequests ? 'ms / 5s' : ''}

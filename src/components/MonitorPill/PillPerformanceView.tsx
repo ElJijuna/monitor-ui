@@ -5,6 +5,7 @@ import { useNetwork, usePerformance } from 'monitor-api/react';
 import { toChartData } from '@/utils/chartData';
 import { formatMemory } from '@/utils/formatters';
 import { fpsColor } from '@/utils/fpsColor';
+import { selectAvgLatency } from '@/utils/selectors';
 
 interface PillPerformanceViewProps {
   monitor: Monitor;
@@ -12,7 +13,7 @@ interface PillPerformanceViewProps {
 
 export const PillPerformanceView = ({ monitor }: PillPerformanceViewProps) => {
   const performance = usePerformance(monitor);
-  const network = useNetwork(monitor);
+  const avgLatency = useNetwork(monitor, selectAvgLatency);
   const color = fpsColor(performance.fps);
   const memory = formatMemory(performance.memory);
   const chartData = toChartData(performance.fpsHistory, performance.fps);
@@ -33,7 +34,7 @@ export const PillPerformanceView = ({ monitor }: PillPerformanceViewProps) => {
       </span>
       <span className="monitor-pill__separator" aria-hidden="true" />
       <Text as="span" className="monitor-pill__trailing" color="accent" variant="caption">
-        {network.window5s.avgLatency > 0 ? `${Math.round(network.window5s.avgLatency)}ms` : '—'}
+        {avgLatency > 0 ? `${Math.round(avgLatency)}ms` : '—'}
       </Text>
     </>
   );

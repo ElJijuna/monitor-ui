@@ -2,6 +2,7 @@ import { ActionRow, BoxedList, Text } from '@gnome-ui/react';
 import type { Monitor } from 'monitor-api';
 import { useNetwork } from 'monitor-api/react';
 import { INSPECTOR_MAX_REQUESTS } from '@/utils/constants';
+import { selectNetworkEntries } from '@/utils/selectors';
 import { EmptyRow } from './EmptyRow';
 import { formatBytes } from './formatters';
 
@@ -10,8 +11,8 @@ interface NetworkSectionProps {
 }
 
 export const NetworkSection = ({ monitor }: NetworkSectionProps) => {
-  const network = useNetwork(monitor);
-  const recentRequests = network.entries.slice(-INSPECTOR_MAX_REQUESTS).reverse();
+  const entries = useNetwork(monitor, selectNetworkEntries);
+  const recentRequests = entries.slice(-INSPECTOR_MAX_REQUESTS).reverse();
 
   return (
     <section className="monitor-inspector__section">

@@ -3,14 +3,15 @@ import type { Monitor } from 'monitor-api';
 import { useNetwork } from 'monitor-api/react';
 import { LOG_MAX_ENTRIES } from '@/utils/constants';
 import { formatBytes } from '@/utils/formatters';
+import { selectNetworkEntries } from '@/utils/selectors';
 
 interface NetworkLogProps {
   monitor: Monitor;
 }
 
 export const NetworkLog = ({ monitor }: NetworkLogProps) => {
-  const network = useNetwork(monitor);
-  const entries = [...network.entries].reverse().slice(0, LOG_MAX_ENTRIES);
+  const retained = useNetwork(monitor, selectNetworkEntries);
+  const entries = [...retained].reverse().slice(0, LOG_MAX_ENTRIES);
 
   return (
     <div className="monitor-dashboard__log">

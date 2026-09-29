@@ -48,14 +48,40 @@ const webVitalsSnapshot = (): WebVitalsSnapshot => ({
 
 const errorSnapshot = (): ErrorSnapshot => ({ entries: [], totalErrors: 0, droppedErrors: 0 });
 
-export const usePerformance = jest.fn(
-  (_monitor: Monitor): PerformanceSnapshot => performanceSnapshot(),
-);
-export const useNetwork = jest.fn((_monitor: Monitor): NetworkSnapshot => networkSnapshot());
-export const useEvents = jest.fn((_monitor: Monitor): EventSnapshot => eventSnapshot());
-export const useReact = jest.fn((_monitor: Monitor): ReactSnapshot => reactSnapshot());
-export const useWebVitals = jest.fn((_monitor: Monitor): WebVitalsSnapshot => webVitalsSnapshot());
-export const useErrors = jest.fn((_monitor: Monitor): ErrorSnapshot => errorSnapshot());
+type Selector<T> = (snapshot: T) => unknown;
+type SnapshotImpl<T> = (monitor: Monitor) => T;
+
+/**
+ * Mocks a `SnapshotHook`: implementations (including `mockReturnValue*`, which jest routes
+ * through `mockImplementation*`) supply the full snapshot, and the hook applies the optional
+ * selector like the real one, so tests keep stubbing whole snapshots.
+ */
+function snapshotHook<T>(initial: () => T) {
+  const select =
+    (impl: SnapshotImpl<T>) =>
+    (monitor: Monitor, selector?: Selector<T>): unknown => {
+      const snapshot = impl(monitor);
+
+      return selector ? selector(snapshot) : snapshot;
+    };
+  const hook = jest.fn(select(() => initial()));
+  const { mockImplementation, mockImplementationOnce } = hook;
+
+  hook.mockImplementation = (impl) => mockImplementation(select(impl as SnapshotImpl<T>));
+  hook.mockImplementationOnce = (impl) => mockImplementationOnce(select(impl as SnapshotImpl<T>));
+
+  // Typed as a plain snapshot mock so tests can pass whole snapshots to `mockReturnValue`.
+  return hook as unknown as jest.Mock<T, [Monitor, Selector<T>?, unknown?]>;
+}
+
+export const usePerformance = snapshotHook(performanceSnapshot);
+export const useNetwork = snapshotHook(networkSnapshot);
+export const useEvents = snapshotHook(eventSnapshot);
+export const useReact = snapshotHook(reactSnapshot);
+export const useWebVitals = snapshotHook(webVitalsSnapshot);
+export const useErrors = snapshotHook(errorSnapshot);
+
+export const shallowEqual = jest.fn((previous: unknown, next: unknown) => Object.is(previous, next));
 
 export const useMonitor = jest.fn(
   (_monitor: Monitor): MonitorSnapshot => ({

@@ -1,7 +1,8 @@
 import { ActionRow, BoxedList, Text } from '@gnome-ui/react';
 import type { Monitor } from 'monitor-api';
-import { useReact } from 'monitor-api/react';
+import { shallowEqual, useReact } from 'monitor-api/react';
 import { INSPECTOR_MAX_SLOW_COMPONENTS } from '@/utils/constants';
+import { selectReactSummary } from '@/utils/selectors';
 import { EmptyRow } from './EmptyRow';
 
 interface ReactSectionProps {
@@ -9,7 +10,7 @@ interface ReactSectionProps {
 }
 
 export const ReactSection = ({ monitor }: ReactSectionProps) => {
-  const react = useReact(monitor);
+  const react = useReact(monitor, selectReactSummary, shallowEqual);
   const slowComponents = react.slowComponents.slice(0, INSPECTOR_MAX_SLOW_COMPONENTS);
 
   return (

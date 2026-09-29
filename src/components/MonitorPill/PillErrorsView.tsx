@@ -1,13 +1,14 @@
 import { Text } from '@gnome-ui/react';
 import type { Monitor } from 'monitor-api';
 import { useErrors } from 'monitor-api/react';
+import { selectTotalErrors } from '@/utils/selectors';
 
 interface PillErrorsViewProps {
   monitor: Monitor;
 }
 
 export const PillErrorsView = ({ monitor }: PillErrorsViewProps) => {
-  const errors = useErrors(monitor);
+  const totalErrors = useErrors(monitor, selectTotalErrors);
 
   return (
     <div className="monitor-pill__segment">
@@ -16,10 +17,10 @@ export const PillErrorsView = ({ monitor }: PillErrorsViewProps) => {
       </Text>
       <Text
         className="monitor-pill__value"
-        color={errors.totalErrors > 0 ? 'error' : undefined}
+        color={totalErrors > 0 ? 'error' : undefined}
         variant="numeric"
       >
-        {errors.totalErrors}
+        {totalErrors}
       </Text>
     </div>
   );

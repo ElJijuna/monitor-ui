@@ -2,6 +2,7 @@ import { ActionRow, BoxedList, Text } from '@gnome-ui/react';
 import type { Monitor } from 'monitor-api';
 import { useEvents } from 'monitor-api/react';
 import { INSPECTOR_MAX_EVENTS } from '@/utils/constants';
+import { selectEventEntries } from '@/utils/selectors';
 import { EmptyRow } from './EmptyRow';
 import { formatTime } from './formatters';
 
@@ -10,8 +11,8 @@ interface EventsSectionProps {
 }
 
 export const EventsSection = ({ monitor }: EventsSectionProps) => {
-  const events = useEvents(monitor);
-  const recentEvents = events.entries.slice(0, INSPECTOR_MAX_EVENTS);
+  const entries = useEvents(monitor, selectEventEntries);
+  const recentEvents = entries.slice(0, INSPECTOR_MAX_EVENTS);
 
   return (
     <section className="monitor-inspector__section">

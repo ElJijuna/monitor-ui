@@ -3,14 +3,15 @@ import type { Monitor } from 'monitor-api';
 import { useEvents } from 'monitor-api/react';
 import { LOG_MAX_ENTRIES } from '@/utils/constants';
 import { formatTime } from '@/utils/formatters';
+import { selectEventEntries } from '@/utils/selectors';
 
 interface EventsLogProps {
   monitor: Monitor;
 }
 
 export const EventsLog = ({ monitor }: EventsLogProps) => {
-  const events = useEvents(monitor);
-  const recentEvents = events.entries.slice(0, LOG_MAX_ENTRIES);
+  const entries = useEvents(monitor, selectEventEntries);
+  const recentEvents = entries.slice(0, LOG_MAX_ENTRIES);
 
   return (
     <div className="monitor-dashboard__log">

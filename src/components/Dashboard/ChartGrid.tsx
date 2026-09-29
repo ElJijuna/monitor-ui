@@ -6,6 +6,7 @@ import { toChartData } from '@/utils/chartData';
 import { COLOR_LATENCY, COLOR_MEMORY } from '@/utils/colors';
 import { CHART_HISTORY_POINTS } from '@/utils/constants';
 import { fpsColor } from '@/utils/fpsColor';
+import { selectNetworkEntries } from '@/utils/selectors';
 
 interface ChartGridProps {
   monitor: Monitor;
@@ -13,9 +14,9 @@ interface ChartGridProps {
 
 export const ChartGrid = ({ monitor }: ChartGridProps) => {
   const performance = usePerformance(monitor);
-  const network = useNetwork(monitor);
+  const networkEntries = useNetwork(monitor, selectNetworkEntries);
   const fpsChartColor = fpsColor(performance.fps);
-  const latencyPoints = network.entries.slice(-CHART_HISTORY_POINTS).map((e) => e.latency);
+  const latencyPoints = networkEntries.slice(-CHART_HISTORY_POINTS).map((e) => e.latency);
 
   const charts = [
     {
