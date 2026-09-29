@@ -1,8 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { MONITOR_METRIC_KINDS } from '@/components/Metrics';
 import { useDemoMonitor } from '@/stories/demoMonitor';
-import { MonitorPill, type MonitorPillProps, type MonitorPillScope } from './MonitorPill';
+import { MonitorPill, type MonitorPillProps } from './MonitorPill';
 
-const SCOPES: MonitorPillScope[] = ['performance', 'network', 'events', 'errors'];
+/* The React collector is disabled in Storybook, so its pill would stay at zero. */
+const SCOPES = MONITOR_METRIC_KINDS.filter((kind) => kind !== 'react');
 
 const MonitorPillStory = (props: Omit<MonitorPillProps, 'monitor'>) => {
   const monitor = useDemoMonitor();
@@ -18,12 +20,12 @@ const meta = {
     docs: {
       description: {
         component:
-          'Clickable entry point (button) that opens the inspector. For read-only, resizable widgets see **Components/Metrics** with `size="pill"`.',
+          'Clickable entry point that opens the inspector. It is the `size="pill"` metric widget for `scope`, activated as a button, so every metric widget can be a scope (`performance` is kept as an alias of `fps`). An offline chip appears next to it while the device collector reports no network. The same widgets in sm, md and lg live in **Components/Metrics**.',
       },
     },
   },
   argTypes: {
-    scope: { control: 'inline-radio', options: SCOPES },
+    scope: { control: 'select', options: ['performance', ...MONITOR_METRIC_KINDS] },
     onClick: { action: 'clicked' },
   },
   args: { scope: 'performance', label: 'Open monitor' },
@@ -43,24 +45,36 @@ export const Events: Story = {
   args: { scope: 'events' },
 };
 
+export const WebVitals: Story = {
+  args: { scope: 'webVitals' },
+};
+
+export const Resources: Story = {
+  args: { scope: 'resources' },
+};
+
+export const Reporter: Story = {
+  args: { scope: 'reporter', label: 'Open reporter status' },
+};
+
 export const Errors: Story = {
   args: { scope: 'errors', label: 'Open error monitor' },
 };
 
-const AllScopesStory = () => {
+const AllScopesStory = ({ onClick }: Pick<MonitorPillProps, 'onClick'>) => {
   const monitor = useDemoMonitor();
 
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
       {SCOPES.map((scope) => (
-        <MonitorPill key={scope} monitor={monitor} scope={scope} />
+        <MonitorPill key={scope} monitor={monitor} onClick={onClick} scope={scope} />
       ))}
     </div>
   );
 };
 
-/** All scopes side by side, sharing one monitor. */
+/** Every scope side by side, sharing one monitor. Click one to log the action. */
 export const AllScopes: Story = {
   argTypes: { scope: { table: { disable: true } } },
-  render: () => <AllScopesStory />,
+  render: ({ onClick }) => <AllScopesStory onClick={onClick} />,
 };

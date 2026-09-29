@@ -1,40 +1,13 @@
+/* The pill itself is the `size="pill"` metric widget; this wrapper only adds the offline chip. */
 .monitor-pill {
   align-items: center;
   display: inline-flex;
-  gap: 10px;
-  min-height: 44px;
-  min-width: 176px;
-  text-align: start;
+  gap: 8px;
+  max-inline-size: 100%;
 }
 
-.monitor-pill__metrics {
-  align-items: flex-end;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  min-width: 48px;
-}
-
-.monitor-pill__metrics--wide {
-  min-width: 96px;
-}
-
-.monitor-pill__primary,
-.monitor-pill__secondary,
-.monitor-pill__trailing {
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-}
-
-.monitor-pill__chart {
-  inline-size: 72px;
-  min-inline-size: 72px;
-}
-
-.monitor-pill__separator {
-  align-self: stretch;
-  background: var(--monitor-border);
-  inline-size: 1px;
+.monitor-pill > .monitor-metric {
+  flex: 0 1 auto;
 }
 
 .monitor-pill__offline {

@@ -1,92 +1,107 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import type { Monitor } from 'monitor-api';
 import * as hooks from 'monitor-api/react';
+import { MONITOR_METRIC_KINDS } from '@/components/Metrics';
 import { MonitorPill } from './MonitorPill';
 
 jest.mock('monitor-api/react');
 jest.mock('monitor-api');
 
-const monitor = {} as Monitor;
+const monitor = {
+  events: { onEvent: { value: null } },
+  errors: { onError: { value: null } },
+  reporter: {
+    snapshot: {
+      value: {
+        status: 'idle',
+        attempts: 0,
+        sent: 0,
+        failed: 0,
+        dropped: 0,
+        retries: 0,
+        cancelled: 0,
+        skipped: 0,
+        lastSuccessAt: null,
+        lastFailure: null,
+      },
+    },
+  },
+} as unknown as Monitor;
+
+const device = (online: boolean | null) => ({ hardwareConcurrency: 8, online, offlineCount: 0 });
 
 beforeEach(() => {
-  jest.mocked(hooks.usePerformance).mockReturnValue({
-    fps: 60,
-    fpsHistory: [60],
-    memory: { used: 42, total: 128, percent: 32.8 },
-    memoryHistory: [32],
-    longTasks: { count: 0, lastDuration: null },
-    longAnimationFrames: {
-      count: 0,
-      totalBlockingDuration: 0,
-      maxBlockingDuration: null,
-      entries: [],
-    },
-    memoryMeasurement: null,
-    cls: 0,
-  });
-  jest.mocked(hooks.useNetwork).mockReturnValue({
-    entries: [],
-    window5s: { count: 3, avgLatency: 50, totalPayload: 2048, errorRate: 0 },
-  });
-  jest.mocked(hooks.useEvents).mockReturnValue({
-    entries: [],
-    byLabel: {},
-  });
-  jest.mocked(hooks.useErrors).mockReturnValue({
-    entries: [],
-    totalErrors: 2,
-    droppedErrors: 0,
-  });
+  // Read signals as-is; the shared mock falls back to a reporter snapshot for null values.
+  jest.mocked(hooks.useSignal).mockImplementation((signal) => signal.value);
+  jest.mocked(hooks.useDevice).mockReturnValue(device(null));
 });
 
 describe('MonitorPill', () => {
-  it('renders with default performance scope showing fps', () => {
+  it('shows the frame rate pill by default', () => {
     render(<MonitorPill monitor={monitor} />);
-    expect(screen.getByText(/fps/i)).toBeInTheDocument();
+    const widget = screen.getByRole('group', { name: 'FPS' });
+
+    expect(widget).toHaveAttribute('data-size', 'pill');
   });
 
-  it('renders network scope showing req', () => {
-    render(<MonitorPill monitor={monitor} scope="network" />);
-    expect(screen.getByText(/req/i)).toBeInTheDocument();
+  it('keeps performance as an alias of fps', () => {
+    render(<MonitorPill monitor={monitor} scope="performance" />);
+    expect(screen.getByRole('group', { name: 'FPS' })).toBeInTheDocument();
   });
 
-  it('renders events scope showing evt', () => {
-    render(<MonitorPill monitor={monitor} scope="events" />);
-    expect(screen.getByText(/evt/i)).toBeInTheDocument();
+  it.each([
+    ['network', 'Network'],
+    ['errors', 'Errors'],
+    ['webVitals', 'Web Vitals'],
+    ['resources', 'Resources'],
+    ['reporter', 'Reporter'],
+  ] as const)('renders the %p widget as a pill', (scope, name) => {
+    render(<MonitorPill monitor={monitor} scope={scope} />);
+    expect(screen.getByRole('group', { name })).toHaveAttribute('data-size', 'pill');
   });
 
-  it('renders errors scope showing the lifetime total', () => {
-    render(<MonitorPill monitor={monitor} scope="errors" />);
-    expect(screen.getByText('Errors')).toBeInTheDocument();
-    expect(screen.getByText('2')).toBeInTheDocument();
+  it.each(MONITOR_METRIC_KINDS)('is a button for the %p scope', (scope) => {
+    render(<MonitorPill monitor={monitor} scope={scope} />);
+    expect(screen.getByRole('button', { name: 'Open monitor' })).toBeInTheDocument();
   });
 
-  it('uses label as aria-label on the pill container', () => {
-    const { container } = render(<MonitorPill monitor={monitor} label="Ver métricas" />);
+  it('calls onClick when activated', async () => {
+    const onClick = jest.fn();
 
-    expect(container.firstChild).toHaveAttribute('aria-label', 'Ver métricas');
+    render(<MonitorPill monitor={monitor} onClick={onClick} />);
+    await userEvent.click(screen.getByRole('button', { name: 'Open monitor' }));
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('names the button with label, or aria-label when given', () => {
+    const { rerender } = render(<MonitorPill label="Ver métricas" monitor={monitor} />);
+
+    expect(screen.getByRole('button', { name: 'Ver métricas' })).toBeInTheDocument();
+
+    rerender(<MonitorPill aria-label="Monitor" label="Ver métricas" monitor={monitor} />);
+    expect(screen.getByRole('button', { name: 'Monitor' })).toBeInTheDocument();
+  });
+
+  it('merges className and DOM props on the wrapper', () => {
+    const { container } = render(
+      <MonitorPill className="custom" data-testid="pill" monitor={monitor} />,
+    );
+
+    expect(container.firstChild).toHaveClass('monitor-pill', 'custom');
+    expect(screen.getByTestId('pill')).toBe(container.firstChild);
   });
 
   it('flags an offline device in every scope, including the accessible name', () => {
-    jest.mocked(hooks.useDevice).mockReturnValue({
-      hardwareConcurrency: 8,
-      online: false,
-      offlineCount: 1,
-    });
-    const { container } = render(
-      <MonitorPill label="Open monitor" monitor={monitor} scope="events" />,
-    );
+    jest.mocked(hooks.useDevice).mockReturnValue(device(false));
+    render(<MonitorPill monitor={monitor} scope="events" />);
 
     expect(screen.getByText('offline')).toBeInTheDocument();
-    expect(container.firstChild).toHaveAttribute('aria-label', 'Open monitor, offline');
+    expect(screen.getByRole('button', { name: 'Open monitor, offline' })).toBeInTheDocument();
   });
 
-  it('shows no offline badge while online or unknown', () => {
-    jest.mocked(hooks.useDevice).mockReturnValue({
-      hardwareConcurrency: 8,
-      online: null,
-      offlineCount: 0,
-    });
+  it.each([true, null])('shows no offline chip while online is %p', (online) => {
+    jest.mocked(hooks.useDevice).mockReturnValue(device(online));
     render(<MonitorPill monitor={monitor} />);
 
     expect(screen.queryByText('offline')).not.toBeInTheDocument();

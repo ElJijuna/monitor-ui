@@ -32,7 +32,8 @@ npm install react react-dom \
 
 ### 1. MonitorPill — compact live indicator
 
-A small interactive button that shows a live metric at a glance. Click it to open the inspector.
+A compact, clickable live metric — the `size="pill"` metric widget for `scope`. Click it to open the
+inspector. An offline chip appears next to it while the browser reports no network.
 
 ```tsx
 import { useEffect, useMemo, useState } from 'react'
@@ -60,7 +61,8 @@ export function App() {
 }
 ```
 
-**`scope` values:** `"performance"` (default) · `"network"` · `"events"` · `"errors"`
+**`scope` values:** any metric — `"fps"` · `"memory"` · `"network"` · `"events"` · `"errors"` ·
+`"resources"` · `"webVitals"` · `"react"` · `"reporter"` — plus `"performance"` (default, same as `"fps"`).
 
 ### 2. MonitorInspector — detailed panel
 
@@ -157,9 +159,10 @@ page structure — see monitor-api's `PRIVACY.md`. Without it, the UI shows valu
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `monitor` | `Monitor` | — | Monitor instance from `monitor-api` |
-| `scope` | `'performance' \| 'network' \| 'events' \| 'errors'` | `'performance'` | Which metric to display |
-| `label` | `string` | `'Open monitor'` | Accessible label |
-| `...button` | `ButtonHTMLAttributes` | — | All native button props |
+| `scope` | `MonitorMetricKind \| 'performance'` | `'performance'` | Which metric to display |
+| `label` | `string` | `'Open monitor'` | Accessible name of the pill button |
+| `onClick` | `() => void` | — | Called when the pill is activated |
+| `...span` | `HTMLAttributes<HTMLSpanElement>` | — | Props for the wrapper element |
 
 ### `MonitorInspector`
 
