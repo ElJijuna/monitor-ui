@@ -20,12 +20,14 @@ const MOCK_ENDPOINTS = [
 function useMockRequests() {
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
+    const controller = new AbortController();
 
     async function fire() {
       const endpoint = MOCK_ENDPOINTS[Math.floor(Math.random() * MOCK_ENDPOINTS.length)];
 
       try {
         await fetch(endpoint.url, {
+          signal: controller.signal,
           method: endpoint.method,
           ...(endpoint.method === 'POST' && {
             headers: { 'Content-Type': 'application/json' },
@@ -36,36 +38,26 @@ function useMockRequests() {
         // network failures are also captured by monitor-api
       }
 
-      timeoutId = setTimeout(fire, 600 + Math.random() * 1400);
+      if (!controller.signal.aborted) {
+        timeoutId = setTimeout(fire, 600 + Math.random() * 1400);
+      }
     }
 
     fire();
 
-    return () => clearTimeout(timeoutId);
+    return () => {
+      controller.abort();
+      clearTimeout(timeoutId);
+    };
   }, []);
 }
-
-const meta = {
-  title: 'Components/Dashboard',
-  component: Dashboard,
-  parameters: {
-    layout: 'fullscreen',
-  },
-  argTypes: {
-    monitor: { table: { disable: true } },
-    onBack: { table: { disable: true } },
-  },
-} satisfies Meta<typeof Dashboard>;
-
-export default meta;
-
-type Story = StoryObj<typeof meta>;
 
 function useDemoMonitor() {
   const monitor = useMemo<Monitor>(
     () =>
       createMonitor({
-        collectors: ['performance', 'network', 'react', 'events', 'webVitals', 'errors'],
+        // Observing this dashboard's own React commits creates a render feedback loop.
+        collectors: ['performance', 'network', 'events', 'webVitals', 'errors'],
         maxHistory: 120,
       }),
     [],
@@ -100,6 +92,21 @@ const DashboardStory = (props: Omit<ComponentProps<typeof Dashboard>, 'monitor'>
     </div>
   );
 };
+
+const meta = {
+  title: 'Components/Dashboard',
+  component: DashboardStory,
+  parameters: {
+    layout: 'fullscreen',
+  },
+  argTypes: {
+    onBack: { table: { disable: true } },
+  },
+} satisfies Meta<typeof DashboardStory>;
+
+export default meta;
+
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: { title: 'Dashboard' },
