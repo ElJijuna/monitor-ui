@@ -66,7 +66,11 @@ export function App() {
 
 ### 2. MonitorInspector — detailed panel
 
-A panel for performance, Web Vitals, network, React internals, custom events, captured errors, and reporter diagnostics.
+A side panel with every metric widget — health, FPS, memory, Web Vitals, network, resources,
+React, events, errors and reporter — plus connectivity chips. Widgets are `expanded`: even in a
+narrow panel each one shows its stats and drill-down list (long frames, requests, vitals
+attribution, errors with their stack traces…) stacked under the card; in a panel of 600px or
+more they switch to their side-by-side lg layout.
 
 ```tsx
 <MonitorInspector monitor={monitor} />

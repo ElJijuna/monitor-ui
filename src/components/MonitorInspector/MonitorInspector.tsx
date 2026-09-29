@@ -56,7 +56,9 @@ export const MonitorInspector = ({
         <ReactMetric expanded monitor={monitor} />
         <EventsMetric expanded monitor={monitor} />
         {showErrors && <ErrorsMetric allowClear={allowClearErrors} expanded monitor={monitor} />}
-        {showReporter && <ReporterMetric allowFlush={allowFlushReport} expanded monitor={monitor} />}
+        {showReporter && (
+          <ReporterMetric allowFlush={allowFlushReport} expanded monitor={monitor} />
+        )}
       </div>
     </Card>
   );

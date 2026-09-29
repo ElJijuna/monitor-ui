@@ -65,7 +65,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Standalone metric widgets. Each one reads a single collector through monitor-api hooks, so they can be dropped anywhere. The layout is chosen by **container queries** from the width of the slot: pill → sm → md → lg. `size` pins a preset width instead.',
+          'Standalone metric widgets. Each one reads a single collector through monitor-api hooks, so they can be dropped anywhere. The layout is chosen by **container queries** from the width of the slot: pill → sm → md → lg. `size` pins a preset width instead, and `expanded` keeps the stats and drill-down list below 600px, stacked under the card (as in the inspector).',
       },
     },
   },
@@ -74,6 +74,7 @@ const meta = {
     size: { control: 'inline-radio', options: ['auto', ...SIZES] },
     label: { control: 'text' },
     allowClear: { control: 'boolean' },
+    expanded: { control: 'boolean' },
     allowFlush: { control: 'boolean', if: { arg: 'metric', eq: 'reporter' } },
   },
   args: {
@@ -81,6 +82,7 @@ const meta = {
     size: 'md',
     allowClear: true,
     allowFlush: true,
+    expanded: false,
   },
   decorators: [
     (Story) => (

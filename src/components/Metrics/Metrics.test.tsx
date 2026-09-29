@@ -330,13 +330,19 @@ describe('ErrorsMetric', () => {
     const error = {
       id: 'e1',
       source: 'error' as const,
-      details: { name: 'TypeError', message: 'boom', stack: 'TypeError: boom\n    at save (app.js:1)' },
+      details: {
+        name: 'TypeError',
+        message: 'boom',
+        stack: 'TypeError: boom\n    at save (app.js:1)',
+      },
       timestamp: 0,
       lastSeenAt: 0,
       occurrences: 1,
     };
 
-    jest.mocked(hooks.useErrors).mockReturnValue({ entries: [error], totalErrors: 1, droppedErrors: 0 });
+    jest
+      .mocked(hooks.useErrors)
+      .mockReturnValue({ entries: [error], totalErrors: 1, droppedErrors: 0 });
     const { container } = render(<ErrorsMetric monitor={makeMonitor({ latestError: error })} />);
     const disclosure = container.querySelector('details');
 
@@ -428,6 +434,21 @@ describe('ReporterMetric', () => {
     expect(screen.getAllByText('timeout')).not.toHaveLength(0);
     await userEvent.click(screen.getByText('Send now'));
     expect(monitor.reporter.flush).toHaveBeenCalledTimes(1);
+    // The mock resolves true: the outcome is announced to screen readers.
+    expect(await screen.findByText('Report sent')).toHaveAttribute('aria-live', 'polite');
+  });
+
+  it.each([
+    [async () => false, 'Report was not sent'],
+    [async () => Promise.reject(new Error('503')), 'Report failed'],
+  ])('announces an unsuccessful flush', async (flush, message) => {
+    const monitor = makeMonitor();
+
+    jest.mocked(monitor.reporter.flush).mockImplementationOnce(flush);
+    render(<ReporterMetric allowFlush monitor={monitor} />);
+    await userEvent.click(screen.getByText('Send now'));
+
+    expect(await screen.findByText(message)).toBeInTheDocument();
   });
 });
 

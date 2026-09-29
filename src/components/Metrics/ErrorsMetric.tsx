@@ -52,7 +52,9 @@ export const ErrorsMetric = ({
             secondary: `${entry.source} · ${formatTime(entry.lastSeenAt)}`,
             trailing: `×${entry.occurrences}`,
             tone: 'bad',
-            expand: <pre>{entry.details.stack ?? `${entry.details.name}: ${entry.details.message}`}</pre>,
+            expand: (
+              <pre>{entry.details.stack ?? `${entry.details.name}: ${entry.details.message}`}</pre>
+            ),
           }))}
           title="Recent errors"
         />

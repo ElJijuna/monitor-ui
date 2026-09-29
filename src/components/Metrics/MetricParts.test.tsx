@@ -233,3 +233,34 @@ describe('MetricCard activation', () => {
     expect(onActivate).not.toHaveBeenCalled();
   });
 });
+
+describe('MetricCard layout', () => {
+  it('flags the expanded layout only when asked', () => {
+    const { rerender } = render(<MetricCard label="X" value={1} />);
+
+    expect(screen.getByRole('group')).not.toHaveAttribute('data-expanded');
+
+    rerender(<MetricCard expanded label="X" value={1} />);
+    expect(screen.getByRole('group')).toHaveAttribute('data-expanded');
+  });
+});
+
+describe('MetricList disclosures', () => {
+  it('keeps plain rows as list items and turns rows with expand into disclosures', () => {
+    const { container } = render(
+      <MetricList
+        items={[
+          { id: 'a', primary: 'Plain' },
+          { id: 'b', primary: 'Detailed', expand: <pre>stack</pre>, tone: 'bad' },
+        ]}
+        title="Rows"
+      />,
+    );
+    const [plain, detailed] = screen.getAllByRole('listitem');
+
+    expect(plain?.querySelector('details')).toBeNull();
+    expect(detailed).toHaveAttribute('data-tone', 'bad');
+    expect(detailed?.querySelector('summary')).toHaveTextContent('Detailed');
+    expect(container.querySelector('.monitor-metric__list-expand')).toHaveTextContent('stack');
+  });
+});

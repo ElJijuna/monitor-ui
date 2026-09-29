@@ -21,6 +21,13 @@ export type { ReporterMetricProps } from './ReporterMetric';
 export { ReporterMetric } from './ReporterMetric';
 export type { ResourcesMetricProps } from './ResourcesMetric';
 export { ResourcesMetric } from './ResourcesMetric';
-export type { ClearableMetricProps, MetricBaseProps, MetricSize, MetricTone } from './types';
+export type {
+  ClearableMetricProps,
+  MetricActivationProps,
+  MetricBaseProps,
+  MetricLayoutProps,
+  MetricSize,
+  MetricTone,
+} from './types';
 export type { WebVitalsMetricProps } from './WebVitalsMetric';
 export { WebVitalsMetric } from './WebVitalsMetric';
