@@ -38,6 +38,8 @@ export const ReporterMetric = ({
     setFlushing(true);
     try {
       await monitor.reporter.flush();
+    } catch {
+      // The failure is already reflected by the reporter snapshot (failed / lastFailure).
     } finally {
       setFlushing(false);
     }

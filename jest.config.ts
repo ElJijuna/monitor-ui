@@ -32,6 +32,7 @@ const config: Config = {
     '!src/index.ts',
     '!src/types/**',
     '!src/**/*.stories.*',
+    '!src/stories/**',
   ],
   coverageThreshold: {
     global: { lines: 70, functions: 70 },
