@@ -1,8 +1,8 @@
 import { Text } from '@gnome-ui/react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { CSSProperties, ReactNode } from 'react';
-import { useEffect, useRef, useState } from 'react';
 import { useDemoMonitor } from '@/stories/demoMonitor';
+import { ResizableFrame } from '@/stories/ResizableFrame';
 import { MONITOR_METRIC_KINDS, MonitorMetric, type MonitorMetricProps } from './MonitorMetric';
 import type { MetricSize } from './types';
 
@@ -142,48 +142,11 @@ function layoutFor(width: number): string {
 
 const ResizableStory = ({ metric }: Pick<PlaygroundProps, 'metric'>) => {
   const monitor = useDemoMonitor();
-  const boxRef = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState(320);
-
-  useEffect(() => {
-    const box = boxRef.current;
-
-    if (!box) {
-      return;
-    }
-
-    const observer = new ResizeObserver(([entry]) => {
-      if (entry) {
-        setWidth(Math.round(entry.contentRect.width));
-      }
-    });
-
-    observer.observe(box);
-
-    return () => observer.disconnect();
-  }, []);
 
   return (
-    <Section
-      note={`${width}px → ${layoutFor(width)} (drag the bottom-right corner)`}
-      title="Container queries"
-    >
-      <div
-        ref={boxRef}
-        style={{
-          border: '1px dashed var(--gnome-border-subtle, rgba(127, 127, 127, 0.4))',
-          borderRadius: 16,
-          maxWidth: '100%',
-          minWidth: 160,
-          overflow: 'hidden',
-          padding: 8,
-          resize: 'horizontal',
-          width: 320,
-        }}
-      >
-        <MonitorMetric allowClear metric={metric} monitor={monitor} />
-      </div>
-    </Section>
+    <ResizableFrame describe={layoutFor} initialWidth={320} title="Container queries">
+      <MonitorMetric allowClear metric={metric} monitor={monitor} />
+    </ResizableFrame>
   );
 };
 

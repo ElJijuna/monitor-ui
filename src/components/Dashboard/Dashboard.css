@@ -1,4 +1,6 @@
 .monitor-dashboard {
+  /* Layout follows the width of the slot the dashboard is placed in, not the viewport. */
+  container: monitor-dashboard / inline-size;
   background: var(--monitor-bg, rgba(8, 8, 13, 0.98));
   border: 1px solid var(--monitor-border, rgba(255, 255, 255, 0.07));
   border-radius: var(--gnome-radius-xl, 15px);
@@ -150,9 +152,9 @@
   text-align: center;
 }
 
-/* ── Responsive ─────────────────────────────────────────── */
+/* ── Responsive (container queries) ─────────────────────── */
 
-@media (max-width: 720px) {
+@container monitor-dashboard (max-width: 720px) {
   .monitor-dashboard__kpis {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -162,8 +164,23 @@
   }
 }
 
-@media (max-width: 480px) {
+@container monitor-dashboard (max-width: 480px) {
+  .monitor-dashboard__header {
+    padding: 10px 12px;
+  }
+
+  .monitor-dashboard__content {
+    gap: var(--gnome-space-2, 12px);
+    padding: var(--gnome-space-2, 12px);
+  }
+
   .monitor-dashboard__tables {
+    grid-template-columns: 1fr;
+  }
+}
+
+@container monitor-dashboard (max-width: 320px) {
+  .monitor-dashboard__kpis {
     grid-template-columns: 1fr;
   }
 }
