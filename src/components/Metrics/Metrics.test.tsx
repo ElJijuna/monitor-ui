@@ -17,6 +17,7 @@ import * as hooks from 'monitor-api/react';
 import { ErrorsMetric } from './ErrorsMetric';
 import { EventsMetric } from './EventsMetric';
 import { FpsMetric } from './FpsMetric';
+import { HealthMetric } from './HealthMetric';
 import { MemoryMetric } from './MemoryMetric';
 import { MetricCard } from './MetricCard';
 import { MONITOR_METRIC_KINDS, MonitorMetric } from './MonitorMetric';
@@ -947,6 +948,7 @@ describe('MonitorMetric kinds', () => {
   });
 
   it.each([
+    ['health', 'Health'],
     ['fps', 'FPS'],
     ['memory', 'JS Heap'],
     ['network', 'Network'],
@@ -1108,5 +1110,44 @@ describe('ResourcesMetric', () => {
     render(<ResourcesMetric allowClear monitor={monitor} />);
     await userEvent.click(screen.getByText('Clear'));
     expect(monitor.resources.clearLog).toHaveBeenCalledTimes(1);
+  });
+});
+
+/* ── Health ─────────────────────────────────────────────── */
+
+describe('HealthMetric', () => {
+  it('reads OK while every measured check passes', () => {
+    render(<HealthMetric monitor={makeMonitor()} />);
+
+    expect(screen.getByText('OK')).toBeInTheDocument();
+    expect(screen.getByText('all good')).toBeInTheDocument();
+    expect(tone()).toBe('good');
+  });
+
+  it('leads with the most serious problem and lists every check', () => {
+    jest
+      .mocked(hooks.useErrors)
+      .mockReturnValueOnce({ entries: [], totalErrors: 2, droppedErrors: 0 });
+    jest.mocked(hooks.useNetwork).mockReturnValueOnce({
+      entries: [],
+      window5s: { count: 4, avgLatency: 120, totalPayload: 0, errorRate: 0.25 },
+    });
+    const { container } = render(<HealthMetric monitor={makeMonitor()} />);
+
+    // The value and the Errors row both read "2 errors".
+    expect(screen.getAllByText('2 errors')).toHaveLength(2);
+    expect(screen.getByText('2 issues')).toBeInTheDocument();
+    expect(tone()).toBe('bad');
+
+    const rows = screen.getAllByRole('listitem');
+
+    expect(rows).toHaveLength(9);
+    expect(rows[0]).toHaveTextContent('Errors');
+    expect(rows[0]).toHaveAttribute('data-tone', 'bad');
+    expect(rows[1]).toHaveTextContent('Network');
+    expect(rows[1]).toHaveAttribute('data-tone', 'warn');
+    expect(container.querySelector('.monitor-metric__stat[data-tone="bad"]')).toHaveTextContent(
+      'Critical1',
+    );
   });
 });

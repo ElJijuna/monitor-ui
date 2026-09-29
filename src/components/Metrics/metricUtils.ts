@@ -1,4 +1,9 @@
-import type { LongAnimationFrameEntry, WebVitalMetric } from 'monitor-api';
+import type {
+  LongAnimationFrameEntry,
+  NetworkWindow5s,
+  ReporterSnapshot,
+  WebVitalMetric,
+} from 'monitor-api';
 import type { MetricTone } from './types';
 
 /** Number of rows shown in the lg drill-down lists. */
@@ -14,6 +19,40 @@ export function fpsTone(fps: number, hasSamples: boolean): MetricTone {
   }
 
   return fps >= 30 ? 'warn' : 'bad';
+}
+
+/** JS heap usage, as a percentage of the heap limit. */
+export function memoryTone(percent: number): MetricTone {
+  if (percent > 80) {
+    return 'bad';
+  }
+
+  return percent > 60 ? 'warn' : 'neutral';
+}
+
+/** Latency above this value (ms) is flagged as slow. */
+export const SLOW_LATENCY_MS = 500;
+
+/** Rolling network health: slow or mostly failing is bad, any failure is a warning. */
+export function networkTone({ avgLatency, errorRate }: NetworkWindow5s): MetricTone {
+  if (avgLatency > SLOW_LATENCY_MS || errorRate >= 0.5) {
+    return 'bad';
+  }
+
+  return errorRate > 0 ? 'warn' : 'good';
+}
+
+/** Report delivery: retrying is a warning, more failures than deliveries is bad. */
+export function reporterTone(reporter: ReporterSnapshot): MetricTone {
+  if (reporter.status === 'retrying') {
+    return 'warn';
+  }
+
+  if (reporter.status === 'idle' || reporter.status === 'sending') {
+    return reporter.lastFailure && reporter.failed > reporter.sent ? 'bad' : 'good';
+  }
+
+  return 'neutral';
 }
 
 /** Cumulative Layout Shift thresholds from web.dev. */

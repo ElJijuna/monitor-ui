@@ -1,27 +1,15 @@
-import type { ReporterSnapshot } from 'monitor-api';
 import { useSignal } from 'monitor-api/react';
 import { useState } from 'react';
 import { formatTime } from '@/utils/formatters';
 import { MetricAction } from './MetricAction';
 import { MetricCard } from './MetricCard';
 import { MetricList } from './MetricList';
-import type { MetricBaseProps, MetricTone } from './types';
+import { reporterTone } from './metricUtils';
+import type { MetricBaseProps } from './types';
 
 export interface ReporterMetricProps extends MetricBaseProps {
   /** Shows a Send now action (md and up) that calls `monitor.reporter.flush()`. */
   allowFlush?: boolean;
-}
-
-function reporterTone(reporter: ReporterSnapshot): MetricTone {
-  if (reporter.status === 'retrying') {
-    return 'warn';
-  }
-
-  if (reporter.status === 'idle' || reporter.status === 'sending') {
-    return reporter.lastFailure && reporter.failed > reporter.sent ? 'bad' : 'good';
-  }
-
-  return 'neutral';
 }
 
 /** Production report delivery status and counters from `monitor.reporter`. */

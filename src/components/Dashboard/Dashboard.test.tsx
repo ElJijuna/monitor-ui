@@ -68,6 +68,7 @@ describe('Dashboard', () => {
     const names = screen.getAllByRole('group').map((group) => group.getAttribute('aria-label'));
 
     expect(names).toEqual([
+      'Health',
       'FPS',
       'JS Heap',
       'Network',

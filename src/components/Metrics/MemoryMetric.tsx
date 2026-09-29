@@ -6,18 +6,10 @@ import { MetricAction } from './MetricAction';
 import { MetricCard } from './MetricCard';
 import { MetricList } from './MetricList';
 import { MetricSpark } from './MetricSpark';
-import { summarize } from './metricUtils';
-import type { ClearableMetricProps, MetricTone } from './types';
+import { memoryTone, summarize } from './metricUtils';
+import type { ClearableMetricProps } from './types';
 
 export type MemoryMetricProps = ClearableMetricProps;
-
-function memoryTone(percent: number): MetricTone {
-  if (percent > 80) {
-    return 'bad';
-  }
-
-  return percent > 60 ? 'warn' : 'neutral';
-}
 
 /** JS heap usage (Chromium only) from the performance collector. */
 export const MemoryMetric = ({

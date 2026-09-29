@@ -61,7 +61,7 @@ export function App() {
 }
 ```
 
-**`scope` values:** any metric — `"fps"` · `"memory"` · `"network"` · `"events"` · `"errors"` ·
+**`scope` values:** any metric — `"health"` (the most serious current problem) · `"fps"` · `"memory"` · `"network"` · `"events"` · `"errors"` ·
 `"resources"` · `"webVitals"` · `"react"` · `"reporter"` — plus `"performance"` (default, same as `"fps"`).
 
 ### 2. MonitorInspector — detailed panel

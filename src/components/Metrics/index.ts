@@ -4,6 +4,8 @@ export type { EventsMetricProps } from './EventsMetric';
 export { EventsMetric } from './EventsMetric';
 export type { FpsMetricProps } from './FpsMetric';
 export { FpsMetric } from './FpsMetric';
+export type { HealthMetricProps } from './HealthMetric';
+export { HealthMetric } from './HealthMetric';
 export type { MemoryMetricProps } from './MemoryMetric';
 export { MemoryMetric } from './MemoryMetric';
 export type { MetricCardProps, MetricStat } from './MetricCard';

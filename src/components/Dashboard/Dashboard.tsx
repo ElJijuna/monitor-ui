@@ -6,6 +6,7 @@ import {
   ErrorsMetric,
   EventsMetric,
   FpsMetric,
+  HealthMetric,
   MemoryMetric,
   NetworkMetric,
   ReactMetric,
@@ -58,6 +59,7 @@ export const Dashboard = ({
 
       <div className="monitor-dashboard__content">
         <div className="monitor-dashboard__metrics">
+          <HealthMetric monitor={monitor} />
           <FpsMetric className="monitor-dashboard__featured" monitor={monitor} />
           <MemoryMetric monitor={monitor} />
           <NetworkMetric className="monitor-dashboard__featured" monitor={monitor} />

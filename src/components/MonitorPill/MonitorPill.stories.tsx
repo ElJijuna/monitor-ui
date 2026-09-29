@@ -37,6 +37,11 @@ type Story = StoryObj<typeof meta>;
 
 export const Performance: Story = {};
 
+/** The most serious current problem across every collector — one pill for the whole app. */
+export const Health: Story = {
+  args: { scope: 'health' },
+};
+
 export const Network: Story = {
   args: { scope: 'network' },
 };

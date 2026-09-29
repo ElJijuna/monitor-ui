@@ -7,13 +7,16 @@ import { MetricAction } from './MetricAction';
 import { MetricCard } from './MetricCard';
 import { MetricList } from './MetricList';
 import { MetricSpark } from './MetricSpark';
-import { formatPercent, METRIC_LIST_MAX_ITEMS, shortUrl } from './metricUtils';
+import {
+  formatPercent,
+  METRIC_LIST_MAX_ITEMS,
+  networkTone,
+  SLOW_LATENCY_MS,
+  shortUrl,
+} from './metricUtils';
 import type { ClearableMetricProps, MetricTone } from './types';
 
 export type NetworkMetricProps = ClearableMetricProps;
-
-/** Latency above this value (ms) is flagged as slow. */
-const SLOW_LATENCY_MS = 500;
 
 /**
  * Rolling request latency, throughput and error rate from the network collector, flagged when
@@ -37,8 +40,7 @@ export const NetworkMetric = ({
   if (offline) {
     tone = 'bad';
   } else if (hasTraffic) {
-    tone =
-      avgLatency > SLOW_LATENCY_MS || errorRate >= 0.5 ? 'bad' : errorRate > 0 ? 'warn' : 'good';
+    tone = networkTone(network.window5s);
   }
 
   return (

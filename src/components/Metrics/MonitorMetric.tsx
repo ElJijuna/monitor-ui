@@ -1,6 +1,7 @@
 import { ErrorsMetric } from './ErrorsMetric';
 import { EventsMetric } from './EventsMetric';
 import { FpsMetric } from './FpsMetric';
+import { HealthMetric } from './HealthMetric';
 import { MemoryMetric } from './MemoryMetric';
 import { NetworkMetric } from './NetworkMetric';
 import { ReactMetric } from './ReactMetric';
@@ -10,6 +11,7 @@ import type { ClearableMetricProps } from './types';
 import { WebVitalsMetric } from './WebVitalsMetric';
 
 export type MonitorMetricKind =
+  | 'health'
   | 'fps'
   | 'memory'
   | 'network'
@@ -21,6 +23,7 @@ export type MonitorMetricKind =
   | 'reporter';
 
 export const MONITOR_METRIC_KINDS: readonly MonitorMetricKind[] = [
+  'health',
   'fps',
   'memory',
   'network',
@@ -41,6 +44,8 @@ export interface MonitorMetricProps extends ClearableMetricProps {
 /** Renders any metric widget by name — handy for user-configurable layouts. */
 export const MonitorMetric = ({ metric, allowClear, allowFlush, ...rest }: MonitorMetricProps) => {
   switch (metric) {
+    case 'health':
+      return <HealthMetric {...rest} />;
     case 'fps':
       return <FpsMetric {...rest} allowClear={allowClear} />;
     case 'memory':
