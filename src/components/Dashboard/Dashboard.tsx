@@ -1,15 +1,20 @@
 import { Button, Text } from '@gnome-ui/react';
 import type { Monitor } from 'monitor-api';
 import '../../styles/tokens.css';
-import '../MonitorInspector/MonitorInspector.css';
 import './Dashboard.css';
-import { ErrorsSection } from '@/components/MonitorInspector/ErrorsSection';
-import { ReactSection } from '@/components/MonitorInspector/ReactSection';
-import { ReporterSection } from '@/components/MonitorInspector/ReporterSection';
-import { WebVitalsSection } from '@/components/MonitorInspector/WebVitalsSection';
-import { ChartGrid } from './ChartGrid';
+import {
+  ErrorsMetric,
+  EventsMetric,
+  FpsMetric,
+  MemoryMetric,
+  NetworkMetric,
+  ReactMetric,
+  ReporterMetric,
+  ResourcesMetric,
+  WebVitalsMetric,
+} from '@/components/Metrics';
+import { DeviceStatus } from './DeviceStatus';
 import { EventsLog } from './EventsLog';
-import { KpiGrid } from './KpiGrid';
 import { NetworkLog } from './NetworkLog';
 
 export interface DashboardProps {
@@ -22,6 +27,10 @@ export interface DashboardProps {
   allowFlushReport?: boolean;
 }
 
+/**
+ * Full view built from the metric widgets. Featured widgets span two grid columns when the
+ * dashboard is wide enough, which turns them into their lg layout with the drill-down panel.
+ */
 export const Dashboard = ({
   monitor,
   onBack,
@@ -38,6 +47,7 @@ export const Dashboard = ({
           <Text className="monitor-dashboard__title" variant="caption-heading">
             {title}
           </Text>
+          <DeviceStatus monitor={monitor} />
         </div>
         {onBack && (
           <Button onClick={onBack} size="sm" variant="flat">
@@ -47,12 +57,23 @@ export const Dashboard = ({
       </div>
 
       <div className="monitor-dashboard__content">
-        <KpiGrid monitor={monitor} />
-        <ChartGrid monitor={monitor} />
-        <WebVitalsSection monitor={monitor} />
-        <ReactSection monitor={monitor} />
-        {showErrors && <ErrorsSection allowClear={allowClearErrors} monitor={monitor} />}
-        {showReporter && <ReporterSection allowFlush={allowFlushReport} monitor={monitor} />}
+        <div className="monitor-dashboard__metrics">
+          <FpsMetric className="monitor-dashboard__featured" monitor={monitor} />
+          <MemoryMetric monitor={monitor} />
+          <NetworkMetric className="monitor-dashboard__featured" monitor={monitor} />
+          <ResourcesMetric monitor={monitor} />
+          <WebVitalsMetric className="monitor-dashboard__featured" monitor={monitor} />
+          <EventsMetric monitor={monitor} />
+          {showErrors && (
+            <ErrorsMetric
+              allowClear={allowClearErrors}
+              className="monitor-dashboard__featured"
+              monitor={monitor}
+            />
+          )}
+          {showReporter && <ReporterMetric allowFlush={allowFlushReport} monitor={monitor} />}
+          <ReactMetric monitor={monitor} />
+        </div>
         <div className="monitor-dashboard__tables">
           <NetworkLog monitor={monitor} />
           <EventsLog monitor={monitor} />

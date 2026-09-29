@@ -23,7 +23,9 @@
 .monitor-dashboard__title-group {
   align-items: center;
   display: flex;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  min-inline-size: 0;
 }
 
 .monitor-dashboard__title {
@@ -43,40 +45,73 @@
   padding: var(--gnome-space-3, 18px);
 }
 
-/* ── KPI grid ───────────────────────────────────────────── */
+/* ── Metric widgets ─────────────────────────────────────── */
 
-.monitor-dashboard__kpis {
+/*
+  Bento grid: auto-fill columns of at least 300px and rows of a fixed minimum height, so
+  widgets in a row share one height and it does not change as data arrives. From 640px the
+  featured widgets take 2 × 2 cells, which gives them their lg layout (drill-down panel);
+  `dense` backfills the 1 × 1 widgets beside them.
+*/
+.monitor-dashboard__metrics {
+  --monitor-dashboard-row: 176px;
+
   display: grid;
   gap: var(--gnome-space-2, 12px);
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-auto-flow: row dense;
+  grid-auto-rows: minmax(var(--monitor-dashboard-row), auto);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
 }
 
-.monitor-dashboard__spark {
-  display: block;
-  inline-size: 100%;
+.monitor-dashboard__metrics > * {
+  min-block-size: 0;
 }
 
-/* ── Charts ─────────────────────────────────────────────── */
-
-.monitor-dashboard__charts {
-  display: grid;
-  gap: var(--gnome-space-2, 12px);
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+@container monitor-dashboard (min-width: 640px) {
+  .monitor-dashboard__featured {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
 }
 
-.monitor-dashboard__chart-panel {
-  background: var(--monitor-bg-card, rgba(255, 255, 255, 0.03));
+/* ── Device chips ───────────────────────────────────────── */
+
+.monitor-dashboard__device {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.monitor-dashboard__chip {
+  --_chip-color: var(--gnome-window-fg-color, #fff);
+
+  align-items: center;
   border: 1px solid var(--monitor-border, rgba(255, 255, 255, 0.07));
-  border-radius: var(--gnome-radius-lg, 12px);
-  display: flex;
-  flex-direction: column;
-  gap: var(--gnome-space-1, 6px);
-  overflow: hidden;
-  padding: var(--gnome-space-2, 12px);
+  border-radius: 999px;
+  display: inline-flex;
+  gap: 5px;
+  line-height: 1;
+  padding: 3px 8px;
+  white-space: nowrap;
 }
 
-.monitor-dashboard__chart-label {
-  display: block;
+.monitor-dashboard__chip[data-tone="good"] {
+  --_chip-color: var(--monitor-color-status-ok, #4ade80);
+}
+
+.monitor-dashboard__chip[data-tone="bad"] {
+  --_chip-color: var(--monitor-color-status-error, #f87171);
+
+  background: color-mix(in srgb, var(--_chip-color) 12%, transparent);
+  color: var(--_chip-color);
+}
+
+.monitor-dashboard__chip[data-tone]::before {
+  background: var(--_chip-color);
+  block-size: 6px;
+  border-radius: 50%;
+  content: "";
+  inline-size: 6px;
 }
 
 /* ── Log tables ─────────────────────────────────────────── */
@@ -154,16 +189,6 @@
 
 /* ── Responsive (container queries) ─────────────────────── */
 
-@container monitor-dashboard (max-width: 720px) {
-  .monitor-dashboard__kpis {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .monitor-dashboard__charts {
-    grid-template-columns: 1fr;
-  }
-}
-
 @container monitor-dashboard (max-width: 480px) {
   .monitor-dashboard__header {
     padding: 10px 12px;
@@ -175,12 +200,6 @@
   }
 
   .monitor-dashboard__tables {
-    grid-template-columns: 1fr;
-  }
-}
-
-@container monitor-dashboard (max-width: 320px) {
-  .monitor-dashboard__kpis {
     grid-template-columns: 1fr;
   }
 }

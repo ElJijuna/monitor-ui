@@ -21,8 +21,6 @@ export const selectNetworkEntries = (snapshot: NetworkSnapshot) => snapshot.entr
 
 export const selectEventEntries = (snapshot: EventSnapshot) => snapshot.entries;
 
-export const selectEventCount = (snapshot: EventSnapshot) => snapshot.entries.length;
-
 export const selectTotalErrors = (snapshot: ErrorSnapshot) => snapshot.totalErrors;
 
 /** Commit counters and slow renders; pair with `shallowEqual`. */

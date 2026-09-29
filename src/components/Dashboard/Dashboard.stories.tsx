@@ -4,23 +4,37 @@ import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { MonitorInspector } from '@/components/MonitorInspector';
 import { MonitorPill } from '@/components/MonitorPill';
-import { useDemoMonitor } from '@/stories/demoMonitor';
+import { type DemoMonitorOptions, useDemoMonitor } from '@/stories/demoMonitor';
 import { ResizableFrame } from '@/stories/ResizableFrame';
 import { Dashboard, type DashboardProps } from './Dashboard';
 
-type DashboardStoryProps = Omit<DashboardProps, 'monitor'>;
+type DashboardStoryProps = Omit<DashboardProps, 'monitor'> & DemoMonitorOptions;
 
-/** Mirrors the container queries in Dashboard.css. */
+/** Min column width, grid gap and content padding from Dashboard.css. */
+const COLUMN_MIN = 300;
+const GAP = 12;
+
+/** Mirrors the widget grid in Dashboard.css: auto-fill columns, featured 2 × 2 from 640px. */
 function dashboardLayout(width: number): string {
-  if (width <= 320) {
-    return 'single column';
-  }
+  const padding = width <= 480 ? 24 : 36;
+  const columns = Math.max(1, Math.floor((width - 2 - padding + GAP) / (COLUMN_MIN + GAP)));
+  const featured = width >= 640 ? ' · featured widgets in lg' : '';
 
-  if (width <= 480) {
-    return 'compact';
-  }
+  return `${columns} column${columns === 1 ? '' : 's'}${featured}`;
+}
 
-  return width <= 720 ? 'medium' : 'wide';
+/** Splits the story args into the demo monitor options and the dashboard props. */
+function useStoryMonitor({
+  requests,
+  events,
+  errors,
+  reporter,
+  jank,
+  ...props
+}: DashboardStoryProps) {
+  const monitor = useDemoMonitor({ requests, events, errors, reporter, jank });
+
+  return { monitor, props };
 }
 
 const page: CSSProperties = {
@@ -32,8 +46,8 @@ const page: CSSProperties = {
   padding: 24,
 };
 
-const DashboardStory = (props: DashboardStoryProps) => {
-  const monitor = useDemoMonitor();
+const DashboardStory = (args: DashboardStoryProps) => {
+  const { monitor, props } = useStoryMonitor(args);
 
   return <Dashboard {...props} monitor={monitor} />;
 };
@@ -46,12 +60,17 @@ const meta = {
     docs: {
       description: {
         component:
-          'The dashboard is an inline-size container: KPIs, charts and logs reflow from the width of the slot it is placed in (wide → medium ≤ 720px → compact ≤ 480px → single column ≤ 320px), so it works the same in a full page, a split view or a side panel.',
+          'The dashboard is built from the metric widgets in a bento grid: auto-fill columns of at least 300px and rows of a fixed minimum height, so widgets in a row share one height that does not jump as data arrives. From 640px the featured widgets — FPS, Network, Web Vitals and Errors — take 2 × 2 cells, which switches them to their lg layout with the drill-down panel: long frames and their scripts, recent requests, Web Vitals attribution, captured errors. The header shows connectivity and CPU chips from the device collector (toggle offline in DevTools → Network to see it change). Everything follows the width of the slot, not the viewport.',
       },
     },
   },
   argTypes: {
     onBack: { table: { disable: true } },
+    requests: { table: { category: 'Demo data' } },
+    events: { table: { category: 'Demo data' } },
+    errors: { table: { category: 'Demo data' } },
+    reporter: { table: { category: 'Demo data' } },
+    jank: { table: { category: 'Demo data' } },
   },
   args: {
     title: 'Dashboard',
@@ -59,6 +78,11 @@ const meta = {
     showReporter: true,
     allowClearErrors: false,
     allowFlushReport: false,
+    requests: true,
+    events: true,
+    errors: true,
+    reporter: true,
+    jank: true,
   },
   decorators: [
     (Story) => (
@@ -81,21 +105,26 @@ export const WithActions: Story = {
   args: { allowClearErrors: true, allowFlushReport: true },
 };
 
-/** Diagnostics sections hidden. */
+/** Errors and reporter widgets hidden. */
 export const MetricsOnly: Story = {
   args: { showErrors: false, showReporter: false },
 };
 
+/** No synthetic main-thread blocking: steady FPS and no long frames. */
+export const Calm: Story = {
+  args: { jank: false, errors: false },
+};
+
 /* ── Container queries ──────────────────────────────────── */
 
-const ResizableStory = (props: DashboardStoryProps) => {
-  const monitor = useDemoMonitor();
+const ResizableStory = (args: DashboardStoryProps) => {
+  const { monitor, props } = useStoryMonitor(args);
 
   return (
     <ResizableFrame
       describe={dashboardLayout}
-      initialWidth={640}
-      minWidth={260}
+      initialWidth={720}
+      minWidth={280}
       title="Resizable slot"
     >
       <Dashboard {...props} monitor={monitor} />
@@ -108,10 +137,10 @@ export const ResizableContainer: Story = {
   render: (args) => <ResizableStory {...args} />,
 };
 
-const SLOT_WIDTHS = [1080, 640, 400, 300] as const;
+const SLOT_WIDTHS = [1280, 720, 400] as const;
 
-const WidthsStory = (props: DashboardStoryProps) => {
-  const monitor = useDemoMonitor();
+const WidthsStory = (args: DashboardStoryProps) => {
+  const { monitor, props } = useStoryMonitor(args);
 
   return (
     <>
@@ -140,8 +169,8 @@ export const Widths: Story = {
 
 /* ── In an application shell ────────────────────────────── */
 
-const AppShellStory = (props: DashboardStoryProps) => {
-  const monitor = useDemoMonitor();
+const AppShellStory = (args: DashboardStoryProps) => {
+  const { monitor, props } = useStoryMonitor(args);
   const [panel, setPanel] = useState<'closed' | 'inspector' | 'dashboard'>('dashboard');
   const panelWidth = panel === 'dashboard' ? 'minmax(0, 1fr)' : '380px';
 

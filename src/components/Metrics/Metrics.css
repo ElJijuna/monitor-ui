@@ -67,6 +67,8 @@
   --monitor-metric-pad-block: 4px;
   --monitor-metric-pad-inline: 12px;
 
+  block-size: 100%;
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto;
@@ -276,7 +278,10 @@
     padding-inline-start: var(--monitor-metric-pad-inline);
   }
 
+  /* Fixed height: rows arriving scroll inside the list instead of growing the card. */
   .monitor-metric__details {
+    align-self: start;
+    block-size: var(--monitor-metric-details-size, 240px);
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -369,7 +374,8 @@
     #000 calc(100% - var(--monitor-metric-fade-end)),
     transparent 100%
   );
-  max-block-size: 188px;
+  flex: 1;
+  min-block-size: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 0 2px 12px 0;
@@ -481,6 +487,7 @@
 
 .monitor-metric__list-empty {
   display: block;
+  margin-block: auto;
   padding-block: 12px;
   text-align: center;
 }

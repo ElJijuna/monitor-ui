@@ -5,7 +5,7 @@
 [![license](https://img.shields.io/npm/l/monitor-ui)](./LICENSE)
 [![CI](https://github.com/ElJijuna/monitor-ui/actions/workflows/release.yml/badge.svg)](https://github.com/ElJijuna/monitor-ui/actions/workflows/release.yml)
 
-Three-level React UI for [monitor-api](https://www.npmjs.com/package/monitor-api): a compact pill that shows live metrics, an inspector panel with detailed sections, and a full dashboard with charts and tables. Each level is independently usable or wired together into a drill-down flow.
+Three-level React UI for [monitor-api](https://www.npmjs.com/package/monitor-api): a compact pill that shows live metrics, an inspector panel with detailed sections, and a full dashboard of metric widgets and logs. Each level is independently usable or wired together into a drill-down flow.
 
 ![monitor-ui dashboard demo](https://raw.githubusercontent.com/ElJijuna/monitor-ui/main/public/assets/dashboard.gif)
 
@@ -82,7 +82,11 @@ Error and reporter actions are opt-in:
 
 ### 3. Dashboard — full view
 
-A full-page dashboard with KPI cards, time-series charts, a network log, and an events log.
+A full view built from the metric widgets — FPS, memory, network, resources, Web Vitals, events,
+errors, reporter and React — plus network and event logs. Widgets fill an auto-fill grid; when the
+dashboard is at least 640px wide, FPS, Network, Web Vitals and Errors take 2 × 2 cells and show
+their drill-down panels. Rows have a fixed minimum height, so cards keep their size as data arrives. The header shows connectivity and CPU chips from the device collector.
+Enable the `resources` collector (and optionally Web Vitals `attribution`) to fill every widget.
 
 ```tsx
 <Dashboard
