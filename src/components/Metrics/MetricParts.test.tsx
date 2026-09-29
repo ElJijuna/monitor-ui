@@ -175,7 +175,6 @@ describe('MetricCard slots', () => {
     render(<MetricCard aria-label="Frame rate" label="FPS" value={1} />);
     expect(screen.getByRole('group', { name: 'Frame rate' })).toBeInTheDocument();
   });
-
 });
 
 describe('MetricCard activation', () => {
@@ -234,4 +233,3 @@ describe('MetricCard activation', () => {
     expect(onActivate).not.toHaveBeenCalled();
   });
 });
-

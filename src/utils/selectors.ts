@@ -1,9 +1,4 @@
-import type {
-  DeviceSnapshot,
-  EventSnapshot,
-  NetworkSnapshot,
-  ReactSnapshot,
-} from 'monitor-api';
+import type { DeviceSnapshot, EventSnapshot, NetworkSnapshot, ReactSnapshot } from 'monitor-api';
 
 /*
   Snapshot selectors for the monitor-api hooks (`useNetwork(monitor, selectWindow5s, shallowEqual)`).
