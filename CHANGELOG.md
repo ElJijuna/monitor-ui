@@ -1,3 +1,29 @@
+# [2.4.0](https://github.com/ElJijuna/monitor-ui/compare/v2.3.0...v2.4.0) (2026-09-29)
+
+
+### Bug Fixes
+
+* ensure gradient is disabled for SparkAreaChart in MetricSpark component ([c513c65](https://github.com/ElJijuna/monitor-ui/commit/c513c65f704d4675f7ef17b98508b50a47e5bf22))
+* replace SparkLineChart with SparkAreaChart in MetricSpark component ([6b2c94f](https://github.com/ElJijuna/monitor-ui/commit/6b2c94fb29a58dd62a19efc0a320fca5298a46de))
+
+
+### Features
+
+* add activation support to MetricCard and related components ([f73ddf3](https://github.com/ElJijuna/monitor-ui/commit/f73ddf3271c396ad1799d3b706333cbb385abd44))
+* add HealthMetric component and integrate into Dashboard and MonitorMetric ([3822500](https://github.com/ElJijuna/monitor-ui/commit/3822500a6428bf20f58cbeaba44d70f171073b10))
+* add ResourcesMetric component and integrate resource monitoring into metrics ([f834363](https://github.com/ElJijuna/monitor-ui/commit/f8343632e32069d4191a2aaf4c9177aa87368d02))
+* add support for long animation frames in performance metrics and enhance related components ([837b853](https://github.com/ElJijuna/monitor-ui/commit/837b853522b586ce5cbf6af9bb652c47bd62c0f3))
+* add Web Vitals attribution support and enhance related components ([b85f8ad](https://github.com/ElJijuna/monitor-ui/commit/b85f8ad79ea220e3624e5dbfe71e58afdf4e33fb))
+* enhance Dashboard with metric widgets and device status integration ([0ca83b4](https://github.com/ElJijuna/monitor-ui/commit/0ca83b46fe5f300347d53df83b693c4c5e8b0281))
+* enhance MetricList component with card framing and improved styling ([1117913](https://github.com/ElJijuna/monitor-ui/commit/1117913b703cd7a14a5fc7ff959e69b7ccf82642))
+* enhance MonitorInspector and metrics components with expanded layout support and improved accessibility; update tests and documentation ([afcbe31](https://github.com/ElJijuna/monitor-ui/commit/afcbe31c1aff9963b4dcc588bde27efa0de01981))
+* enhance StatCard mock and integrate it into MetricCard for improved layout and functionality ([f653972](https://github.com/ElJijuna/monitor-ui/commit/f653972c2ad460dc88ca2d408250366c8aefebde))
+* implement DeviceSection and integrate device monitoring into the UI ([1d2549f](https://github.com/ElJijuna/monitor-ui/commit/1d2549f018db42638e4476be7e6930cdd0f81d7d))
+* implement snapshot selectors for monitor-api hooks to optimize component re-renders ([337e624](https://github.com/ElJijuna/monitor-ui/commit/337e624874ec9a50678092e677012e2e078da065))
+* introduce DeviceStatus component and integrate into MonitorInspector; refactor metrics for improved layout and accessibility ([8f47c2e](https://github.com/ElJijuna/monitor-ui/commit/8f47c2ee5e42fdf3a1ef3fcf236cfbeb7b3cfb35))
+* remove ChartGrid and KpiGrid components to streamline dashboard ([026c4a7](https://github.com/ElJijuna/monitor-ui/commit/026c4a7dbf8e40d26e47ec67df8ffe6e1b0df03b))
+* update MonitorPill component to support additional metrics and improve accessibility ([7c5b96e](https://github.com/ElJijuna/monitor-ui/commit/7c5b96ef51607ce33f62e7a14398b6a51327a160))
+
 # [2.3.0](https://github.com/ElJijuna/monitor-ui/compare/v2.2.0...v2.3.0) (2026-09-29)
 
 
