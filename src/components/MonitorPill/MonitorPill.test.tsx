@@ -66,4 +66,29 @@ describe('MonitorPill', () => {
 
     expect(container.firstChild).toHaveAttribute('aria-label', 'Ver métricas');
   });
+
+  it('flags an offline device in every scope, including the accessible name', () => {
+    jest.mocked(hooks.useDevice).mockReturnValue({
+      hardwareConcurrency: 8,
+      online: false,
+      offlineCount: 1,
+    });
+    const { container } = render(
+      <MonitorPill label="Open monitor" monitor={monitor} scope="events" />,
+    );
+
+    expect(screen.getByText('offline')).toBeInTheDocument();
+    expect(container.firstChild).toHaveAttribute('aria-label', 'Open monitor, offline');
+  });
+
+  it('shows no offline badge while online or unknown', () => {
+    jest.mocked(hooks.useDevice).mockReturnValue({
+      hardwareConcurrency: 8,
+      online: null,
+      offlineCount: 0,
+    });
+    render(<MonitorPill monitor={monitor} />);
+
+    expect(screen.queryByText('offline')).not.toBeInTheDocument();
+  });
 });

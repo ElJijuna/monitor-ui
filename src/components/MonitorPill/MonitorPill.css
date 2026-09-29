@@ -36,3 +36,19 @@
   background: var(--monitor-border);
   inline-size: 1px;
 }
+
+.monitor-pill__offline {
+  align-items: center;
+  display: inline-flex;
+  gap: 5px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.monitor-pill__offline::before {
+  background: currentColor;
+  block-size: 6px;
+  border-radius: 50%;
+  content: "";
+  inline-size: 6px;
+}

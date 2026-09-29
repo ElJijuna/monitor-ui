@@ -1,4 +1,5 @@
 import type {
+  DeviceSnapshot,
   ErrorSnapshot,
   EventSnapshot,
   Monitor,
@@ -56,6 +57,12 @@ const webVitalsSnapshot = (): WebVitalsSnapshot => ({
 });
 
 const errorSnapshot = (): ErrorSnapshot => ({ entries: [], totalErrors: 0, droppedErrors: 0 });
+
+const deviceSnapshot = (): DeviceSnapshot => ({
+  hardwareConcurrency: null,
+  online: null,
+  offlineCount: 0,
+});
 
 const emptyTypeStats = (): ResourceTypeStats => ({
   count: 0,
@@ -120,6 +127,7 @@ export const useReact = snapshotHook(reactSnapshot);
 export const useWebVitals = snapshotHook(webVitalsSnapshot);
 export const useErrors = snapshotHook(errorSnapshot);
 export const useResources = snapshotHook(resourceSnapshot);
+export const useDevice = snapshotHook(deviceSnapshot);
 
 export const shallowEqual = jest.fn((previous: unknown, next: unknown) =>
   Object.is(previous, next),
@@ -135,7 +143,7 @@ export const useMonitor = jest.fn(
     errors: errorSnapshot(),
     resources: resourceSnapshot(),
     webVitals: webVitalsSnapshot(),
-    device: { hardwareConcurrency: null, online: null, offlineCount: 0 },
+    device: deviceSnapshot(),
   }),
 );
 export const useSignal = jest.fn(

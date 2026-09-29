@@ -3,6 +3,7 @@ import type { Monitor } from 'monitor-api';
 import type { HTMLAttributes } from 'react';
 import '../../styles/tokens.css';
 import './MonitorInspector.css';
+import { DeviceSection } from './DeviceSection';
 import { ErrorsSection } from './ErrorsSection';
 import { EventsSection } from './EventsSection';
 import { NetworkSection } from './NetworkSection';
@@ -36,6 +37,7 @@ export const MonitorInspector = ({
     >
       <div className="monitor-inspector__content">
         <PerformanceSection monitor={monitor} />
+        <DeviceSection monitor={monitor} />
         <WebVitalsSection monitor={monitor} />
         <NetworkSection monitor={monitor} />
         <ReactSection monitor={monitor} />

@@ -19,9 +19,28 @@ const HeaderBarMock = ({
 }: AnyProps & { title?: ReactNode; end?: ReactNode }) =>
   createElement('div', { className, ...rest }, title, end, children);
 
+// Row slots are nodes, not DOM attributes: render them as children, like the real ActionRow.
+const ActionRowMock = ({
+  title,
+  subtitle,
+  trailing,
+  variant: _variant,
+  children,
+  className,
+  ...rest
+}: AnyProps & { title?: ReactNode; subtitle?: ReactNode; trailing?: ReactNode }) =>
+  createElement(
+    'div',
+    { className, ...rest },
+    title !== undefined && createElement('span', null, title),
+    subtitle !== undefined && createElement('span', null, subtitle),
+    trailing,
+    children,
+  );
+
 export default PassThrough;
 export const ThemeProvider = PassThrough;
-export const ActionRow = PassThrough;
+export const ActionRow = ActionRowMock;
 export const BoxedList = PassThrough;
 export const Button = ButtonMock;
 // `interactive` is a boolean behaviour flag, not a DOM attribute.

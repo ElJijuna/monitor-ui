@@ -1,4 +1,10 @@
-import type { ErrorSnapshot, EventSnapshot, NetworkSnapshot, ReactSnapshot } from 'monitor-api';
+import type {
+  DeviceSnapshot,
+  ErrorSnapshot,
+  EventSnapshot,
+  NetworkSnapshot,
+  ReactSnapshot,
+} from 'monitor-api';
 
 /*
   Snapshot selectors for the monitor-api hooks (`useNetwork(monitor, selectWindow5s, shallowEqual)`).
@@ -25,3 +31,6 @@ export const selectReactSummary = ({
   totalCommits,
   truncatedCommits,
 }: ReactSnapshot) => ({ slowComponents, totalCommits, truncatedCommits });
+
+/** `false` only when the browser reports no network; `null` before `start()` or where unknown. */
+export const selectOnline = (snapshot: DeviceSnapshot) => snapshot.online;

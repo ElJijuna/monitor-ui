@@ -225,6 +225,18 @@ describe('MemoryMetric', () => {
 });
 
 describe('NetworkMetric', () => {
+  it('is bad and says so while the device is offline', () => {
+    jest.mocked(hooks.useDevice).mockReturnValueOnce({
+      hardwareConcurrency: 4,
+      online: false,
+      offlineCount: 1,
+    });
+    render(<NetworkMetric monitor={makeMonitor()} />);
+
+    expect(screen.getByText('offline')).toBeInTheDocument();
+    expect(tone()).toBe('bad');
+  });
+
   const entry = {
     id: 'a',
     url: 'https://api.example.com/users?page=2',

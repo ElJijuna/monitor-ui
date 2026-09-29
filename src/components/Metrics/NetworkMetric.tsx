@@ -1,7 +1,8 @@
-import { useNetwork } from 'monitor-api/react';
+import { useDevice, useNetwork } from 'monitor-api/react';
 import { COLOR_LATENCY } from '@/utils/colors';
 import { CHART_HISTORY_POINTS } from '@/utils/constants';
 import { formatBytes } from '@/utils/formatters';
+import { selectOnline } from '@/utils/selectors';
 import { MetricAction } from './MetricAction';
 import { MetricCard } from './MetricCard';
 import { MetricList } from './MetricList';
@@ -14,7 +15,10 @@ export type NetworkMetricProps = ClearableMetricProps;
 /** Latency above this value (ms) is flagged as slow. */
 const SLOW_LATENCY_MS = 500;
 
-/** Rolling request latency, throughput and error rate from the network collector. */
+/**
+ * Rolling request latency, throughput and error rate from the network collector, flagged when
+ * the device collector reports the browser offline.
+ */
 export const NetworkMetric = ({
   monitor,
   label = 'Network',
@@ -22,6 +26,7 @@ export const NetworkMetric = ({
   ...rest
 }: NetworkMetricProps) => {
   const network = useNetwork(monitor);
+  const offline = useDevice(monitor, selectOnline) === false;
   const { count, avgLatency, errorRate, totalPayload } = network.window5s;
   const hasTraffic = count > 0;
   const latencies = network.entries.slice(-CHART_HISTORY_POINTS).map((entry) => entry.latency);
@@ -29,7 +34,9 @@ export const NetworkMetric = ({
 
   let tone: MetricTone = 'neutral';
 
-  if (hasTraffic) {
+  if (offline) {
+    tone = 'bad';
+  } else if (hasTraffic) {
     tone =
       avgLatency > SLOW_LATENCY_MS || errorRate >= 0.5 ? 'bad' : errorRate > 0 ? 'warn' : 'good';
   }
@@ -47,7 +54,7 @@ export const NetworkMetric = ({
           />
         )
       }
-      caption={hasTraffic ? `${count} req / 5s` : 'idle'}
+      caption={offline ? 'offline' : hasTraffic ? `${count} req / 5s` : 'idle'}
       chart={<MetricSpark color={COLOR_LATENCY} data={latencies} />}
       details={
         <MetricList
