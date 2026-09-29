@@ -5,6 +5,7 @@ import { MemoryMetric } from './MemoryMetric';
 import { NetworkMetric } from './NetworkMetric';
 import { ReactMetric } from './ReactMetric';
 import { ReporterMetric } from './ReporterMetric';
+import { ResourcesMetric } from './ResourcesMetric';
 import type { ClearableMetricProps } from './types';
 import { WebVitalsMetric } from './WebVitalsMetric';
 
@@ -14,6 +15,7 @@ export type MonitorMetricKind =
   | 'network'
   | 'events'
   | 'errors'
+  | 'resources'
   | 'webVitals'
   | 'react'
   | 'reporter';
@@ -24,6 +26,7 @@ export const MONITOR_METRIC_KINDS: readonly MonitorMetricKind[] = [
   'network',
   'events',
   'errors',
+  'resources',
   'webVitals',
   'react',
   'reporter',
@@ -48,6 +51,8 @@ export const MonitorMetric = ({ metric, allowClear, allowFlush, ...rest }: Monit
       return <EventsMetric {...rest} allowClear={allowClear} />;
     case 'errors':
       return <ErrorsMetric {...rest} allowClear={allowClear} />;
+    case 'resources':
+      return <ResourcesMetric {...rest} allowClear={allowClear} />;
     case 'webVitals':
       return <WebVitalsMetric {...rest} allowClear={allowClear} />;
     case 'react':

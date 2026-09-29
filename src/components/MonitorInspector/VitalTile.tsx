@@ -28,7 +28,8 @@ export const VitalTile = ({ name, metric }: VitalTileProps) => {
     attribution?.target,
     ...phases.map((phase) => `${phase.label} ${formatVital(name, phase.value)}`),
   ].filter(Boolean);
-  const summary = `${VITAL_FULL_NAMES[name]}: ${metric ? formatVital(name, metric.value) : 'pending'}`;
+  const value = metric ? formatVital(name, metric.value) : 'pending';
+  const summary = `${VITAL_FULL_NAMES[name]}: ${value}`;
 
   return (
     <li

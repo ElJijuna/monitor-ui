@@ -6,6 +6,8 @@ import type {
   NetworkSnapshot,
   PerformanceSnapshot,
   ReactSnapshot,
+  ResourceSnapshot,
+  ResourceTypeStats,
   WebVitalsSnapshot,
 } from 'monitor-api';
 import type SSignal from 'ssignal';
@@ -55,6 +57,36 @@ const webVitalsSnapshot = (): WebVitalsSnapshot => ({
 
 const errorSnapshot = (): ErrorSnapshot => ({ entries: [], totalErrors: 0, droppedErrors: 0 });
 
+const emptyTypeStats = (): ResourceTypeStats => ({
+  count: 0,
+  transferSize: 0,
+  decodedBodySize: 0,
+  cacheHits: 0,
+  totalDuration: 0,
+  maxDuration: 0,
+});
+
+const resourceSnapshot = (): ResourceSnapshot => ({
+  entries: [],
+  totals: {
+    ...emptyTypeStats(),
+    thirdPartyCount: 0,
+    thirdPartyTransferSize: 0,
+    renderBlockingCount: 0,
+    failedCount: 0,
+  },
+  byType: {
+    script: emptyTypeStats(),
+    stylesheet: emptyTypeStats(),
+    image: emptyTypeStats(),
+    font: emptyTypeStats(),
+    media: emptyTypeStats(),
+    iframe: emptyTypeStats(),
+    other: emptyTypeStats(),
+  },
+  slowest: [],
+});
+
 type Selector<T> = (snapshot: T) => unknown;
 type SnapshotImpl<T> = (monitor: Monitor) => T;
 
@@ -87,6 +119,7 @@ export const useEvents = snapshotHook(eventSnapshot);
 export const useReact = snapshotHook(reactSnapshot);
 export const useWebVitals = snapshotHook(webVitalsSnapshot);
 export const useErrors = snapshotHook(errorSnapshot);
+export const useResources = snapshotHook(resourceSnapshot);
 
 export const shallowEqual = jest.fn((previous: unknown, next: unknown) =>
   Object.is(previous, next),
@@ -100,7 +133,9 @@ export const useMonitor = jest.fn(
     react: reactSnapshot(),
     events: eventSnapshot(),
     errors: errorSnapshot(),
+    resources: resourceSnapshot(),
     webVitals: webVitalsSnapshot(),
+    device: { hardwareConcurrency: null, online: null, offlineCount: 0 },
   }),
 );
 export const useSignal = jest.fn(

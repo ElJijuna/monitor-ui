@@ -72,6 +72,7 @@ export function useDemoMonitor({
           events: { maxHistory: 200 },
           webVitals: { reportAllChanges: true, attribution: true },
           errors: { maxHistory: 25, dedupWindow: 4_000 },
+          resources: true,
           react: false,
         },
         maxHistory: 120,

@@ -7,3 +7,4 @@ export const COLOR_FPS_BAD = 'var(--monitor-color-fps-bad, #f87171)';
 export const COLOR_MEMORY = 'var(--monitor-color-memory, #60a5fa)';
 export const COLOR_LATENCY = 'var(--monitor-color-latency, #a78bfa)';
 export const COLOR_EVENTS = 'var(--monitor-color-events, #f472b6)';
+export const COLOR_RESOURCES = 'var(--monitor-color-resources, #2dd4bf)';

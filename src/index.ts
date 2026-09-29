@@ -26,6 +26,7 @@ export type {
   NetworkMetricProps,
   ReactMetricProps,
   ReporterMetricProps,
+  ResourcesMetricProps,
   WebVitalsMetricProps,
 } from './components/Metrics';
 export {
@@ -39,6 +40,7 @@ export {
   NetworkMetric,
   ReactMetric,
   ReporterMetric,
+  ResourcesMetric,
   WebVitalsMetric,
 } from './components/Metrics';
 export type { MonitorInspectorProps } from './components/MonitorInspector';
@@ -53,6 +55,7 @@ export {
   COLOR_FPS_WARN,
   COLOR_LATENCY,
   COLOR_MEMORY,
+  COLOR_RESOURCES,
 } from './utils/colors';
 export { formatBytes, formatMemory, formatTime } from './utils/formatters';
 export { fpsColor, latencyColor, memoryColor } from './utils/fpsColor';

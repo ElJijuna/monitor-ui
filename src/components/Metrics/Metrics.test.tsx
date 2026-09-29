@@ -9,6 +9,8 @@ import type {
   PerformanceSnapshot,
   ReactSnapshot,
   ReporterSnapshot,
+  ResourceEntry,
+  ResourceSnapshot,
   WebVitalMetric,
 } from 'monitor-api';
 import * as hooks from 'monitor-api/react';
@@ -21,6 +23,7 @@ import { MonitorMetric } from './MonitorMetric';
 import { NetworkMetric } from './NetworkMetric';
 import { ReactMetric } from './ReactMetric';
 import { ReporterMetric } from './ReporterMetric';
+import { ResourcesMetric } from './ResourcesMetric';
 import { WebVitalsMetric } from './WebVitalsMetric';
 
 jest.mock('monitor-api/react');
@@ -61,6 +64,7 @@ function makeMonitor({
     events: { clearLog: jest.fn(), onEvent: { value: latestEvent } },
     errors: { clearLog: jest.fn(), onError: { value: latestError } },
     webVitals: { clearLog: jest.fn() },
+    resources: { clearLog: jest.fn() },
     react: { clearLog: jest.fn() },
     reporter: { snapshot: { value: reporter }, flush: jest.fn(async () => true) },
   } as unknown as Monitor;
@@ -920,6 +924,7 @@ describe('MonitorMetric kinds', () => {
     ['network', 'Network'],
     ['events', 'Events'],
     ['errors', 'Errors'],
+    ['resources', 'Resources'],
     ['webVitals', 'Web Vitals'],
     ['react', 'React'],
     ['reporter', 'Reporter'],
@@ -936,5 +941,144 @@ describe('MonitorMetric kinds', () => {
   it('ignores allowClear for the reporter', () => {
     render(<MonitorMetric allowClear metric="reporter" monitor={makeMonitor()} />);
     expect(screen.queryByText('Clear')).not.toBeInTheDocument();
+  });
+});
+
+/* ── Resources ──────────────────────────────────────────── */
+
+function asset(overrides: Partial<ResourceEntry> = {}): ResourceEntry {
+  return {
+    url: 'https://app.test/assets/app.js',
+    type: 'script',
+    initiatorType: 'script',
+    duration: 200,
+    transferSize: 20_480,
+    encodedBodySize: 20_000,
+    decodedBodySize: 60_000,
+    cache: 'miss',
+    renderBlocking: false,
+    status: 200,
+    thirdParty: false,
+    timestamp: 0,
+    ...overrides,
+  };
+}
+
+function resources(
+  overrides: Partial<ResourceSnapshot['totals']> = {},
+  slowest: ResourceEntry[] = [],
+) {
+  const stats = {
+    count: 0,
+    transferSize: 0,
+    decodedBodySize: 0,
+    cacheHits: 0,
+    totalDuration: 0,
+    maxDuration: 0,
+  };
+
+  return {
+    entries: slowest,
+    totals: {
+      ...stats,
+      thirdPartyCount: 0,
+      thirdPartyTransferSize: 0,
+      renderBlockingCount: 0,
+      failedCount: 0,
+      ...overrides,
+    },
+    byType: {
+      script: stats,
+      stylesheet: stats,
+      image: stats,
+      font: stats,
+      media: stats,
+      iframe: stats,
+      other: stats,
+    },
+    slowest,
+  } satisfies ResourceSnapshot;
+}
+
+describe('ResourcesMetric', () => {
+  it('waits for the first asset', () => {
+    render(<ResourcesMetric allowClear monitor={makeMonitor()} />);
+
+    expect(screen.getByText('waiting')).toBeInTheDocument();
+    expect(screen.getByText('No assets recorded yet')).toBeInTheDocument();
+    expect(screen.getByText('Clear')).toBeDisabled();
+    expect(tone()).toBe('neutral');
+  });
+
+  it('summarizes page weight and lists the slowest assets', () => {
+    jest.mocked(hooks.useResources).mockReturnValueOnce(
+      resources(
+        {
+          count: 4,
+          transferSize: 512_000,
+          cacheHits: 1,
+          maxDuration: 1_400,
+          thirdPartyCount: 2,
+          renderBlockingCount: 1,
+        },
+        [
+          asset({
+            url: 'https://cdn.test/hero.webp',
+            type: 'image',
+            duration: 1_400,
+            thirdParty: true,
+          }),
+          asset({
+            type: 'stylesheet',
+            url: '/main.css',
+            duration: 700,
+            cache: 'hit',
+            renderBlocking: true,
+          }),
+          asset({
+            type: 'font',
+            url: 'https://fonts.test/a.woff2',
+            cache: 'unknown',
+            duration: 350,
+          }),
+        ],
+      ),
+    );
+    const { container } = render(<ResourcesMetric monitor={makeMonitor()} />);
+
+    expect(screen.getByText('500 KB')).toBeInTheDocument();
+    expect(screen.getByText('4 assets')).toBeInTheDocument();
+    expect(screen.getByText('25%')).toBeInTheDocument(); // cache hits
+    expect(tone()).toBe('warn');
+
+    const rows = screen.getAllByRole('listitem');
+
+    expect(rows[0]).toHaveTextContent('IMG/hero.webp20 KB · third-party1400ms');
+    expect(rows[0]).toHaveAttribute('data-tone', 'warn');
+    expect(rows[1]).toHaveTextContent('cached · render-blocking');
+    expect(rows[2]).toHaveTextContent('size hidden');
+
+    const bars = container.querySelectorAll<HTMLElement>('.monitor-metric__list-bar');
+
+    expect(bars[1]?.style.inlineSize).toBe('50%');
+  });
+
+  it('is bad when an asset failed', () => {
+    jest
+      .mocked(hooks.useResources)
+      .mockReturnValueOnce(resources({ count: 1, failedCount: 1 }, [asset({ status: 404 })]));
+    render(<ResourcesMetric monitor={makeMonitor()} />);
+
+    expect(tone()).toBe('bad');
+    expect(screen.getByRole('listitem')).toHaveAttribute('data-tone', 'bad');
+  });
+
+  it('clears the resource log', async () => {
+    const monitor = makeMonitor();
+
+    jest.mocked(hooks.useResources).mockReturnValueOnce(resources({ count: 1 }, [asset()]));
+    render(<ResourcesMetric allowClear monitor={monitor} />);
+    await userEvent.click(screen.getByText('Clear'));
+    expect(monitor.resources.clearLog).toHaveBeenCalledTimes(1);
   });
 });
