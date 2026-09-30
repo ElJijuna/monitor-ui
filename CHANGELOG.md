@@ -1,3 +1,10 @@
+## [2.5.1](https://github.com/ElJijuna/monitor-ui/compare/v2.5.0...v2.5.1) (2026-09-30)
+
+
+### Bug Fixes
+
+* add @microsoft/api-extractor dependency and update build configurations ([91686de](https://github.com/ElJijuna/monitor-ui/commit/91686deea9878ef92005837e56bda73c30438a21))
+
 # [2.5.0](https://github.com/ElJijuna/monitor-ui/compare/v2.4.0...v2.5.0) (2026-09-30)
 
 
