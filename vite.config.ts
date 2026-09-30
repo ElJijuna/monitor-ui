@@ -15,8 +15,9 @@ export default defineConfig({
     cssInjectedByJs(),
     dts({
       include: ['src'],
-      exclude: ['src/**/*.test.*', 'src/**/*.stories.*', 'src/test-utils/**'],
-      rollupTypes: true,
+      entryRoot: 'src',
+      exclude: ['src/**/*.test.*', 'src/**/*.stories.*', 'src/test-utils/**', 'src/stories/**'],
+      bundleTypes: true,
       tsconfigPath: './tsconfig.build.json',
     }),
   ],

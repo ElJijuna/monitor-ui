@@ -3,9 +3,16 @@
     "compilerOptions": {
         "declaration": true,
         "declarationDir": "./dist",
+        "rootDir": "./src",
         "emitDeclarationOnly": true,
         "outDir": "./dist"
     },
     "include": ["src"],
-    "exclude": ["src/**/*.test.tsx", "src/**/*.test.ts", "src/**/*.stories.tsx", "src/test-utils"]
+    "exclude": [
+        "src/**/*.test.tsx",
+        "src/**/*.test.ts",
+        "src/**/*.stories.tsx",
+        "src/test-utils",
+        "src/stories"
+    ]
 }
