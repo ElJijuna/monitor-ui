@@ -1,3 +1,4 @@
+import { DeviceMetric } from './DeviceMetric';
 import { ErrorsMetric } from './ErrorsMetric';
 import { EventsMetric } from './EventsMetric';
 import { FpsMetric } from './FpsMetric';
@@ -20,7 +21,8 @@ export type MonitorMetricKind =
   | 'resources'
   | 'webVitals'
   | 'react'
-  | 'reporter';
+  | 'reporter'
+  | 'device';
 
 export const MONITOR_METRIC_KINDS: readonly MonitorMetricKind[] = [
   'health',
@@ -33,6 +35,7 @@ export const MONITOR_METRIC_KINDS: readonly MonitorMetricKind[] = [
   'webVitals',
   'react',
   'reporter',
+  'device',
 ];
 
 export interface MonitorMetricProps extends ClearableMetricProps {
@@ -64,5 +67,7 @@ export const MonitorMetric = ({ metric, allowClear, allowFlush, ...rest }: Monit
       return <ReactMetric {...rest} allowClear={allowClear} />;
     case 'reporter':
       return <ReporterMetric {...rest} allowFlush={allowFlush} />;
+    case 'device':
+      return <DeviceMetric {...rest} />;
   }
 };

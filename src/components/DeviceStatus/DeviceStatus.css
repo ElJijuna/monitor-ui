@@ -21,6 +21,10 @@
   --_chip-color: var(--monitor-color-status-ok, #4ade80);
 }
 
+.monitor-device__chip[data-tone="warn"] {
+  --_chip-color: var(--monitor-color-fps-warn, #facc15);
+}
+
 .monitor-device__chip[data-tone="bad"] {
   --_chip-color: var(--monitor-color-status-error, #f87171);
 

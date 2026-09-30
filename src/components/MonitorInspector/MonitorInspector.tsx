@@ -5,6 +5,7 @@ import '../../styles/tokens.css';
 import './MonitorInspector.css';
 import { DeviceStatus } from '@/components/DeviceStatus';
 import {
+  DeviceMetric,
   ErrorsMetric,
   EventsMetric,
   FpsMetric,
@@ -59,6 +60,7 @@ export const MonitorInspector = ({
         {showReporter && (
           <ReporterMetric allowFlush={allowFlushReport} expanded monitor={monitor} />
         )}
+        <DeviceMetric expanded monitor={monitor} />
       </div>
     </Card>
   );

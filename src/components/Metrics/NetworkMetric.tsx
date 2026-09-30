@@ -2,7 +2,7 @@ import { useDevice, useNetwork } from 'monitor-api/react';
 import { COLOR_LATENCY } from '@/utils/colors';
 import { CHART_HISTORY_POINTS } from '@/utils/constants';
 import { formatBytes } from '@/utils/formatters';
-import { selectOnline } from '@/utils/selectors';
+import { selectEffectiveType, selectOnline } from '@/utils/selectors';
 import { MetricAction } from './MetricAction';
 import { MetricCard } from './MetricCard';
 import { MetricList } from './MetricList';
@@ -20,7 +20,8 @@ export type NetworkMetricProps = ClearableMetricProps;
 
 /**
  * Rolling request latency, throughput and error rate from the network collector, flagged when
- * the device collector reports the browser offline.
+ * the device collector reports the browser offline. The caption adds the browser's connection
+ * estimate (`4g`, `3g`…) where the Network Information API is available.
  */
 export const NetworkMetric = ({
   monitor,
@@ -30,6 +31,7 @@ export const NetworkMetric = ({
 }: NetworkMetricProps) => {
   const network = useNetwork(monitor);
   const offline = useDevice(monitor, selectOnline) === false;
+  const effectiveType = useDevice(monitor, selectEffectiveType);
   const { count, avgLatency, errorRate, totalPayload } = network.window5s;
   const hasTraffic = count > 0;
   const latencies = network.entries.slice(-CHART_HISTORY_POINTS).map((entry) => entry.latency);
@@ -56,7 +58,11 @@ export const NetworkMetric = ({
           />
         )
       }
-      caption={offline ? 'offline' : hasTraffic ? `${count} req / 5s` : 'idle'}
+      caption={
+        offline
+          ? 'offline'
+          : [hasTraffic ? `${count} req / 5s` : 'idle', effectiveType].filter(Boolean).join(' · ')
+      }
       chart={<MetricSpark color={COLOR_LATENCY} data={latencies} />}
       details={
         <MetricList

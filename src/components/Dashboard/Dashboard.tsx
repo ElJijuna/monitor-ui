@@ -4,6 +4,7 @@ import '../../styles/tokens.css';
 import './Dashboard.css';
 import { DeviceStatus } from '@/components/DeviceStatus';
 import {
+  DeviceMetric,
   ErrorsMetric,
   EventsMetric,
   FpsMetric,
@@ -75,6 +76,7 @@ export const Dashboard = ({
           )}
           {showReporter && <ReporterMetric allowFlush={allowFlushReport} monitor={monitor} />}
           <ReactMetric monitor={monitor} />
+          <DeviceMetric monitor={monitor} />
         </div>
         <div className="monitor-dashboard__tables">
           <NetworkLog monitor={monitor} />

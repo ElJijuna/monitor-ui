@@ -73,6 +73,7 @@ export function useDemoMonitor({
           webVitals: { reportAllChanges: true, attribution: true },
           errors: { maxHistory: 25, dedupWindow: 4_000 },
           resources: true,
+          device: true,
           react: false,
         },
         maxHistory: 120,

@@ -1,4 +1,7 @@
 export type {
+  BrowserInfo,
+  ConnectionInfo,
+  DeviceSnapshot,
   ErrorCollectorConfig,
   ErrorSnapshot,
   MonitorError,
@@ -6,11 +9,14 @@ export type {
   MonitorErrorSource,
   ReporterSnapshot,
   ReportFailure,
+  ScreenInfo,
+  ViewportInfo,
 } from 'monitor-api';
 export type { DashboardProps } from './components/Dashboard';
 export { Dashboard } from './components/Dashboard';
 export type {
   ClearableMetricProps,
+  DeviceMetricProps,
   ErrorsMetricProps,
   EventsMetricProps,
   FpsMetricProps,
@@ -33,6 +39,7 @@ export type {
   WebVitalsMetricProps,
 } from './components/Metrics';
 export {
+  DeviceMetric,
   ErrorsMetric,
   EventsMetric,
   FpsMetric,
@@ -61,5 +68,13 @@ export {
   COLOR_MEMORY,
   COLOR_RESOURCES,
 } from './utils/colors';
+export {
+  connectionTone,
+  formatBrowser,
+  formatConnection,
+  formatPlatform,
+  formatScreen,
+  formatSize,
+} from './utils/device';
 export { formatBytes, formatMemory, formatTime } from './utils/formatters';
 export { fpsColor, latencyColor, memoryColor } from './utils/fpsColor';

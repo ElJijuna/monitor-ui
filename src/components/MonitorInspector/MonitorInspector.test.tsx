@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import type { Monitor } from 'monitor-api';
 import * as hooks from 'monitor-api/react';
+import { deviceSnapshot } from '@/test-utils/deviceSnapshot';
 import { MonitorInspector } from './MonitorInspector';
 
 jest.mock('monitor-api/react');
@@ -52,6 +53,7 @@ describe('MonitorInspector', () => {
       'Events',
       'Errors',
       'Reporter',
+      'Device',
     ]);
     expect(widgets().every((widget) => widget.hasAttribute('data-expanded'))).toBe(true);
   });
@@ -72,11 +74,9 @@ describe('MonitorInspector', () => {
   });
 
   it('shows device chips once the collector reports', () => {
-    jest.mocked(hooks.useDevice).mockReturnValue({
-      hardwareConcurrency: 4,
-      online: true,
-      offlineCount: 0,
-    });
+    jest
+      .mocked(hooks.useDevice)
+      .mockReturnValue(deviceSnapshot({ hardwareConcurrency: 4, online: true }));
     const { container } = render(<MonitorInspector monitor={monitor} />);
     const chips = container.querySelectorAll('.monitor-device__chip');
 
@@ -85,11 +85,7 @@ describe('MonitorInspector', () => {
     expect(chips[0]).toHaveAttribute('data-tone', 'good');
     expect(chips[1]).toHaveTextContent('4 cores');
     // Back to the unreported device for any later test.
-    jest.mocked(hooks.useDevice).mockReturnValue({
-      hardwareConcurrency: null,
-      online: null,
-      offlineCount: 0,
-    });
+    jest.mocked(hooks.useDevice).mockReturnValue(deviceSnapshot());
   });
 
   it('applies custom className', () => {

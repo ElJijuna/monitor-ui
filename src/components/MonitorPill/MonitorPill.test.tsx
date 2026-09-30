@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import type { Monitor } from 'monitor-api';
 import * as hooks from 'monitor-api/react';
 import { MONITOR_METRIC_KINDS } from '@/components/Metrics';
+import { deviceSnapshot } from '@/test-utils/deviceSnapshot';
 import { MonitorPill } from './MonitorPill';
 
 jest.mock('monitor-api/react');
@@ -29,7 +30,7 @@ const monitor = {
   },
 } as unknown as Monitor;
 
-const device = (online: boolean | null) => ({ hardwareConcurrency: 8, online, offlineCount: 0 });
+const device = (online: boolean | null) => deviceSnapshot({ hardwareConcurrency: 8, online });
 
 beforeEach(() => {
   // Read signals as-is; the shared mock falls back to a reporter snapshot for null values.
@@ -56,6 +57,7 @@ describe('MonitorPill', () => {
     ['webVitals', 'Web Vitals'],
     ['resources', 'Resources'],
     ['reporter', 'Reporter'],
+    ['device', 'Device'],
   ] as const)('renders the %p widget as a pill', (scope, name) => {
     render(<MonitorPill monitor={monitor} scope={scope} />);
     expect(screen.getByRole('group', { name })).toHaveAttribute('data-size', 'pill');

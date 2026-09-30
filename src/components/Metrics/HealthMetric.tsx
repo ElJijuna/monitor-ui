@@ -14,7 +14,7 @@ import {
   useSignal,
   useWebVitals,
 } from 'monitor-api/react';
-import { selectOnline, selectWindow5s } from '@/utils/selectors';
+import { selectConnectivity, selectWindow5s } from '@/utils/selectors';
 import { evaluateHealth } from './healthChecks';
 import { MetricCard } from './MetricCard';
 import { MetricList } from './MetricList';
@@ -62,7 +62,7 @@ const CAPTIONS: Record<MetricTone, (issues: number) => string> = {
  * Handy as a single pill when there is room for only one.
  */
 export const HealthMetric = ({ monitor, label = 'Health', ...rest }: HealthMetricProps) => {
-  const online = useDevice(monitor, selectOnline);
+  const { online, ...connection } = useDevice(monitor, selectConnectivity, shallowEqual);
   const totalErrors = useErrors(monitor, selectTotalErrors);
   const vitals = useWebVitals(monitor, selectVitals, shallowEqual);
   const performance = usePerformance(monitor, selectPerformance, shallowEqual);
@@ -72,6 +72,7 @@ export const HealthMetric = ({ monitor, label = 'Health', ...rest }: HealthMetri
 
   const checks = evaluateHealth({
     online,
+    connection,
     totalErrors,
     vitals,
     fps: performance.fps,

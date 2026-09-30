@@ -1,3 +1,5 @@
+export type { DeviceMetricProps } from './DeviceMetric';
+export { DeviceMetric } from './DeviceMetric';
 export type { ErrorsMetricProps } from './ErrorsMetric';
 export { ErrorsMetric } from './ErrorsMetric';
 export type { EventsMetricProps } from './EventsMetric';

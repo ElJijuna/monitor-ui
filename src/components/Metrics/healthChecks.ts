@@ -1,5 +1,11 @@
-import type { NetworkWindow5s, ReporterSnapshot, WebVitalMetric } from 'monitor-api';
+import type {
+  ConnectionInfo,
+  NetworkWindow5s,
+  ReporterSnapshot,
+  WebVitalMetric,
+} from 'monitor-api';
 import { formatVital } from '@/components/MonitorInspector/formatters';
+import { connectionTone, formatConnection } from '@/utils/device';
 import {
   blockingTone,
   formatPercent,
@@ -14,6 +20,8 @@ import type { MetricTone } from './types';
 /** What the health widget reads from the monitor, already narrowed by selectors. */
 export interface HealthInput {
   online: boolean | null;
+  /** Network Information API estimate; omitted or all-null where the browser lacks it. */
+  connection?: ConnectionInfo;
   totalErrors: number;
   /** Latest value of each reported Web Vital. */
   vitals: WebVitalMetric[];
@@ -44,16 +52,35 @@ const plural = (count: number, word: string) => `${count} ${word}${count === 1 ?
 /** Collectors that report `neutral` for fine values count as passing once they have data. */
 const passing = (tone: MetricTone): MetricTone => (tone === 'neutral' ? 'good' : tone);
 
-function connectionCheck(online: boolean | null): HealthCheck {
+function connectionCheck(online: boolean | null, connection?: ConnectionInfo): HealthCheck {
   const base = { id: 'connection', label: 'Connection' };
 
   if (online === null) {
     return { ...base, tone: 'neutral', summary: '—', detail: 'Not reported yet' };
   }
 
-  return online
-    ? { ...base, tone: 'good', summary: 'Online', detail: 'A network is reachable' }
-    : { ...base, tone: 'bad', summary: 'Offline', detail: 'The browser reports no network' };
+  if (!online) {
+    return { ...base, tone: 'bad', summary: 'Offline', detail: 'The browser reports no network' };
+  }
+
+  const quality = connection ? connectionTone(connection) : null;
+  const estimate = connection ? formatConnection(connection) : null;
+
+  if (quality === 'bad' || quality === 'warn') {
+    return {
+      ...base,
+      tone: quality,
+      summary: `${connection?.effectiveType} network`,
+      detail: `Slow connection estimate: ${estimate}`,
+    };
+  }
+
+  return {
+    ...base,
+    tone: 'good',
+    summary: 'Online',
+    detail: estimate ? `A network is reachable · ${estimate}` : 'A network is reachable',
+  };
 }
 
 function errorsCheck(totalErrors: number): HealthCheck {
@@ -187,7 +214,7 @@ function reporterCheck(reporter: ReporterSnapshot): HealthCheck {
 /** Every check, most serious first; checks with the same severity keep their priority order. */
 export function evaluateHealth(input: HealthInput): HealthCheck[] {
   const checks = [
-    connectionCheck(input.online),
+    connectionCheck(input.online, input.connection),
     errorsCheck(input.totalErrors),
     vitalsCheck(input.vitals),
     frameRateCheck(input.fps, input.fpsSamples),

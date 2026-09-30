@@ -14,6 +14,8 @@ import type {
   WebVitalMetric,
 } from 'monitor-api';
 import * as hooks from 'monitor-api/react';
+import { deviceSnapshot } from '@/test-utils/deviceSnapshot';
+import { DeviceMetric } from './DeviceMetric';
 import { ErrorsMetric } from './ErrorsMetric';
 import { EventsMetric } from './EventsMetric';
 import { FpsMetric } from './FpsMetric';
@@ -227,11 +229,11 @@ describe('MemoryMetric', () => {
 
 describe('NetworkMetric', () => {
   it('is bad and says so while the device is offline', () => {
-    jest.mocked(hooks.useDevice).mockReturnValueOnce({
-      hardwareConcurrency: 4,
-      online: false,
-      offlineCount: 1,
-    });
+    jest
+      .mocked(hooks.useDevice)
+      .mockReturnValueOnce(
+        deviceSnapshot({ hardwareConcurrency: 4, online: false, offlineCount: 1 }),
+      );
     render(<NetworkMetric monitor={makeMonitor()} />);
 
     expect(screen.getByText('offline')).toBeInTheDocument();
@@ -270,6 +272,95 @@ describe('NetworkMetric', () => {
     expect(screen.getByText('/users?page=2')).toBeInTheDocument();
     expect(screen.getByText('GET · fetch · 2 KB')).toBeInTheDocument();
     expect(screen.getByRole('group')).toHaveAttribute('data-tone', 'warn');
+  });
+
+  it("adds the browser's connection estimate to the caption", () => {
+    jest.mocked(hooks.useDevice).mockReturnValue(
+      deviceSnapshot({
+        online: true,
+        connection: { effectiveType: '4g', rtt: 50, downlink: 10, saveData: false },
+      }),
+    );
+    render(<NetworkMetric monitor={makeMonitor()} />);
+
+    expect(screen.getByText('idle · 4g')).toBeInTheDocument();
+    jest.mocked(hooks.useDevice).mockReturnValue(deviceSnapshot());
+  });
+});
+
+describe('DeviceMetric', () => {
+  afterEach(() => {
+    jest.mocked(hooks.useDevice).mockReturnValue(deviceSnapshot());
+  });
+
+  it('waits for the device collector', () => {
+    render(<DeviceMetric monitor={makeMonitor()} size="lg" />);
+
+    expect(screen.getByText('waiting')).toBeInTheDocument();
+    expect(screen.getByText('Not reported yet')).toBeInTheDocument();
+    expect(tone()).toBe('neutral');
+  });
+
+  it('shows the browser, platform, capabilities and the whole environment', () => {
+    jest.mocked(hooks.useDevice).mockReturnValue(
+      deviceSnapshot({
+        hardwareConcurrency: 8,
+        deviceMemory: 16,
+        online: true,
+        browser: { name: 'Chrome', majorVersion: 128, mobile: false, platform: 'macOS' },
+        language: 'es-ES',
+        timeZone: 'Europe/Madrid',
+        screen: { width: 1512, height: 982, pixelRatio: 2 },
+        viewport: { width: 1280, height: 720 },
+        connection: { effectiveType: '4g', rtt: 50, downlink: 10, saveData: false },
+        colorScheme: 'dark',
+        reducedMotion: true,
+      }),
+    );
+    render(<DeviceMetric monitor={makeMonitor()} size="lg" />);
+
+    expect(screen.getAllByText('Chrome 128')).toHaveLength(2);
+    expect(screen.getAllByText('macOS · desktop')).toHaveLength(2);
+    expect(screen.getByText('16 GB')).toBeInTheDocument();
+    expect(screen.getAllByText('1280×720')).toHaveLength(2);
+    expect(screen.getByText('4g · 50ms · 10 Mb/s')).toBeInTheDocument();
+    expect(screen.getByText('1512×982 @2x')).toBeInTheDocument();
+    expect(screen.getByText('Europe/Madrid')).toBeInTheDocument();
+    expect(screen.getByText('es-ES')).toBeInTheDocument();
+    expect(screen.getByText('dark')).toBeInTheDocument();
+    expect(screen.getByText('reduced')).toBeInTheDocument();
+    expect(tone()).toBe('good');
+  });
+
+  it('leaves out what the browser does not expose', () => {
+    jest.mocked(hooks.useDevice).mockReturnValue(
+      deviceSnapshot({
+        online: true,
+        browser: { name: 'Firefox', majorVersion: null, mobile: null, platform: null },
+      }),
+    );
+    render(<DeviceMetric monitor={makeMonitor()} size="lg" />);
+
+    expect(screen.getAllByText('Firefox')).toHaveLength(2);
+    expect(screen.getByText('unknown platform')).toBeInTheDocument();
+    expect(screen.queryByText('Time zone')).not.toBeInTheDocument();
+    expect(screen.queryByText('Network estimate')).not.toBeInTheDocument();
+  });
+
+  const slow = (effectiveType: string) => ({
+    online: true,
+    connection: { effectiveType, rtt: 900, downlink: 0.4, saveData: null },
+  });
+
+  it.each([
+    ['offline', { online: false }, 'bad'],
+    ['2g', slow('2g'), 'bad'],
+    ['3g', slow('3g'), 'warn'],
+  ] as const)('flags a device that is %s', (_name, overrides, expected) => {
+    jest.mocked(hooks.useDevice).mockReturnValue(deviceSnapshot(overrides));
+    render(<DeviceMetric monitor={makeMonitor()} />);
+
+    expect(tone()).toBe(expected);
   });
 });
 

@@ -79,6 +79,29 @@ describe('evaluateHealth', () => {
     ]);
   });
 
+  it("grades an online connection by the browser's estimate", () => {
+    const connection = (effectiveType: string | null) => ({
+      effectiveType,
+      rtt: 300,
+      downlink: 1.5,
+      saveData: false,
+    });
+
+    expect(byId(evaluateHealth(input({ online: true })), 'connection')).toMatchObject({
+      tone: 'good',
+      detail: 'A network is reachable',
+    });
+    expect(
+      byId(evaluateHealth(input({ online: true, connection: connection('4g') })), 'connection'),
+    ).toMatchObject({ tone: 'good', detail: 'A network is reachable · 4g · 300ms · 1.5 Mb/s' });
+    expect(
+      byId(evaluateHealth(input({ online: true, connection: connection('3g') })), 'connection'),
+    ).toMatchObject({ tone: 'warn', summary: '3g network' });
+    expect(
+      byId(evaluateHealth(input({ online: true, connection: connection('2g') })), 'connection'),
+    ).toMatchObject({ tone: 'bad', summary: '2g network' });
+  });
+
   it('summarizes Web Vitals by the worst rating', () => {
     const poor = evaluateHealth(
       input({

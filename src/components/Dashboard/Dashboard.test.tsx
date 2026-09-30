@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { Monitor } from 'monitor-api';
 import * as hooks from 'monitor-api/react';
+import { deviceSnapshot } from '@/test-utils/deviceSnapshot';
 import { Dashboard } from './Dashboard';
 
 jest.mock('monitor-api/react');
@@ -78,6 +79,7 @@ describe('Dashboard', () => {
       'Errors',
       'Reporter',
       'React',
+      'Device',
     ]);
     expect(
       [...container.querySelectorAll('.monitor-dashboard__featured')].map((el) =>
@@ -105,21 +107,42 @@ describe('Dashboard', () => {
     expect(container.querySelector('.monitor-device')).toBeNull();
   });
 
-  it('shows connectivity and CPU chips in the header', () => {
-    jest.mocked(hooks.useDevice).mockReturnValue({
-      hardwareConcurrency: 8,
-      online: false,
-      offlineCount: 2,
-    });
-    render(<Dashboard monitor={monitor} />);
+  it('shows connectivity, browser, CPU and RAM chips in the header', () => {
+    jest.mocked(hooks.useDevice).mockReturnValue(
+      deviceSnapshot({
+        hardwareConcurrency: 8,
+        deviceMemory: 16,
+        online: false,
+        offlineCount: 2,
+        browser: { name: 'Chrome', majorVersion: 128, mobile: false, platform: 'macOS' },
+      }),
+    );
+    const { container } = render(<Dashboard monitor={monitor} />);
+    const chips = [...container.querySelectorAll('.monitor-device__chip')];
 
-    expect(screen.getByText('Offline · 2 drops')).toHaveAttribute('data-tone', 'bad');
-    expect(screen.getByText('8 cores')).toBeInTheDocument();
+    expect(chips.map((chip) => chip.textContent)).toEqual([
+      'Offline · 2 drops',
+      'Chrome 128 · macOS',
+      '8 cores',
+      '16 GB RAM',
+    ]);
+    expect(chips[0]).toHaveAttribute('data-tone', 'bad');
     // Back to the unreported device for any later test.
-    jest.mocked(hooks.useDevice).mockReturnValue({
-      hardwareConcurrency: null,
-      online: null,
-      offlineCount: 0,
-    });
+    jest.mocked(hooks.useDevice).mockReturnValue(deviceSnapshot());
+  });
+
+  it('flags a slow connection estimate while online', () => {
+    jest.mocked(hooks.useDevice).mockReturnValue(
+      deviceSnapshot({
+        online: true,
+        connection: { effectiveType: '3g', rtt: 300, downlink: 1.2, saveData: true },
+      }),
+    );
+    const { container } = render(<Dashboard monitor={monitor} />);
+    const chips = container.querySelectorAll('.monitor-device__chip');
+
+    expect(chips[1]).toHaveTextContent('3g · data saver');
+    expect(chips[1]).toHaveAttribute('data-tone', 'warn');
+    jest.mocked(hooks.useDevice).mockReturnValue(deviceSnapshot());
   });
 });

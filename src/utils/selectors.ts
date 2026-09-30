@@ -15,3 +15,15 @@ export const selectEventEntries = (snapshot: EventSnapshot) => snapshot.entries;
 
 /** `false` only when the browser reports no network; `null` before `start()` or where unknown. */
 export const selectOnline = (snapshot: DeviceSnapshot) => snapshot.online;
+
+/** Online state plus the connection estimate; pair with `shallowEqual`. */
+export const selectConnectivity = ({ online, connection }: DeviceSnapshot) => ({
+  online,
+  effectiveType: connection.effectiveType,
+  rtt: connection.rtt,
+  downlink: connection.downlink,
+  saveData: connection.saveData,
+});
+
+/** Effective connection type (`4g`, `3g`…), or null where the browser does not estimate it. */
+export const selectEffectiveType = (snapshot: DeviceSnapshot) => snapshot.connection.effectiveType;

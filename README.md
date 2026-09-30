@@ -43,7 +43,7 @@ import { MonitorPill, MonitorInspector } from 'monitor-ui'
 export function App() {
   const monitor = useMemo(() => createMonitor({
     maxHistory: 120,
-    collectors: ['performance', 'network', 'react', 'events', 'webVitals', 'errors'],
+    collectors: ['performance', 'network', 'react', 'events', 'webVitals', 'errors', 'device'],
   }), [])
   const [open, setOpen] = useState(false)
 
@@ -62,12 +62,12 @@ export function App() {
 ```
 
 **`scope` values:** any metric — `"health"` (the most serious current problem) · `"fps"` · `"memory"` · `"network"` · `"events"` · `"errors"` ·
-`"resources"` · `"webVitals"` · `"react"` · `"reporter"` — plus `"performance"` (default, same as `"fps"`).
+`"resources"` · `"webVitals"` · `"react"` · `"reporter"` · `"device"` — plus `"performance"` (default, same as `"fps"`).
 
 ### 2. MonitorInspector — detailed panel
 
 A side panel with every metric widget — health, FPS, memory, Web Vitals, network, resources,
-React, events, errors and reporter — plus connectivity chips. Widgets are `expanded`: even in a
+React, events, errors, reporter and device — plus device chips. Widgets are `expanded`: even in a
 narrow panel each one shows its stats and drill-down list (long frames, requests, vitals
 attribution, errors with their stack traces…) stacked under the card; in a panel of 600px or
 more they switch to their side-by-side lg layout.
@@ -89,9 +89,9 @@ Error and reporter actions are opt-in:
 ### 3. Dashboard — full view
 
 A full view built from the metric widgets — FPS, memory, network, resources, Web Vitals, events,
-errors, reporter and React — plus network and event logs. Widgets fill an auto-fill grid; when the
+errors, reporter, React and device — plus network and event logs. Widgets fill an auto-fill grid; when the
 dashboard is at least 640px wide, FPS, Network, Web Vitals and Errors take 2 × 2 cells and show
-their drill-down panels. Rows have a fixed minimum height, so cards keep their size as data arrives. The header shows connectivity and CPU chips from the device collector.
+their drill-down panels. Rows have a fixed minimum height, so cards keep their size as data arrives. The header shows device chips: connectivity, a slow-connection or data-saver warning, browser and OS, CPU cores and RAM.
 Enable the `resources` collector (and optionally Web Vitals `attribution`) to fill every widget.
 
 ```tsx
@@ -156,6 +156,22 @@ createMonitor({
 It loads the larger `web-vitals/attribution` build on demand, and selectors and URLs can reveal
 page structure — see monitor-api's `PRIVACY.md`. Without it, the UI shows values and ratings only.
 
+### Device and browser information
+
+The device collector (monitor-api 1.9+) describes where the page runs. `DeviceMetric`
+(`scope="device"`) shows the browser and OS. It turns red while the browser is offline and
+yellow or red when the browser estimates a slow connection (`3g`, `2g`). Its drill-down lists the
+connection estimate (type, RTT, downlink, data saver), screen size and pixel ratio, viewport,
+language, time zone, color scheme and motion preference. Values the browser does not expose (for
+example `deviceMemory` and the connection estimate outside Chromium) are left out.
+
+The same information feeds the other widgets: the Health **Connection** check grades the connection
+estimate, and the Network caption adds the connection type (`idle · 4g`).
+
+```tsx
+<DeviceMetric monitor={monitor} size="lg" />
+```
+
 ## API
 
 ### `MonitorPill`
@@ -201,6 +217,12 @@ import {
   formatBytes,    // (bytes: number) => string — e.g. "42.1 MB"
   formatMemory,   // (bytes: number) => string — heap-aware formatting
   formatTime,     // (ms: number) => string — e.g. "1.2s" or "340ms"
+  formatBrowser,  // (browser: BrowserInfo) => string | null — e.g. "Chrome 128"
+  formatPlatform, // (browser: BrowserInfo) => string | null — e.g. "macOS · desktop"
+  formatScreen,   // (screen: ScreenInfo) => string | null — e.g. "1512×982 @2x"
+  formatSize,     // (size: { width, height }) => string | null — e.g. "1280×720"
+  formatConnection, // (connection: ConnectionInfo) => string | null — e.g. "4g · 50ms · 10 Mb/s"
+  connectionTone, // (connection: ConnectionInfo) => 'good' | 'warn' | 'bad' | null
   toChartData,    // (history: Sample[]) => ChartData
 } from 'monitor-ui'
 ```

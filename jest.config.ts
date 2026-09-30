@@ -37,6 +37,7 @@ const config: Config = {
     '!src/types/**',
     '!src/**/*.stories.*',
     '!src/stories/**',
+    '!src/test-utils/**',
   ],
   coverageThreshold: {
     global: { lines: 70, functions: 70 },
