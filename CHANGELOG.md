@@ -1,3 +1,10 @@
+# [2.5.0](https://github.com/ElJijuna/monitor-ui/compare/v2.4.0...v2.5.0) (2026-09-30)
+
+
+### Features
+
+* add device metrics and improve device snapshot handling ([45f9398](https://github.com/ElJijuna/monitor-ui/commit/45f939882b636eec8fd0e47a7548d1b4cf766741))
+
 # [2.4.0](https://github.com/ElJijuna/monitor-ui/compare/v2.3.0...v2.4.0) (2026-09-29)
 
 
